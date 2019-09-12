@@ -1,0 +1,14 @@
+Backend Coding Guidelines:
+--------------------------
+
+Getters:
+    Verb followed by noun
+
+Note:
+  service files in application are named with form:
+    <name>.service.ts
+
+Example bracket guidlines:
+      getArrayElement () {
+          <Body>
+      }      
