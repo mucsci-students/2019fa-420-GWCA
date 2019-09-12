@@ -1,0 +1,15 @@
+Each Class Requires fields (for 1st sprint):
+  -Name
+  -List of variables
+  -List of methods
+
+Data structure:
+  Classes are held in a list:
+  +----------------------*
+  |Class 1   | Class 2   |
+  +----------------------+
+
+  Classes are represented as  objects with fields:
+      .name - string containing name
+      .vars - List of strings representing variable names
+      .methods - list of strings representing method names
