@@ -1,4 +1,4 @@
-import { Component, OnInit, NgModule } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 
 @Component({
@@ -8,6 +8,7 @@ import { Component, OnInit, NgModule } from '@angular/core';
 })
 export class DialogTestComponent implements OnInit {
 
+  @Input() name: string;
   constructor() { }
 
   ngOnInit() {

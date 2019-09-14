@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog,MatDialogRef,} from '@angular/material/dialog';
+import {MatDialog,MatDialogRef} from '@angular/material/dialog';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 
 @Component({
@@ -17,6 +17,7 @@ export class NewButtonComponent implements OnInit {
   public dialogRef: MatDialogRef<DialogTestComponent>
   openDialog(){
     //insert component here to generate and remove component
-    const dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
+    this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
+    this.dialogRef.componentInstance.name = "New Button";
   }
 }
