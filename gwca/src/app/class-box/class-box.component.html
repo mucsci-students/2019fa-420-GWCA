@@ -1,0 +1,19 @@
+<div class="class-box">
+    <div class="name">
+        <h2>{{name}}</h2>
+    </div>
+    <div class="variables">
+        <ul>
+            <li class="variable" *ngFor="let variable of variables">
+                {{variable}}
+            </li>
+        </ul>
+    </div>
+    <div class="methods">
+        <ul>
+            <li class="method" *ngFor="let method of methods">
+                {{method}}
+            </li>
+        </ul>
+    </div>
+</div>
