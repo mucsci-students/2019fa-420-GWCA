@@ -1,17 +1,19 @@
 <div class="class-box">
     <div class="name">
-        <mat-form-field>
-            <input matInput placeholder="name">
-        </mat-form-field>
+        <h2>{{name}}</h2>
     </div>
     <div class="variables">
-        <mat-form-field>
-            <input matInput placeholder="variables">
-        </mat-form-field>
+        <ul>
+            <li *ngFor="let variable of variables">
+                {{variable}}
+            </li>
+        </ul>
     </div>
     <div class="methods">
-        <mat-form-field>
-            <input matInput placeholder="methods">
-        </mat-form-field>
+        <ul>
+            <li *ngFor="let method of methods">
+                {{method}}
+            </li>
+        </ul>
     </div>
 </div>

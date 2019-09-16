@@ -1,1 +1,10 @@
 <h1 mat-dialog-title>{{name}} modal works</h1>
+<span *ngIf="buttonPressed === 'edit'">
+    <form class="edit-form">
+        <mat-form-field>
+            <mat-select placeholder="Choose a class...">
+               <mat-option value="test text">test text</mat-option><!-- <mat-option *ngFor=></mat-option> -->
+            </mat-select>
+        </mat-form-field>
+    </form>
+</span>

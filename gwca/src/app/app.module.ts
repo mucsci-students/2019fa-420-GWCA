@@ -21,7 +21,7 @@ import { ClassAreaComponent } from './class-area/class-area.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material';
+import { MatInputModule, MatSelectModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
@@ -46,6 +46,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatSelectModule,
   ],
   entryComponents: [
     DialogTestComponent,

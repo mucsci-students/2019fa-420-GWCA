@@ -1,5 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
-
+import { Component, OnInit, Input, ViewChildren, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-dialog-test',
@@ -7,11 +6,27 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./dialog-test.component.css']
 })
 export class DialogTestComponent implements OnInit {
-
+  @Input() buttonPressed: string;
   @Input() name: string;
-  constructor() { }
+  classNames;
+  classes;
 
+  constructor() { }
+  
   ngOnInit() {
+    this.classes = document.querySelectorAll(".class-box");
+    // console.log(this.classNames);
+    // this.listClasses();
+    // this.classList = this.classes.nativeElement.querySelectorAll('class-box');
+    // console.log((document.querySelectorAll('.class-box > .name')));
+  }
+
+  ngAfterViewInit(){
+    // this.classList = this.classes.nativeElement.querySelectorAll('class-box');
+  }        
+
+  listClasses(){
+    // console.log(this.classList);
   }
 
 }
