@@ -22,6 +22,6 @@ export class EditButtonComponent implements OnInit {
     //insert component here to generate and remove component
     this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
     this.dialogRef.componentInstance.name = "Edit Button";
-    this.dialogRef.componentInstance.buttonPressed = "edit"
+    this.dialogRef.componentInstance.buttonPressed = "edit";
   }
 }

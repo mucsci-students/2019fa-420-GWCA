@@ -19,5 +19,7 @@ export class NewButtonComponent implements OnInit {
     //insert component here to generate and remove component
     this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
     this.dialogRef.componentInstance.name = "New Button";
+    this.dialogRef.componentInstance.buttonPressed = "new";
+
   }
 }

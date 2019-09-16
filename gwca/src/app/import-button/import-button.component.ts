@@ -20,6 +20,8 @@ export class ImportButtonComponent implements OnInit {
     //insert component here to generate and remove component
     this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
     this.dialogRef.componentInstance.name = "Import Button";
+    this.dialogRef.componentInstance.buttonPressed = "import";
+
   }
 
 }

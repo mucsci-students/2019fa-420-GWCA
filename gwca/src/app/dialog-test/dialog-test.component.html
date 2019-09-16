@@ -1,10 +1,27 @@
 <h1 mat-dialog-title>{{name}} modal works</h1>
+<!-- edit button contents -->
 <span *ngIf="buttonPressed === 'edit'">
     <form class="edit-form">
         <mat-form-field>
-            <mat-select placeholder="Choose a class...">
-               <mat-option value="test text">test text</mat-option><!-- <mat-option *ngFor=></mat-option> -->
+            <mat-select placeholder="Choose a class..." [(value)]="choice">
+               <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
             </mat-select>
         </mat-form-field>
+        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Submit</button>
+    </form>
+</span>
+<!-- new button contents -->
+<span *ngIf="buttonPressed === 'new'">
+    <p>JIMMY ADD YOUR FORM HERE</p>
+</span>
+<!-- export button contents -->
+<span *ngIf="buttonPressed === 'export'">
+    <button mat-raised-button color="primary" class="submit" download>Export</button>
+</span>
+<!-- import button contents -->
+<span *ngIf="buttonPressed === 'import'">
+    <form>
+        <input type="file" class="file-input">
+        <button mat-raised-button color="primary" class="submit">Import</button>
     </form>
 </span>
