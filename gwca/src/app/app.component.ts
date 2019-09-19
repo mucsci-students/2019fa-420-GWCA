@@ -9,5 +9,11 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'gwca';
 
+  public name: String;
+
+  test(){
+    console.log(this.name);
+  }
+
 
 }
