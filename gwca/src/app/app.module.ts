@@ -17,6 +17,10 @@ import { CreateButtonTestComponent } from './create-button-test/create-button-te
 import { ClassAreaComponent } from './class-area/class-area.component';
 
 
+//services
+import { StorageService } from './storage.service';
+
+
 //material imports
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -52,7 +56,7 @@ import { MatIconModule } from '@angular/material/icon';
     DialogTestComponent,
     ClassBoxComponent,
   ],
-  providers: [],
+  providers: [StorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
