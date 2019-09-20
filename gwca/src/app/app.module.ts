@@ -18,8 +18,8 @@ import { ClassAreaComponent } from './class-area/class-area.component';
 
 
 //services
-import { StorageService } from './storage.service';
-
+//import { StorageService } from './storage.service';
+import { ClassStorageService } from './class-storage.service'
 
 //material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -58,7 +58,7 @@ import { FormsModule } from '@angular/forms';
     DialogTestComponent,
     ClassBoxComponent,
   ],
-  providers: [StorageService],
+  providers: [ClassStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
