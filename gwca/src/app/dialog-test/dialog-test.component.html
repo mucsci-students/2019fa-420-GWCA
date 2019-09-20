@@ -12,7 +12,17 @@
 </span>
 <!-- new button contents -->
 <span *ngIf="buttonPressed === 'new'">
-    <p>JIMMY ADD YOUR FORM HERE</p>
+    <form class="new-form">
+      <mat-form-field>
+        <label>Class Name<input matInput ng-model="class-name"/></label>
+      </mat-form-field>
+      <mat-form-field>
+        <label>Methods (Seperated by commas)<textarea matInput ng-model="methods"></textarea></label>
+      </mat-form-field>
+      <mat-form-field>
+        <label>State variables (Seperated by commas)<textarea matInput ng-model="variables"></textarea></label>
+      </mat-form-field>
+    </form>
 </span>
 <!-- export button contents -->
 <span *ngIf="buttonPressed === 'export'">
