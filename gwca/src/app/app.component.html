@@ -7,9 +7,21 @@
 </div>
 <div class="classes-container">
   <app-class-area></app-class-area>
-  <!-- <ng-template #container></ng-template> -->
-  <!-- <app-class-box></app-class-box> -->
+
 </div>
 
-<!-- <app-create-button-test></app-create-button-test> -->
+<div class="testing">
+  <mat-form-field>
+    <input class="form-control" [(ngModel)]="name" matInput placeholder="Put text here!">
+  </mat-form-field>
+
+
+
+  <button (click)="write()">Write!</button>
+</div>
+
+<div class="testing2">
+  <button (click)="read()">Read!</button>
+</div>
+
 <router-outlet></router-outlet>
