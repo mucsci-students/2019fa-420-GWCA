@@ -1,7 +1,4 @@
 import { Component, OnInit, NgModule} from '@angular/core';
-import { StorageService } from '../storage.service';
-
-
 
 
 @Component({
@@ -11,10 +8,9 @@ import { StorageService } from '../storage.service';
 })
 export class CreateButtonTestComponent implements OnInit {
 
-  constructor(public storage: StorageService){}
+  constructor(){}
 
   ngOnInit() {
-    this.storage.test();
   }
 
 
