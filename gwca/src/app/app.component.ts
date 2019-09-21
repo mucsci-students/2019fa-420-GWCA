@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ClassStorageService } from './class-storage.service';
 
 
@@ -11,20 +11,22 @@ import { ClassStorageService } from './class-storage.service';
 export class AppComponent {
   title = 'gwca';
 
-  public name: String;
+  @ViewChild('container',{static: false}) rf: ViewContainerRef;
+
+  //public name: String;
 
   constructor(private _service: ClassStorageService){
 
   }
 
-  write(){
-    //console.log(this.name);
-    this._service.addClass(this.name);
-  }
+  // write(){
+  //   //console.log(this.name);
+  //   this._service.addClass(this.name);
+  // }
 
-  read(){
-    console.log(this._service.printClasses());
-  }
+  // read(){
+  //   console.log(this._service.printClasses());
+  // }
 
 
 }

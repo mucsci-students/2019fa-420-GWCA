@@ -58,7 +58,10 @@ import { FormsModule } from '@angular/forms';
     DialogTestComponent,
     ClassBoxComponent,
   ],
-  providers: [ClassStorageService],
+  providers: [
+    ClassStorageService,
+    ClassAreaComponent,
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
