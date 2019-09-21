@@ -1,20 +1,27 @@
-import { Component, OnInit, Input, ViewChildren, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { ClassStorageService } from '../class-storage.service';
 
 @Component({
   selector: 'app-dialog-test',
   templateUrl: './dialog-test.component.html',
   styleUrls: ['./dialog-test.component.css']
 })
+
 export class DialogTestComponent implements OnInit {
   @Input() buttonPressed: string;
   @Input() name: string;
   classNames;
   classes;
-  choice;
+  choice: string;
+  //input values for create new
+  className: string;
+  variables: string;
+  methods: string;
 
-  constructor() { }
-  
+  constructor(public service: ClassStorageService) { }
+
   ngOnInit() {
+    this.choice = "";
     //gets class names to choose
     this.classNames = document.querySelectorAll("h2");
     
@@ -23,23 +30,41 @@ export class DialogTestComponent implements OnInit {
     
   }
 
-  search(className: string){
-    for(var i = 0; i < this.classes.length;i++){
-      if(this.classes[i].querySelector("h2").innerHTML === className){
-        //get variable names
-        console.log("Variables");
-        var variables = this.classes[i].querySelectorAll(".variable");
-        for(var j = 0; j < variables.length;j++){
-          console.log(variables[j].innerHTML);
-        }
-        //get method names
-        console.log("Methods");
-        var methods = this.classes[i].querySelectorAll(".method");
-        for(j = 0; j < methods.length;j++){
-          console.log(methods[j].innerHTML);
-        }
-      }
-    }
+  search(Name: string){
+    this.className = this.service.findClass(Name)['name'];
+    this.variables = this.service.findClass(Name)['variables'].join(',');
+    this.methods = this.service.findClass(Name)['methods'].join(',');
+    this.choice = 'found';
+
   }
+
+  async delay(ms: number) {
+    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+}
+
+  updateClass(){
+
+    //update the back-end
+    this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
+    var cls = document.querySelector('.'+CSS.escape(this.className));
+   
+    //update
+
+    cls.querySelector('.name').innerHTML = this.className;
+
+    cls.querySelector('.methods').innerHTML = this.methods;
+    cls.querySelector('.variables').innerHTML = this.variables;
+  }
+
+  insertData(){
+    this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
+
+  
+  }
+
+  // tester(){
+  //   console.log(document.getElementsByClassName("classes")[0].children);
+  // }
+
 
 }

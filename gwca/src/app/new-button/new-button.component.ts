@@ -10,11 +10,14 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 export class NewButtonComponent implements OnInit {
 
   constructor(public dialog: MatDialog) { }
+  public dialogRef: MatDialogRef<DialogTestComponent>
 
   ngOnInit() {
+    
   }
 
-  public dialogRef: MatDialogRef<DialogTestComponent>
+  
+
   openDialog(){
     //insert component here to generate and remove component
     this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
@@ -22,4 +25,8 @@ export class NewButtonComponent implements OnInit {
     this.dialogRef.componentInstance.buttonPressed = "new";
 
   }
+
+
+
+  
 }

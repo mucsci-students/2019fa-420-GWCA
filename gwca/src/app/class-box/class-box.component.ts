@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ClassStorageService } from '../class-storage.service';
 
 @Component({
   selector: 'app-class-box',
@@ -6,12 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./class-box.component.css']
 })
 export class ClassBoxComponent implements OnInit {
-  name: string = "Test"
-  variables: string[] = ["variable1","variable2","variable3"];
-  methods: string[] = ["method1","method2","method3"];
-  constructor() { }
+  name: string;
+  variables: string[];
+  methods: string[];
+  constructor(private classService: ClassStorageService) { }
 
   ngOnInit() {
+    this.name = this.classService.allClasses[0]['name'];
+    this.variables = this.classService.allClasses[0]['variables'];
+    this.methods = this.classService.allClasses[0]['methods'];
   }
 
 }

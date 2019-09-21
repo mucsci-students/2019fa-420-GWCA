@@ -1,27 +1,42 @@
-<h1 mat-dialog-title>{{name}} modal works</h1>
+<h1 mat-dialog-title>{{name}}</h1>
 <!-- edit button contents -->
 <span *ngIf="buttonPressed === 'edit'">
     <form class="edit-form">
         <mat-form-field>
             <mat-select placeholder="Choose a class..." [(value)]="choice">
+              <!-- <mat-option selected>None</mat-option> -->
                <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
             </mat-select>
+            
         </mat-form-field>
-        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Submit</button>
+        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Search</button>
+        <span *ngIf="choice === 'found'">
+          <mat-form-field>
+            <label>Class Name<input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/></label>
+          </mat-form-field>
+          <mat-form-field>
+            <label>Methods (Seperated by commas)<textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea></label>
+          </mat-form-field>
+          <mat-form-field>
+            <label>State variables (Seperated by commas)<textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea></label>
+          </mat-form-field>
+          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
+        </span>
     </form>
 </span>
 <!-- new button contents -->
 <span *ngIf="buttonPressed === 'new'">
     <form class="new-form">
       <mat-form-field>
-        <label>Class Name<input matInput ng-model="class-name"/></label>
+        <label>Class Name<input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/></label>
       </mat-form-field>
       <mat-form-field>
-        <label>Methods (Seperated by commas)<textarea matInput ng-model="methods"></textarea></label>
+        <label>Methods (Seperated by commas)<textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea></label>
       </mat-form-field>
       <mat-form-field>
-        <label>State variables (Seperated by commas)<textarea matInput ng-model="variables"></textarea></label>
+        <label>State variables (Seperated by commas)<textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea></label>
       </mat-form-field>
+      <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="insertData()">Submit</button>
     </form>
 </span>
 <!-- export button contents -->
