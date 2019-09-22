@@ -38,22 +38,17 @@ export class DialogTestComponent implements OnInit {
 
   }
 
-  async delay(ms: number) {
-    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
-}
+
 
   updateClass(){
 
     //update the back-end
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
+    //this.service.allClasses.shift();
     var cls = document.querySelector('.'+CSS.escape(this.className));
    
     //update
-
-    cls.querySelector('.name').innerHTML = this.className;
-
-    cls.querySelector('.methods').innerHTML = this.methods;
-    cls.querySelector('.variables').innerHTML = this.variables;
+    cls.remove();
   }
 
   insertData(){
