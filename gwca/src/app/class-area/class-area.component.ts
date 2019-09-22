@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef,ViewChild,ComponentFactoryResolver, IterableDiffer, IterableDiffers, SimpleChanges, KeyValueDiffers, OnChanges } from '@angular/core';
+import { Component, OnInit, ViewContainerRef,ViewChild,ComponentFactoryResolver, IterableDiffer, IterableDiffers, SimpleChanges, KeyValueDiffers, OnChanges, DoCheck } from '@angular/core';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
@@ -9,16 +9,29 @@ import { MatDialogRef, MatDialog } from '@angular/material';
   templateUrl: './class-area.component.html',
   styleUrls: ['./class-area.component.css']
 })
-export class ClassAreaComponent implements OnInit {
+export class ClassAreaComponent implements OnInit, DoCheck {
 
   @ViewChild('container',{static:true,read: ViewContainerRef}) ref;
   
+  private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
-    ,public dialog: MatDialog) {
+    ,public dialog: MatDialog, private iterableDiffs: IterableDiffers) {
+      this.iterableDiffer= this.iterableDiffs.find([]).create(null);
      }
 
 
   ngOnInit() {
+  }
+
+  //listen for insertion into array of "classes" and on insert create the class
+  ngDoCheck(){
+    let changes = this.iterableDiffer.diff(this.service.allClasses);
+    if(changes){
+        changes.forEachAddedItem(r =>
+           this.createClass()
+          );
+        
+    }
   }
 
   //dialog
@@ -60,12 +73,6 @@ export class ClassAreaComponent implements OnInit {
     temp.instance.name = this.service.generate().name;
     temp.instance.methods = this.service.generate().methods;
     temp.instance.variables = this.service.generate().variables;
-    //shift to end
-    this.service.allClasses.push(this.service.allClasses[0]);
-    this.service.allClasses.shift();
   }
 
-  test(){
-    console.log("TEST");
-  }
 }

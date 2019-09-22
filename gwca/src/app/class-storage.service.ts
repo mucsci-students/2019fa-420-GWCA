@@ -27,14 +27,7 @@ export class ClassStorageService {
    }
 
   createNew(classname: string, methods: string[],variables: string[]){
-    if(this.allClasses.length === 0){
-      this.allClasses.push({'name':classname,'methods':methods,'variables':variables});
-    }
-    else{
       this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
-    }
-    this.generateComponent = true;
-    this.generateComponent = false;
   }
 
   generate(){
