@@ -1,4 +1,5 @@
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { VariableAst } from '@angular/compiler';
 
 
 
@@ -23,12 +24,9 @@ export class ClassStorageService {
     this.className = '';
     this.classes = [];
     this.allClasses = [];
-    this.generateComponent = false;
    }
 
-  createNew(classname: string, methods: string[],variables: string[]){
-      this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
-  }
+  
 
   generate(){
     return this.allClasses[0];
@@ -41,10 +39,25 @@ export class ClassStorageService {
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
       if(this.allClasses[i]['name'] === name){
-        console.log(this.allClasses[i]);
         return this.allClasses[i];
       }
     }
+  }
+
+  createNew(classname: string, methods: string[],variables: string[]){
+    //this.findClass(classname);
+    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
+  }
+
+  pruneArray(){
+    for(var i = 0;i < this.allClasses.length;i++){
+      for(var j = (i+1);j< this.allClasses.length;j++){
+        if(this.allClasses[i]['name'] === this.allClasses[j]['name']){
+          this.allClasses.splice(j,1);
+        }
+      }
+    }
+    console.log(this.allClasses);
   }
 
   printClasses(){

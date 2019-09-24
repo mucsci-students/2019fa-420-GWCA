@@ -46,7 +46,7 @@ export class DialogTestComponent implements OnInit {
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
     //this.service.allClasses.shift();
     var cls = document.querySelector('.'+CSS.escape(this.className));
-   
+    
     //update
     cls.remove();
   }
