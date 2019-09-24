@@ -30,6 +30,9 @@ export class ClassAreaComponent implements OnInit, DoCheck {
         changes.forEachAddedItem(r =>
            this.createClass()
           );
+        changes.forEachAddedItem(a =>
+          this.service.pruneArray()
+        );
         
     }
   }
@@ -58,10 +61,6 @@ export class ClassAreaComponent implements OnInit, DoCheck {
         this.dialogRef.componentInstance.name = "Export Button";
         break;
     }
-  }
-  
-  closeDialog(){
-    this.dialogRef.close(this.createClass());
   }
   
 
