@@ -20,6 +20,7 @@ export class ClassStorageService {
   generateComponent: boolean;
 
 
+  
   constructor() {
     this.className = '';
     this.classes = [];
