@@ -1,4 +1,6 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatDialog,MatDialogRef } from '@angular/material/dialog';
+import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { ClassStorageService } from './class-storage.service';
 
 
@@ -13,20 +15,16 @@ export class AppComponent {
 
   @ViewChild('container',{static: false}) rf: ViewContainerRef;
 
-  //public name: String;
-
-  constructor(private _service: ClassStorageService){
+  constructor(public dialog: MatDialog, public service: ClassStorageService){
 
   }
 
-  // write(){
-  //   //console.log(this.name);
-  //   this._service.addClass(this.name);
-  // }
+  public dialogRef: MatDialogRef<DialogTestComponent>
+  openDialog(){
+    //insert component here to generate and remove component
+    this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
+    this.dialogRef.componentInstance.name = "Export Button";
+    this.dialogRef.componentInstance.buttonPressed = "export";
 
-  // read(){
-  //   console.log(this._service.printClasses());
-  // }
-
-
+  }
 }

@@ -62,12 +62,6 @@ export class ClassStorageService {
   }
 
   dumpClasses(){
-    for(var i = 0; i < this.allClasses.length; i++){
-      console.log("(" + this.className + ": ");
-      for(var j =0; j < this.classes.length; j++){
-        console.log(this.classes[j] + " ");
-      }
-      console.log(")");
-    }
+    console.log(this.allClasses);   
   }
 }
