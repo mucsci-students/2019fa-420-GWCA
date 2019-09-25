@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DialogTestComponent } from './dialog-test.component';
+import { MatSelectModule } from '@angular/material';
 
 describe('DialogTestComponent', () => {
   let component: DialogTestComponent;
@@ -8,7 +9,10 @@ describe('DialogTestComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialogTestComponent ]
+      declarations: [ DialogTestComponent ],
+      imports: [
+        MatSelectModule,
+      ]
     })
     .compileComponents();
   }));
@@ -19,7 +23,6 @@ describe('DialogTestComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+
+
 });

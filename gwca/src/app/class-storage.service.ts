@@ -1,9 +1,8 @@
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { VariableAst } from '@angular/compiler';
 
 
 
-interface fullClass {
+export interface fullClass {
   name: string;
   methods: string[];
   variables: string[];
@@ -42,6 +41,7 @@ export class ClassStorageService {
         return this.allClasses[i];
       }
     }
+    return null;
   }
 
   createNew(classname: string, methods: string[],variables: string[]){
@@ -57,7 +57,6 @@ export class ClassStorageService {
         }
       }
     }
-    console.log(this.allClasses);
   }
 
   printClasses(){

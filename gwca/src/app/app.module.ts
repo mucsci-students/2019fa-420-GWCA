@@ -6,14 +6,9 @@ import { NgModule } from '@angular/core';
 //components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NewButtonComponent } from './new-button/new-button.component';
-import { EditButtonComponent } from './edit-button/edit-button.component';
-import { ImportButtonComponent } from './import-button/import-button.component';
-import { ExportButtonComponent } from './export-button/export-button.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogTestComponent } from './dialog-test/dialog-test.component';
 import { ClassBoxComponent } from './class-box/class-box.component';
-import { CreateButtonTestComponent } from './create-button-test/create-button-test.component';
 import { ClassAreaComponent } from './class-area/class-area.component';
 
 
@@ -32,13 +27,8 @@ import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
-    NewButtonComponent,
-    EditButtonComponent,
-    ImportButtonComponent,
-    ExportButtonComponent,
     DialogTestComponent,
     ClassBoxComponent,
-    CreateButtonTestComponent,
     ClassAreaComponent,
 
   ],

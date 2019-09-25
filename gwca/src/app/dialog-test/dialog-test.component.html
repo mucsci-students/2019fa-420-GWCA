@@ -2,23 +2,30 @@
 <!-- edit button contents -->
 <span *ngIf="buttonPressed === 'edit'">
     <form class="edit-form">
+      <span *ngIf="choice !== 'found'">
         <mat-form-field>
             <mat-select placeholder="Choose a class..." [(value)]="choice">
               <!-- <mat-option selected>None</mat-option> -->
                <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select>
-            
+            </mat-select> 
         </mat-form-field>
         <button mat-raised-button color="primary" type="button" (click)="search(choice)">Search</button>
+      </span>  
+
         <span *ngIf="choice === 'found'">
-          <mat-form-field>
-            <label>Class Name<input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/></label>
+          <mat-form-field class="input-data">
+            <mat-label>Class Name</mat-label>
+            <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
           </mat-form-field>
           <mat-form-field>
-            <label>Methods (Seperated by commas)<textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea></label>
+            <mat-label>Methods</mat-label>
+              <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
+            <mat-hint>Seperated by commas</mat-hint>
           </mat-form-field>
           <mat-form-field>
-            <label>State variables (Seperated by commas)<textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea></label>
+            <mat-label>State variables</mat-label>
+            <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
+            <mat-hint>Seperated by commas</mat-hint>
           </mat-form-field>
           <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
         </span>
@@ -28,13 +35,18 @@
 <span *ngIf="buttonPressed === 'new'">
     <form class="new-form">
       <mat-form-field>
-        <label>Class Name<input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/></label>
+        <mat-label>Class Name</mat-label>
+        <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
       </mat-form-field>
       <mat-form-field>
-        <label>Methods (Seperated by commas)<textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea></label>
+        <mat-label>Methods</mat-label>
+        <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
+        <mat-hint>Seperated by commas</mat-hint>
       </mat-form-field>
       <mat-form-field>
-        <label>State variables (Seperated by commas)<textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea></label>
+        <mat-label>State variables</mat-label>
+        <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
+        <mat-hint>Seperated by commas</mat-hint>
       </mat-form-field>
       <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="insertData()">Submit</button>
     </form>
