@@ -19,6 +19,7 @@ export class ClassStorageService {
   generateComponent: boolean;
 
 
+  
   constructor() {
     this.className = '';
     this.classes = [];
@@ -59,7 +60,7 @@ export class ClassStorageService {
     }
   }
 
-  printClasses(){
-    console.log(this.classes.pop());
+  dumpClasses(){
+    console.log(this.allClasses);   
   }
 }
