@@ -10,8 +10,8 @@ import { ClassStorageService } from '../class-storage.service';
 export class DialogTestComponent implements OnInit {
   @Input() buttonPressed: string;
   @Input() name: string;
-  classNames;
-  classes;
+  classNames: NodeListOf<Element>;
+  classes: NodeListOf<Element>;
   choice: string;
   //input values for create new
   className: string;
@@ -52,6 +52,8 @@ export class DialogTestComponent implements OnInit {
   }
 
   insertData(){
+    //remove spaces and replace with underscores
+    this.className = this.className.replace(/\s/g,"_");
     this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
 
   
