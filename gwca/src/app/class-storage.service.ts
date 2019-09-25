@@ -32,9 +32,6 @@ export class ClassStorageService {
     return this.allClasses[0];
   }
 
-  addClass(name){
-    this.classes.push(name);
-  }
 
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
@@ -60,7 +57,33 @@ export class ClassStorageService {
     }
   }
 
-  dumpClasses(){
-    console.log(this.allClasses);   
+  //this function outputs the current diagram as a JSON string
+  diagramToJSON(){
+    var diagram = JSON.stringify(this.allClasses);      
+    console.log("diagram = " + diagram);
   }
+
+  //This function takes in a JSON string, and creates it's corresponding diagram.
+  jsonToClasses(data){
+    try{
+      var diagram = JSON.parse(data);
+      console.log(diagram);
+      this.allClasses.length = 0;
+      diagram.forEach(element => {
+        this.createNew(element.name, element.methods, element.variables);
+        console.log(element.name + " " + element.methods + " " + element.variables);
+      });
+    }
+    catch(e) {
+      console.log(e);
+    }
+  }
+
+  jsonToClassesTesting(){
+    var data = [
+                  {"name":"Class2","methods":["method2()","method3()"],"variables":["var2","var3","var4"]},
+                  {"name":"Class1","methods":["method1()"],"variables":["var1"]}
+                ]
+    this.jsonToClasses(JSON.stringify(data));
+    }
 }
