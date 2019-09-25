@@ -68,7 +68,7 @@ export class ClassStorageService {
     try{
       var diagram = JSON.parse(data);
       console.log(diagram);
-      this.allClasses.length = 0;
+      //this.allClasses.length = 0;
       diagram.forEach(element => {
         this.createNew(element.name, element.methods, element.variables);
         console.log(element.name + " " + element.methods + " " + element.variables);

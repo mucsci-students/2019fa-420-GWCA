@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
+import { all } from 'q';
 
 @Component({
   selector: 'app-class-box',
