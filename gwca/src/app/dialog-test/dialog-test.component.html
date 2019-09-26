@@ -53,7 +53,10 @@
 </span>
 <!-- export button contents -->
 <span *ngIf="buttonPressed === 'export'">
-    <button mat-raised-button color="primary" class="submit" download>Export</button>
+    <h1>Copy this</h1>
+    <code>
+      <pre>{{service.jsonString | json}}</pre>
+    </code>
 </span>
 <!-- import button contents -->
 <span *ngIf="buttonPressed === 'import'">

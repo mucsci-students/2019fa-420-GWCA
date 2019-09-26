@@ -17,6 +17,8 @@ export class DialogTestComponent implements OnInit {
   className: string;
   variables: string;
   methods: string;
+  //export
+  //exportString: 
 
   constructor(public service: ClassStorageService) { }
 

@@ -17,7 +17,7 @@ export class ClassStorageService {
   classes: Array<{className: string}>;
   allClasses: fullClass[];
   generateComponent: boolean;
-
+  jsonString: any;
 
   
   constructor() {
@@ -61,6 +61,7 @@ export class ClassStorageService {
   diagramToJSON(){
     var diagram = JSON.stringify(this.allClasses);      
     console.log("diagram = " + diagram);
+    this.jsonString = diagram;
   }
 
   //This function takes in a JSON string, and creates it's corresponding diagram.
