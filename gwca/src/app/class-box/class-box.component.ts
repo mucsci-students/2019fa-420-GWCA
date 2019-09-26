@@ -17,6 +17,7 @@ export class ClassBoxComponent implements OnInit {
     this.name = this.classService.allClasses[0]['name'];
     this.variables = this.classService.allClasses[0]['variables'];
     this.methods = this.classService.allClasses[0]['methods'];
+    this.classService.allClasses.unshift(this.classService.allClasses.pop());
   }
 
 }

@@ -68,11 +68,11 @@ export class ClassStorageService {
     try{
       var diagram = JSON.parse(data);
       console.log(diagram);
-      //this.allClasses.length = 0;
-      diagram.forEach(element => {
-        this.createNew(element.name, element.methods, element.variables);
-        console.log(element.name + " " + element.methods + " " + element.variables);
-      });
+      this.allClasses.length = 0;
+      for(var i = 0; i < diagram.length; i++){
+        this.createNew(diagram[i].name, diagram[i].methods, diagram[i].variables);
+        console.log(diagram[i].name + " " + diagram[i].methods + " " + diagram[i].variables);
+      }
     }
     catch(e) {
       console.log(e);
@@ -81,8 +81,10 @@ export class ClassStorageService {
 
   jsonToClassesTesting(){
     var data = [
-                  {"name":"Class2","methods":["method2()","method3()"],"variables":["var2","var3","var4"]},
-                  {"name":"Class1","methods":["method1()"],"variables":["var1"]}
+                  {"name":"Class3","methods":["method2()","method3()"],"variables":["var2","var3","var4"]},
+                  {"name":"a","methods":["2()"],"variables":["4"]},
+                  {"name":"b","methods":["3()"],"variables":["6"]},
+                  {"name":"c","methods":["4()"],"variables":["7"]}
                 ]
     this.jsonToClasses(JSON.stringify(data));
     }
