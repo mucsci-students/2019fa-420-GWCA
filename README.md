@@ -28,9 +28,20 @@ Installing the Angular CLI:
 
 	Then you can run your project locally with the command:
 
-	4) ng serve (Note: to see this in your browser you have to open localhost:4200)
+	4) ng serve or ng s (Note: to see this in your browser you have to open localhost:4200) (adding the -o flag will open the browser in localhost:4200)
 
 	This will compile your app on save.
+	
+Helpfule Angular CLI commands:
+
+	1) ng s -o --> compile on save and open localhost:4200 in browser
+	
+	2) ng g c <component-name> --> generate a component, this will include the html file, the typescript file, the css file, and the karma file (testing).
+	
+	3) ng test --> runs all of your tests written in your karma testbed
+	
+	4) ng build --> build your application into something that can be deployed (--prod flag, production build, otherwise it is a develop build)
+	
   
 Add-ins:
   
