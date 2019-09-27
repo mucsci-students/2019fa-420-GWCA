@@ -6,6 +6,7 @@ import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ComponentFactoryResolver, DebugElement } from '@angular/core';
+import { jsPlumb } from 'jsPlumb';
 
 describe('ClassAreaComponent', () => {
   let component: ClassAreaComponent;
@@ -127,6 +128,16 @@ describe('ClassAreaComponent', () => {
     component.createClass();
     expect(ClassBoxComponent).toBeTruthy();
   });
+
+  //test the connector
+   it('should draw the line',() => {
+     const el = fixture.debugElement.nativeElement;
+     el.querySelector('.lineDraw').click();
+
+     fixture.whenStable().then(() => {
+       expect(component.drawSomeLines).toHaveBeenCalled();
+     });
+   });
 
   
 

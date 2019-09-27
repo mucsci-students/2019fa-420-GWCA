@@ -1,5 +1,5 @@
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
-
+import { jsPlumb } from 'jsplumb';
 
 
 export interface fullClass {
@@ -13,15 +13,12 @@ export interface fullClass {
 })
 
 export class ClassStorageService {
-  className: string;
-  classes: Array<{className: string}>;
   allClasses: fullClass[];
   generateComponent: boolean;
+  jsPlumbInstance;
 
 
   constructor() {
-    this.className = '';
-    this.classes = [];
     this.allClasses = [];
    }
 
@@ -31,9 +28,6 @@ export class ClassStorageService {
     return this.allClasses[0];
   }
 
-  addClass(name){
-    this.classes.push(name);
-  }
 
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
@@ -59,7 +53,11 @@ export class ClassStorageService {
     }
   }
 
-  printClasses(){
-    console.log(this.classes.pop());
+  addConnetor(){
+     for(var i = 0;i<this.allClasses.length;i++){
+        var el = document.getElementById(this.allClasses[i]['name']);
+        console.log(el);
+     }
   }
+
 }
