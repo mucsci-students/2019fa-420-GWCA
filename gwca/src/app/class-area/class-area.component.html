@@ -1,14 +1,17 @@
+<!-- <script src="node_modules/jsplumb/dist/js/jsplumb.min.js"></script> -->
 <div class="all-buttons">
     <button mat-raised-button color="primary" class="buttons new" (click)="openDialog('new')" >New</button>
     <button mat-raised-button color="primary" class="buttons edit" (click)="openDialog('edit')">Edit</button>
     <button mat-raised-button color="primary" class="buttons import" (click)="openDialog('import')">Import</button>
     <button mat-raised-button color="primary" class="buttons export" (click)="openDialog('export')">Export</button>
+    <button (click)="connectElements('apple','cherry')">Connect</button>
+</div>
+<div class="classes" >
+    <!-- <ng-template  #container></ng-template> -->
+    <ng-container *ngFor="let classBox of classBoxes">
+        <app-class-box></app-class-box>
+        <!-- <app-class-box cdkDrag (cdkDragEnded)="moveCheck()"></app-class-box> -->
+    </ng-container>
+</div>
 
-    <!-- <app-new-button></app-new-button> -->
-    <!-- <app-edit-button></app-edit-button> -->
-    <!-- <app-import-button></app-import-button> -->
-    <!-- <app-export-button></app-export-button> -->
-</div>
-<div class="classes">
-    <ng-template #container></ng-template>
-</div>
+
