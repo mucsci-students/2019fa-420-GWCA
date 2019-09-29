@@ -17,6 +17,10 @@ export class DialogTestComponent implements OnInit {
   className: string;
   variables: string;
   methods: string;
+  //export
+  //import value
+  diagram: string;
+  //exportString: 
 
   constructor(public service: ClassStorageService) { }
 
@@ -78,6 +82,10 @@ export class DialogTestComponent implements OnInit {
     }
     console.log(this.service.allClasses);
   
+  }
+
+  importDiagram(diagram){
+    this.service.jsonToClasses(diagram);
   }
 
   // tester(){

@@ -13,20 +13,7 @@ export class AppComponent {
 
   @ViewChild('container',{static: false}) rf: ViewContainerRef;
 
-  //public name: String;
-
-  constructor(private _service: ClassStorageService){
+  constructor(public service: ClassStorageService){
 
   }
-
-  // write(){
-  //   //console.log(this.name);
-  //   this._service.addClass(this.name);
-  // }
-
-  // read(){
-  //   console.log(this._service.printClasses());
-  // }
-
-
 }
