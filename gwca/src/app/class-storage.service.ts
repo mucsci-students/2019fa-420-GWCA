@@ -17,7 +17,7 @@ export class ClassStorageService {
   classes: Array<{className: string}>;
   allClasses: fullClass[];
   generateComponent: boolean;
-  jsonString: any;
+  jsonString: string;
 
   
   constructor() {
