@@ -7,3 +7,12 @@
 pre {
     white-space: inherit;
 }
+    height        : 90vh;
+}
+
+.testing-area{
+    display       : flex;
+    flex-direction: row;
+    border        : 1px solid black;
+    /* height        : 100vh; */
+}
