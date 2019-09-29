@@ -18,6 +18,8 @@ export class DialogTestComponent implements OnInit {
   variables: string;
   methods: string;
   //export
+  //import value
+  diagram: string;
   //exportString: 
 
   constructor(public service: ClassStorageService) { }
@@ -59,6 +61,10 @@ export class DialogTestComponent implements OnInit {
     this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
 
   
+  }
+
+  importDiagram(diagram){
+    this.service.jsonToClasses(diagram);
   }
 
   // tester(){

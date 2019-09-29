@@ -16,12 +16,4 @@ export class AppComponent {
   constructor(public service: ClassStorageService){
 
   }
-
-  exportTest(){
-    this.service.diagramToJSON();
-  }
-
-  importTest(){
-    this.service.jsonToClassesTesting();
-  }
 }

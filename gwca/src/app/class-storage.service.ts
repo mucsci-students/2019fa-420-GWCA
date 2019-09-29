@@ -60,33 +60,20 @@ export class ClassStorageService {
   //this function outputs the current diagram as a JSON string
   diagramToJSON(){
     var diagram = JSON.stringify(this.allClasses);      
-    console.log("diagram = " + diagram);
     this.jsonString = diagram;
   }
 
   //This function takes in a JSON string, and creates it's corresponding diagram.
   jsonToClasses(data){
     try{
-      var diagram = JSON.parse(data);
-      console.log(diagram);
+      var importedDiagram = JSON.parse(data);
       this.allClasses.length = 0;
-      for(var i = 0; i < diagram.length; i++){
-        this.createNew(diagram[i].name, diagram[i].methods, diagram[i].variables);
-        console.log(diagram[i].name + " " + diagram[i].methods + " " + diagram[i].variables);
+      for(var i = 0; i < importedDiagram.length; i++){
+        this.createNew(importedDiagram[i].name, importedDiagram[i].methods, importedDiagram[i].variables);
       }
     }
     catch(e) {
       console.log(e);
     }
   }
-
-  jsonToClassesTesting(){
-    var data = [
-                  {"name":"Class3","methods":["method2()","method3()"],"variables":["var2","var3","var4"]},
-                  {"name":"a","methods":["2()"],"variables":["4"]},
-                  {"name":"b","methods":["3()"],"variables":["6"]},
-                  {"name":"c","methods":["4()"],"variables":["7"]}
-                ]
-    this.jsonToClasses(JSON.stringify(data));
-    }
 }
