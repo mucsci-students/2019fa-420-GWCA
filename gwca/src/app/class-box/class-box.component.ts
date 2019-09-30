@@ -11,7 +11,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
   name: string;
   variables: string[];
   methods: string[];
-
+  //jsplumb settings for connectors
   source = {
     endpoint: "Rectangle",
     isSource: true,
@@ -35,15 +35,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
     this.name = this.classService.allClasses[0]['name'];
     this.variables = this.classService.allClasses[0]['variables'];
     this.methods = this.classService.allClasses[0]['methods'];
-    //  var element = document.querySelectorAll('.class-box');
-    //  for(var i=0;i<element.length;i++){
-    //    element[i]['style']['transform'] = 'translateX('+(i*300)+'px)';
-    //  }
-    
-    // instance.makeSource(this.name,{
-    //   anchor: 'Continuous',
-    //   endpoint: ['Rectangle'],
-    // });
+
   }
 
   //have to wait otherwise can't find element in DOM and won't make draggable
