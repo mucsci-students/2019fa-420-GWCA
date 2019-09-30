@@ -6,6 +6,7 @@ export interface fullClass {
   name: string;
   methods: string[];
   variables: string[];
+  
 }
 
 @Injectable({
@@ -16,6 +17,15 @@ export class ClassStorageService {
   allClasses: fullClass[];
   generateComponent: boolean;
   jsPlumbInstance;
+  //jsPlumb endpoint settings
+  target = {
+    anchor: "Top",
+    endpoint: "Rectangle",
+    isTarget: true
+  };
+  source = {
+    isSource: true
+  };
 
 
   constructor() {
