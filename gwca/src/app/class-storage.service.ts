@@ -16,6 +16,7 @@ export interface fullClass {
 export class ClassStorageService {
   allClasses: fullClass[];
   generateComponent: boolean;
+  jsonString: string;
   jsPlumbInstance;
   //jsPlumb endpoint settings
   target = {
@@ -28,6 +29,7 @@ export class ClassStorageService {
   };
 
   //initialize the list that holds the classes
+  
   constructor() {
     this.allClasses = [];
    }
@@ -65,7 +67,27 @@ export class ClassStorageService {
     }
   }
 
-  //adds the connectors from jsplumb to the classes
+
+  //this function outputs the current diagram as a JSON string
+  diagramToJSON(){
+    var diagram = JSON.stringify(this.allClasses);      
+    this.jsonString = diagram;
+  }
+
+  //This function takes in a JSON string, and creates it's corresponding diagram.
+  jsonToClasses(data){
+    try{
+      var importedDiagram = JSON.parse(data);
+      this.allClasses.length = 0;
+      for(var i = 0; i < importedDiagram.length; i++){
+        this.createNew(importedDiagram[i].name, importedDiagram[i].methods, importedDiagram[i].variables);
+      }
+    }
+    catch(e) {
+      console.log(e);
+    }
+    
+   //adds the connectors from jsplumb to the classes  
   addConnetor(){
      for(var i = 0;i<this.allClasses.length;i++){
         var el = document.getElementById(this.allClasses[i]['name']);

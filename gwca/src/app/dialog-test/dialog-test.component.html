@@ -9,7 +9,7 @@
                <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
             </mat-select> 
         </mat-form-field>
-        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Search</button>
+        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
       </span>  
 
         <span *ngIf="choice === 'found'">
@@ -53,12 +53,15 @@
 </span>
 <!-- export button contents -->
 <span *ngIf="buttonPressed === 'export'">
-    <button mat-raised-button color="primary" class="submit" download>Export</button>
+    <h1>Copy this:</h1>
+    <code>
+      <pre>{{service.jsonString}}</pre>
+    </code>
 </span>
 <!-- import button contents -->
 <span *ngIf="buttonPressed === 'import'">
     <form>
-        <input type="file" class="file-input">
-        <button mat-raised-button color="primary" class="submit">Import</button>
+      <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
+        <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
     </form>
 </span>
