@@ -48,7 +48,13 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
 
   //have to wait otherwise can't find element in DOM and won't make draggable
   ngAfterViewInit(){
-    setTimeout(() => this.classService.jsPlumbInstance.draggable(document.getElementById(this.name)),2000);
+    setTimeout(() =>
+    this.classService.jsPlumbInstance.draggable(document.getElementById(this.name)), 
+    100);
+    //add source connector (connect to others)
+    this.classService.jsPlumbInstance.addEndpoint(this.name,this.classService.source);
+    //add target connector (get connected to)
+    this.classService.jsPlumbInstance.addEndpoint(this.name,this.classService.target);
   }
 
 
