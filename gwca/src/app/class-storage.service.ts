@@ -28,18 +28,19 @@ export class ClassStorageService {
     isSource: true
   };
 
+  //initialize the list that holds the classes
   
   constructor() {
     this.allClasses = [];
    }
 
   
-
+  //gets 1st element of list for the view
   generate(){
     return this.allClasses[0];
   }
 
-
+  //searh array for class
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
       if(this.allClasses[i]['name'] === name){
@@ -49,11 +50,13 @@ export class ClassStorageService {
     return null;
   }
 
+  //push a new class into the array (front)
   createNew(classname: string, methods: string[],variables: string[]){
     //this.findClass(classname);
     this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
   }
 
+  //remove duplicates in the array
   pruneArray(){
     for(var i = 0;i < this.allClasses.length;i++){
       for(var j = (i+1);j< this.allClasses.length;j++){
@@ -63,6 +66,7 @@ export class ClassStorageService {
       }
     }
   }
+
 
   //this function outputs the current diagram as a JSON string
   diagramToJSON(){
@@ -83,10 +87,10 @@ export class ClassStorageService {
       console.log(e);
     }
     
+   //adds the connectors from jsplumb to the classes  
   addConnetor(){
      for(var i = 0;i<this.allClasses.length;i++){
         var el = document.getElementById(this.allClasses[i]['name']);
-        console.log(el);
      }
   }
 

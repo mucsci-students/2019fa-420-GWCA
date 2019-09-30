@@ -16,7 +16,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   //NOTE: this is testing, ignore for now
 
   @ViewChild('container',{static:true,read: ViewContainerRef}) ref;
-  
+  //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
     ,public dialog: MatDialog, private iterableDiffs: IterableDiffers) {
@@ -37,19 +37,16 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
         changes.forEachAddedItem(a =>
           this.service.pruneArray()
         );
-        // changes.forEachAddedItem(b =>
-        //   this.service.addConnetor()
-        // );
     }
   }
 
 
-  
+  //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
     this.service.jsPlumbInstance = jsPlumb.getInstance();
   }
 
-
+  //for direct connections in jsplumb
   connectElements(el1: string,el2: string){
     this.service.jsPlumbInstance.connect({
       source: el1,
@@ -84,7 +81,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     }
   }
   
-  //generate components (new way)
+  //generate components (new way) in the view
   classBoxes = [];
 
   createClass(){
