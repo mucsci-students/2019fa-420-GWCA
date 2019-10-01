@@ -3,3 +3,7 @@
     flex-direction: row;
     flex-wrap     : wrap;
 }
+
+.cli-button{
+    float         : right;
+}
