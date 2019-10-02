@@ -4,9 +4,12 @@
     flex-wrap     : wrap;
 }
 
-pre {
-    white-space: inherit;
+
+.cli-button{
+    float         : right;
 }
+pre {
+    white-space   : inherit;
     height        : 90vh;
 }
 
@@ -15,4 +18,5 @@ pre {
     flex-direction: row;
     border        : 1px solid black;
     /* height        : 100vh; */
+
 }

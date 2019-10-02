@@ -22,8 +22,13 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule, MatSelectModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
+
+import { FormsModule } from '@angular/forms';
+import { CliComponent } from './cli/cli.component';
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
+
 
 @NgModule({
   declarations: [
@@ -31,6 +36,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     DialogTestComponent,
     ClassBoxComponent,
     ClassAreaComponent,
+    CliComponent,
 
   ],
   imports: [
