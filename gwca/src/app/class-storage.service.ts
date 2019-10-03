@@ -1,4 +1,4 @@
-import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { jsPlumb } from 'jsplumb';
 
 
@@ -86,6 +86,7 @@ export class ClassStorageService {
     catch(e) {
       console.log(e);
     }
+  }
     
    //adds the connectors from jsplumb to the classes  
   addConnetor(){
