@@ -4,7 +4,7 @@
     <button mat-raised-button color="primary" class="buttons" (click)="openDialog('new')" >New</button>
     <button mat-raised-button color="primary" class="buttons" (click)="openDialog('edit')">Edit</button>
     <button mat-raised-button color="primary" class="buttons" (click)="openDialog('import')">Import</button>
-    <button mat-raised-button color="primary" class="buttons" (click)="openDialog('export')">Export</button>
+    <button mat-raised-button color="primary" class="buttons" (click)="openDialog('export');updateStoredDiagram()">Export</button>
     <a routerLink="cli">
         <button mat-raised-button color="primary" class="cli-button">Switch to CLI</button>
     </a>

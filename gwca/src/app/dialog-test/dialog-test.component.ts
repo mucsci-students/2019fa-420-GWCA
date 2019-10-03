@@ -84,13 +84,17 @@ export class DialogTestComponent implements OnInit {
   
   }
 
+
+  /*
+  * importDiagram is basically just a wrapper for the service's import method.
+  * This needs to be done because we can't directly call the service in the (click)
+  * listener on line 65 of dialogue-test.component.html.
+  */
   importDiagram(diagram){
     this.service.jsonToClasses(diagram);
   }
 
-  // tester(){
-  //   console.log(document.getElementsByClassName("classes")[0].children);
-  // }
-
-
+  updateStoredDiagram(){
+    this.service.diagramToJSON();
+  }  
 }
