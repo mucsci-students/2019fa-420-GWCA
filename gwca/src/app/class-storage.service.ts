@@ -64,7 +64,6 @@ export class ClassStorageService {
   //push a new class into the array (front) and update our corresponding JSON model
   createNew(classname: string, methods: string[],variables: string[]){
     this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
-    this.diagramToJSON();
   }
 
   //remove duplicates in the array
