@@ -1,3 +1,14 @@
+/*
+* This file is where the actual service is defined. This is what is referred to 
+* when I discussing adding/removing features to the back end of our project.
+* It's extremely important to understand that the majority of the data manipulation
+* in this project involves this file, dialog-test.component.ts, and 
+* dialog-test.component.html
+*
+* If you can't figure out the workflow between these three files, ask somebody.
+*/
+
+
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { jsPlumb } from 'jsplumb';
 
@@ -50,10 +61,10 @@ export class ClassStorageService {
     return null;
   }
 
-  //push a new class into the array (front)
+  //push a new class into the array (front) and update our corresponding JSON model
   createNew(classname: string, methods: string[],variables: string[]){
-    //this.findClass(classname);
     this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
+    this.diagramToJSON();
   }
 
   //remove duplicates in the array
@@ -68,13 +79,16 @@ export class ClassStorageService {
   }
 
 
-  //this function outputs the current diagram as a JSON string
+ // this function outputs the current diagram as a JSON string
   diagramToJSON(){
     var diagram = JSON.stringify(this.allClasses);      
     this.jsonString = diagram;
   }
 
-  //This function takes in a JSON string, and creates it's corresponding diagram.
+  /*
+  * This function takes in a JSON string, and creates it's corresponding diagram.
+  * note how we iterate over the JSON and call create new on each object.
+  */
   jsonToClasses(data){
     try{
       var importedDiagram = JSON.parse(data);
@@ -86,6 +100,7 @@ export class ClassStorageService {
     catch(e) {
       console.log(e);
     }
+  }
     
    //adds the connectors from jsplumb to the classes  
   addConnetor(){
@@ -93,5 +108,4 @@ export class ClassStorageService {
         var el = document.getElementById(this.allClasses[i]['name']);
      }
   }
-
 }
