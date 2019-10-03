@@ -1,3 +1,6 @@
+
+import { Injectable } from '@angular/core';
+
 /*
 * This file is where the actual service is defined. This is what is referred to 
 * when I discussing adding/removing features to the back end of our project.
@@ -10,6 +13,7 @@
 
 
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
+
 import { jsPlumb } from 'jsplumb';
 
 
