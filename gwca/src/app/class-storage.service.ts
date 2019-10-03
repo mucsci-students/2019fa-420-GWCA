@@ -11,6 +11,7 @@
 
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { jsPlumb } from 'jsplumb';
+import { jsYaml } from 'js-yaml';
 
 
 export interface fullClass {
