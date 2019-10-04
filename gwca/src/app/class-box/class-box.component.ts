@@ -40,6 +40,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
 
   //have to wait otherwise can't find element in DOM and won't make draggable
   ngAfterViewInit(){
+    console.log("Loaded class box");
     setTimeout(() =>
     this.classService.jsPlumbInstance.draggable(document.getElementById(this.name)), 
     100);

@@ -80,7 +80,7 @@ export class DialogTestComponent implements OnInit {
     else{
       this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
     }
-    console.log(this.service.allClasses);
+    //console.log(this.service.allClasses);
   
   }
 

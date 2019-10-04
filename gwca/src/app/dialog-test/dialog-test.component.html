@@ -48,6 +48,11 @@
         <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
         <mat-hint>Seperated by commas</mat-hint>
       </mat-form-field>
+      <mat-select placeholder="Choose a class..." [(value)]="choice">
+        <mat-option selected>None</mat-option>
+         <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
+      </mat-select>
+      <hr>
       <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="insertData()">Submit</button>
     </form>
 </span>

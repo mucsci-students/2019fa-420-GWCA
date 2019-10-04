@@ -6,13 +6,14 @@ import { CliComponent } from './cli/cli.component';
 
 const routes: Routes = [
   {path: 'cli',component: CliComponent},
-  {path: '**',component: ClassAreaComponent},
-
+  {path: '**',component: ClassAreaComponent,
+  runGuardsAndResolvers: 'always',
+},
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{onSameUrlNavigation:'reload'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
