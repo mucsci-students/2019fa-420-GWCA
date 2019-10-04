@@ -5,6 +5,8 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Router, NavigationEnd } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-class-area',
@@ -12,19 +14,28 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   styleUrls: ['./class-area.component.css']
 })
 export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
-
+  switchToCLI: boolean
   //NOTE: this is testing, ignore for now
 
   @ViewChild('container',{static:true,read: ViewContainerRef}) ref;
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
-    ,public dialog: MatDialog, private iterableDiffs: IterableDiffers) {
+    ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
+    private router: Router) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
+
+
+      router.events.subscribe(event  => {
+        if(event instanceof NavigationEnd){
+              this.switchToCLI = true;
+          }
+        });
      }
 
 
   ngOnInit() {
+    console.log(this.switchToCLI);
   }
 
   //listen for insertion into array of "classes" and on insert create the class
@@ -32,11 +43,27 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     let changes = this.iterableDiffer.diff(this.service.allClasses);
     if(changes){
         changes.forEachAddedItem(r =>
-           this.createClass()
+           this.updateBackend()
           );
-        changes.forEachAddedItem(a =>
-          this.service.pruneArray()
-        );
+    }
+  }
+
+
+  removeTest(){
+    var classes = document.querySelectorAll(".class-box");
+    for(var i = 0;i<classes.length;i++){
+      this.service.jsPlumbInstance.remove(classes[i]['id']);
+    }
+    //reset classbox array that generates the boxes in the view
+    //this.service.jsPlumbInstance.remove("a");
+  }
+
+
+  //update backend
+  updateBackend(){
+    if(this.switchToCLI === false){
+      this.createClass();
+      this.service.pruneArray();
     }
   }
 
@@ -44,20 +71,17 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
     this.service.jsPlumbInstance = jsPlumb.getInstance();
+    this.removeTest();
+
   }
 
-  //for direct connections in jsplumb
-  connectElements(el1: string,el2: string){
-    this.service.jsPlumbInstance.connect({
-      source: el1,
-      target: el2
-    });
-  }
+
 
 
   //dialog
   public dialogRef: MatDialogRef<DialogTestComponent>
   openDialog(buttonName){
+    this.switchToCLI = false;
     //insert component here to generate and remove component
     this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
 
@@ -79,18 +103,29 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
         this.dialogRef.componentInstance.name = "Export Button";
         break;
     }
+    //listen for close without submit
+    this.dialogRef.backdropClick().subscribe(() => {
+      this.switchToCLI = true;
+    });
+    //listen for normal close
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.switchToCLI = true;
+    });
   }
   
   //generate components (new way) in the view
   classBoxes = [];
 
   createClass(){
-     const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
-    //  const temp = this.ref.createComponent(factory);
-    //  temp.instance.name = this.service.generate().name;
-    //  temp.instance.methods = this.service.generate().methods;
-    //  temp.instance.variables = this.service.generate().variables;
-     this.classBoxes.push(factory);
+    //if(this.cliSwitch !== true){
+      const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
+      //  const temp = this.ref.createComponent(factory);
+      //  temp.instance.name = this.service.generate().name;
+      //  temp.instance.methods = this.service.generate().methods;
+      //  temp.instance.variables = this.service.generate().variables;
+      this.classBoxes.push(factory);
+      this.switchToCLI = true;
+    //}
   }
 
   drop(event: CdkDragDrop<ClassBoxComponent[]>){

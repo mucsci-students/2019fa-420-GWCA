@@ -12,7 +12,6 @@ import { Injectable } from '@angular/core';
 */
 
 
-import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { jsPlumb } from 'jsplumb';
 
@@ -40,7 +39,8 @@ export class ClassStorageService {
     isTarget: true
   };
   source = {
-    isSource: true
+    isSource: true,
+    connector: "Flowchart",
   };
 
   //initialize the list that holds the classes
