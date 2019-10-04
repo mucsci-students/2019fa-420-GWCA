@@ -1,11 +1,10 @@
 
-import { Injectable } from '@angular/core';
 
 /*
-* This file is where the actual service is defined. This is what is referred to 
+* This file is where the actual service is defined. This is what is referred to
 * when I discussing adding/removing features to the back end of our project.
 * It's extremely important to understand that the majority of the data manipulation
-* in this project involves this file, dialog-test.component.ts, and 
+* in this project involves this file, dialog-test.component.ts, and
 * dialog-test.component.html
 *
 * If you can't figure out the workflow between these three files, ask somebody.
@@ -13,7 +12,6 @@ import { Injectable } from '@angular/core';
 
 
 import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
-
 import { jsPlumb } from 'jsplumb';
 
 
@@ -21,7 +19,7 @@ export interface fullClass {
   name: string;
   methods: string[];
   variables: string[];
-  
+
 }
 
 @Injectable({
@@ -44,12 +42,12 @@ export class ClassStorageService {
   };
 
   //initialize the list that holds the classes
-  
+
   constructor() {
     this.allClasses = [];
    }
 
-  
+
   //gets 1st element of list for the view
   generate(){
     return this.allClasses[0];
@@ -84,7 +82,7 @@ export class ClassStorageService {
 
  // this function outputs the current diagram as a JSON string
   diagramToJSON(){
-    var diagram = JSON.stringify(this.allClasses);      
+    var diagram = JSON.stringify(this.allClasses);
     this.jsonString = diagram;
   }
 
@@ -104,8 +102,8 @@ export class ClassStorageService {
       console.log(e);
     }
   }
-    
-   //adds the connectors from jsplumb to the classes  
+
+   //adds the connectors from jsplumb to the classes
   addConnetor(){
      for(var i = 0;i<this.allClasses.length;i++){
         var el = document.getElementById(this.allClasses[i]['name']);
