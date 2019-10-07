@@ -11,7 +11,6 @@ export class DialogTestComponent implements OnInit {
   @Input() buttonPressed: string;
   @Input() name: string;
   classNames: NodeListOf<Element>;
-  classes: NodeListOf<Element>;
   choice: string;
   //input values for create new
   className: string;
@@ -20,7 +19,6 @@ export class DialogTestComponent implements OnInit {
   //export
   //import value
   diagram: string;
-  //exportString: 
 
   constructor(public service: ClassStorageService) { }
 
@@ -30,7 +28,7 @@ export class DialogTestComponent implements OnInit {
     this.classNames = document.querySelectorAll("h2");
     
     //gets actual classes
-    this.classes = document.querySelectorAll(".class-box");
+    // this.classes = document.querySelectorAll(".class-box");
     
   }
 
@@ -50,7 +48,6 @@ export class DialogTestComponent implements OnInit {
 
     //update the back-end
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
-    //this.service.allClasses.shift();
     var cls = document.querySelector('.'+CSS.escape(this.className));
     
     //update

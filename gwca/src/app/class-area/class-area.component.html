@@ -9,13 +9,18 @@
     <a routerLink="cli">
         <button mat-raised-button color="primary" class="cli-button">Switch to CLI</button>
     </a>
-    <button (click)="removeTest()">Remove</button>
-
 </div>
-<div class="classes" >
+<div class="legend">
+    <h5>Legend</h5>
+    <ul>
+        <li><div class="circle"></div> Source</li>
+        <li><div class="square"></div> Target</li>
+    </ul>
+</div>
+<div class="classes" id="#classes-container">
     <!-- <ng-template  #container></ng-template> -->
-    <ng-container *ngFor="let classBox of classBoxes">
-        <app-class-box></app-class-box>
+    <ng-container *ngFor="let classBox of classBoxes; let i = index">
+            <app-class-box></app-class-box>
         <!-- <app-class-box cdkDrag (cdkDragEnded)="moveCheck()"></app-class-box> -->
     </ng-container>
 </div>
