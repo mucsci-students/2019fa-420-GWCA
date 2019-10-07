@@ -5,8 +5,7 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Router, NavigationEnd } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'app-class-area',
@@ -14,7 +13,8 @@ import { Observable } from 'rxjs';
   styleUrls: ['./class-area.component.css']
 })
 export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
-  switchToCLI: boolean
+  switchToCLI: boolean;
+ 
   //NOTE: this is testing, ignore for now
 
   @ViewChild('container',{static:true,read: ViewContainerRef}) ref;
@@ -28,14 +28,30 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
       router.events.subscribe(event  => {
         if(event instanceof NavigationEnd){
-              this.switchToCLI = true;
+          this.switchToCLI = true;
+        }
+
+        if(event instanceof NavigationStart){
+          if(router.url !== '/cli'){
+            //find all classes in the DOM and then iterate through all of them and add connections to the back-end
+            var elements = document.querySelectorAll('.class-box');
+            for(var i = 0;i< elements.length;i++){
+              var connections = this.service.jsPlumbInstance.getConnections({source: elements[i].id});
+              for(var j = 0;j<connections.length;j++){
+                if(connections[j]['source']['attributes']['id'].value !== connections[j]['target']['attributes']['id'].value){
+                  this.updateConnections(connections[j]['source']['attributes']['id'].value,connections[j]['target']['attributes']['id'].value);
+                }
+              }
+            }
+            this.removeAll();
+
           }
+        }
         });
      }
 
 
   ngOnInit() {
-    console.log(this.switchToCLI);
   }
 
   //listen for insertion into array of "classes" and on insert create the class
@@ -44,18 +60,18 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     if(changes){
         changes.forEachAddedItem(r =>
            this.updateBackend()
-          );
+        );
     }
   }
 
 
-  removeTest(){
+
+  removeAll(){
     var classes = document.querySelectorAll(".class-box");
     for(var i = 0;i<classes.length;i++){
       this.service.jsPlumbInstance.remove(classes[i]['id']);
     }
-    //reset classbox array that generates the boxes in the view
-    //this.service.jsPlumbInstance.remove("a");
+   
   }
 
 
@@ -65,17 +81,34 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
       this.createClass();
       this.service.pruneArray();
     }
+    this.service.currentContainerIndex = this.service.currentContainerIndex + 1;
   }
 
+  //find the class in the back-end array and add the connection
+  updateConnections(source:string, target: string){
+    var connections = this.service.findClass(source)['connections'];
+    if(connections.length == 1){
+      if(connections[0] !== [source,target]){
+        this.service.findClass(source)['connections'].push([source,target]);
+      }
+    }
+    else{
+      for(var i = 0; i< connections.length;i++){
+        if(connections[i] == [source,target]){
+          return;
+        }
+      }
+      this.service.findClass(source)['connections'].push([source,target]);
+    }
+  }
 
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
     this.service.jsPlumbInstance = jsPlumb.getInstance();
-    this.removeTest();
+    this.service.jsPlumbInstance.setContainer("classes-container");
+    this.removeAll();
 
   }
-
-
 
 
   //dialog
@@ -116,12 +149,10 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
       this.switchToCLI = true;
     });
   }
-  
   //generate components (new way) in the view
   classBoxes = [];
 
   createClass(){
-    //if(this.cliSwitch !== true){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
       //  const temp = this.ref.createComponent(factory);
       //  temp.instance.name = this.service.generate().name;
@@ -129,7 +160,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
       //  temp.instance.variables = this.service.generate().variables;
       this.classBoxes.push(factory);
       this.switchToCLI = true;
-    //}
   }
 
   drop(event: CdkDragDrop<ClassBoxComponent[]>){

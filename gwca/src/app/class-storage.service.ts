@@ -13,14 +13,14 @@ import { Injectable } from '@angular/core';
 
 
 
-import { jsPlumb } from 'jsplumb';
 
 
 export interface fullClass {
   name: string;
   methods: string[];
   variables: string[];
-  
+  //array with arrays inside where the first value is the source and the second is the target
+  connections: string[][];
 }
 
 @Injectable({
@@ -32,15 +32,39 @@ export class ClassStorageService {
   generateComponent: boolean;
   jsonString: string;
   jsPlumbInstance;
+  currentContainerIndex: number = 0;
   //jsPlumb endpoint settings
-  target = {
-    anchor: "Top",
+  common = {
+    isTarget: true,
+    isSource: true,
+    paintStyle: {fill: "green"},
+    maxConnections: -1,
+    connector: "Flowchart",
+    
+  }
+  target_common = {
+    isTarget: true,
     endpoint: "Rectangle",
-    isTarget: true
+    paintStyle: { fill: "red"},
+    maxConnections: 5
   };
-  source = {
+  target_1 = {
+    anchor: "Top",
+  };
+  target_2 = {
+    anchor: "Left",
+  };
+  source_common = {
     isSource: true,
     connector: "Flowchart",
+    paintStyle: { fill: "green"},
+    maxConnections: 5
+  };
+  source_1 = {
+    anchor: "Bottom",
+  };
+  source_2 = {
+    anchor: "Right",
   };
 
   //initialize the list that holds the classes
@@ -67,7 +91,7 @@ export class ClassStorageService {
 
   //push a new class into the array (front) and update our corresponding JSON model
   createNew(classname: string, methods: string[],variables: string[]){
-    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
+    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables,'connections':[]});
   }
 
   //remove duplicates in the array
@@ -104,11 +128,5 @@ export class ClassStorageService {
       console.log(e);
     }
   }
-    
-   //adds the connectors from jsplumb to the classes  
-  addConnetor(){
-     for(var i = 0;i<this.allClasses.length;i++){
-        var el = document.getElementById(this.allClasses[i]['name']);
-     }
-  }
+  
 }
