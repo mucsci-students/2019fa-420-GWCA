@@ -34,6 +34,14 @@ export class ClassStorageService {
   jsPlumbInstance;
   currentContainerIndex: number = 0;
   //jsPlumb endpoint settings
+  common = {
+    isTarget: true,
+    isSource: true,
+    paintStyle: {fill: "green"},
+    maxConnections: -1,
+    connector: "Flowchart",
+    
+  }
   target_common = {
     isTarget: true,
     endpoint: "Rectangle",

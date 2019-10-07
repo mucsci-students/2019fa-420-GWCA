@@ -38,10 +38,11 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
             for(var i = 0;i< elements.length;i++){
               var connections = this.service.jsPlumbInstance.getConnections({source: elements[i].id});
               for(var j = 0;j<connections.length;j++){
-                this.updateConnections(connections[j]['source']['attributes']['id'].value,connections[j]['target']['attributes']['id'].value);
+                if(connections[j]['source']['attributes']['id'].value !== connections[j]['target']['attributes']['id'].value){
+                  this.updateConnections(connections[j]['source']['attributes']['id'].value,connections[j]['target']['attributes']['id'].value);
+                }
               }
             }
-            //var connections = this.service.jsPlumbInstance.getAllConnections();
             this.removeAll();
 
           }

@@ -11,22 +11,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
   name: string;
   variables: string[];
   methods: string[];
-  //jsplumb settings for connectors
-  source = {
-    endpoint: "Rectangle",
-    isSource: true,
-    isTarget: false,
-    maxConnections: 1,
-    cssClass: "sourceBottom",
-  };
 
-  target = {
-    endpoint: "Dot",
-    isSource: false,
-    isTarget: true,
-    maxConnections: 1,
-    cssClass: "targetTop",
-  };
 
 
   constructor(private classService: ClassStorageService) { 
@@ -66,17 +51,20 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
      }
 
     //add source connectors (connect to others)
-    jsPlumbInstance.addEndpoint(this.name,this.classService.source_1,this.classService.source_common);
-    jsPlumbInstance.addEndpoint(this.name,this.classService.source_2,this.classService.source_common);
+    jsPlumbInstance.addEndpoint(this.name,this.classService.source_1,this.classService.common);
+    jsPlumbInstance.addEndpoint(this.name,this.classService.source_2,this.classService.common);
     //add target connectors (get connected to)
-    jsPlumbInstance.addEndpoint(this.name,this.classService.target_1,this.classService.target_common);
-    jsPlumbInstance.addEndpoint(this.name,this.classService.target_2,this.classService.target_common);
-
-    // var boxes = document.querySelectorAll("app-class-box");
-    // for(var i = 0;i<boxes.length;i++){
-    //   (<HTMLElement>boxes[i]).style.marginLeft = (20 + (300 * (this.classService.currentContainerIndex -1))) + 'px';
-    // }
-
+    jsPlumbInstance.addEndpoint(this.name,this.classService.target_1,this.classService.common);
+    jsPlumbInstance.addEndpoint(this.name,this.classService.target_2,this.classService.common);
+    //no self connections
+    jsPlumbInstance.bind("connection",function(){
+      var connections = jsPlumbInstance.getConnections(this.name);
+      for(var i = 0;i<connections.length;i++){
+        if(connections[i]['source']['id'] == connections[i]['target']['id']){
+          jsPlumbInstance.deleteConnection(connections[i]);
+        }
+      }
+    });
    
   }
 
