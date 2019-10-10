@@ -97,5 +97,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     moveItemInArray(this.classBoxes,event.previousIndex,event.currentIndex);
   }
 
-
+  updateStoredDiagram(){
+    this.service.diagramToJSON();
+  }  
 }

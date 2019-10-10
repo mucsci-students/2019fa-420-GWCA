@@ -93,4 +93,8 @@ export class DialogTestComponent implements OnInit {
   importDiagram(diagram){
     this.service.jsonToClasses(diagram);
   }
+
+  updateStoredDiagram(){
+    this.service.diagramToJSON();
+  }  
 }
