@@ -32,7 +32,9 @@ export class ClassStorageService {
   generateComponent: boolean;
   jsonString: string;
   jsPlumbInstance;
-  currentContainerIndex: number = 0;
+  leftShift: number = 20;
+  instance: number = 0;
+
   //jsPlumb endpoint settings
   common = {
     isTarget: true,
@@ -40,32 +42,13 @@ export class ClassStorageService {
     paintStyle: {fill: "green"},
     maxConnections: -1,
     connector: "Flowchart",
+    connectorOverlays: [
+      ["Arrow", {width: 15,length: 30,location: 1,id: "arrow"}]
+    ],
+    DoNotThrowErrors: true,
     
-  }
-  target_common = {
-    isTarget: true,
-    endpoint: "Rectangle",
-    paintStyle: { fill: "red"},
-    maxConnections: 5
   };
-  target_1 = {
-    anchor: "Top",
-  };
-  target_2 = {
-    anchor: "Left",
-  };
-  source_common = {
-    isSource: true,
-    connector: "Flowchart",
-    paintStyle: { fill: "green"},
-    maxConnections: 5
-  };
-  source_1 = {
-    anchor: "Bottom",
-  };
-  source_2 = {
-    anchor: "Right",
-  };
+
 
   //initialize the list that holds the classes
   
@@ -82,11 +65,17 @@ export class ClassStorageService {
   //searh array for class
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
-      if(this.allClasses[i]['name'] === name){
+      if(this.allClasses[i]['name'] == name){
         return this.allClasses[i];
       }
     }
     return null;
+  }
+
+
+  revertLeftShift(){
+    this.leftShift = 20;
+    //console.log(this.leftShift);
   }
 
   //push a new class into the array (front) and update our corresponding JSON model
@@ -104,6 +93,7 @@ export class ClassStorageService {
       }
     }
   }
+
 
 
  // this function outputs the current diagram as a JSON string

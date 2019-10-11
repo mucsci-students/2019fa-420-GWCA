@@ -4,12 +4,10 @@ import { ClassAreaComponent } from './class-area/class-area.component';
 import { CliComponent } from './cli/cli.component';
 
 
-const routes: Routes = [
+export const routes: Routes = [
+  {path: '',component: ClassAreaComponent},
   {path: 'cli',component: CliComponent},
-  {path: '**',component: ClassAreaComponent,
-  runGuardsAndResolvers: 'always',
-},
-
+  {path: '**',redirectTo: ''},
 ];
 
 @NgModule({
