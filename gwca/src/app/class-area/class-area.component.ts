@@ -3,9 +3,10 @@ import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { jsPlumb } from 'jsplumb';
+import { jsPlumb, ElementRef } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { async } from 'q';
 
 @Component({
   selector: 'app-class-area',
@@ -16,8 +17,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   switchToCLI: boolean;
  
   //NOTE: this is testing, ignore for now
-
-  @ViewChild('container',{static:true,read: ViewContainerRef}) ref;
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
@@ -38,8 +37,9 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         if(event instanceof NavigationStart){
           if(router.url !== '/cli'){
             this.connectionsUpdateWrapper();
-            this.removeAll();
+            //this.removeAll();
             // this.classBoxes = [];
+
           }
         }
         });
@@ -66,6 +66,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
     //set up jsplumb instance after the view has initialized
     ngAfterViewInit(){
+
       this.service.jsPlumbInstance = jsPlumb.getInstance({
         DragOptions: {
           drag: function(){
@@ -75,7 +76,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
       });
       this.service.jsPlumbInstance.setContainer("classes-container");
-      //this.service.jsPlumbInstance.reset();
+      this.service.jsPlumbInstance.reset();
       this.service.revertLeftShift();
   
   
@@ -86,16 +87,18 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
       //empty back-end for re-insertion
       this.service.allClasses = [];
       //this.classBoxes = [];
+
+
   
       if(classes.length != 0){
         var class_boxes = document.querySelectorAll("app-class-box");
+
         //re-initialize data
         for(var i = 0;i<class_boxes.length;i++){
-
-          this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Top",uuid:(class_boxes[i]['firstChild']['attributes'][3].value+"_top")},this.service.common);
-          this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Bottom",uuid:(class_boxes[i]['firstChild']['attributes'][3].value+"_bottom")},this.service.common);
-          this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Right",uuid:(class_boxes[i]['firstChild']['attributes'][3].value+"_right")},this.service.common);
-          this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Left",uuid:(class_boxes[i]['firstChild']['attributes'][3].value+"_left")},this.service.common);
+           this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Top",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_top")},this.service.common);
+           this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Bottom",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_bottom")},this.service.common);
+           this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Right",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_right")},this.service.common);
+           this.service.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Left",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_left")},this.service.common);
           
           // //re-bind the "no link to self rule"
           var jsPlumbInstance = this.service.jsPlumbInstance;
@@ -105,34 +108,26 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
                 jsPlumbInstance.deleteConnection(connection[0]);
               }
            });
-           this.service.jsPlumbInstance.draggable(class_boxes[i]['childNodes'][0]['id'],{
-             drag:function(endpoint){
-              //  jsPlumbInstance.selectEndpoints({source: endpoint['el']}).each(function(point){
-              //   // (<HTMLElement>point).style.left = endpoint.pos[0];
-              //   // (<HTMLElement>point).style.top = endpoint.pos[1];
 
-              //  });
-             }
-           });
         }
 
-        // var endpoints = document.querySelectorAll('div.jtk-endpoint');
-        // this.service.jsPlumbInstance.draggable(endpoints,{
-        //   drag: function(event){
-        //     (<HTMLElement>event.el).style.left = event.pos[0];
-        //     (<HTMLElement>event.el).style.top = event.pos[1];
-        //   },
-        //   container: true,
-        //   DoNotThrowErrors: true,
 
-        // });
+
 
         //re-connect connections
          for(var i = 0;i<classes.length;i++){
            if(classes[i]['connections'].length !== 0){
              for(var j = 0;j<classes[i]['connections'].length;j++){
-              this.service.jsPlumbInstance.connect({uuids: [classes[i]['connections'][j][0],classes[i]['connections'][j][1]]});
-            }
+               //have to format the uuid a little to get the update element
+              var source = classes[i]['connections'][j][0].split("_")[0];
+              var sourcePosition = classes[i]['connections'][j][0].split("_")[1];
+              var srcElement = document.querySelector("app-class-box ."+source).id;
+              var target = classes[i]['connections'][j][1].split("_")[0]
+              var targetPosition = classes[i]['connections'][j][1].split("_")[1];
+              var targetElement = document.querySelector("app-class-box ."+target).id;
+              this.service.jsPlumbInstance.connect({uuids:[(srcElement+"_"+sourcePosition),(targetElement+"_"+targetPosition)]});
+             }
+
           }
          }
   
@@ -142,31 +137,22 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
     }
 
 
-  
-  test(){
-    var endpoints = this.service.jsPlumbInstance.getSelector('.jtk-endpoint');
-        console.log(endpoints);
-  }
+
 
 
   removeAll(){
     //remove the classes and endpoints
     this.service.jsPlumbInstance.reset();
 
-    //"delete" the elements (just hide them)
-      var class_boxes = document.querySelectorAll(".class-box");
+      var class_boxes = document.querySelectorAll("app-class-box");
       for(var i = 0;i<class_boxes.length;i++){
-        //(<HTMLElement>class_boxes[i]).style.display = "none";
-        class_boxes[i].remove();
+        this.service.jsPlumbInstance.remove(class_boxes[i]);
       }
-
-    //  var endpoints = document.querySelectorAll("div.jtk-endpoint");
-    //  for(var i = 0;i<endpoints.length;i++){
-    //    (<HTMLElement>endpoints[i]).style.display = "none";
-    //  }
 
     
   }
+
+
 
   //update backend
   updateBackend(){
@@ -175,29 +161,34 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
     if(generated.length == 0){
       this.createClass();
       this.service.pruneArray();
+
     }
   }
 
    //find the class in the back-end array and add the connection
    insertConnection(source:string, target: string){
     var sourceClass = source.split("_")[0];
-    console.log(sourceClass);
+
+    var sourcePosition = [source.split("_")[0],source.split("_")[2]].join("_");
+    var targetPosition = [target.split("_")[0],target.split("_")[2]].join("_");
+
+
      var connections = this.service.findClass(sourceClass)['connections'];
      if(connections.length == 1){
        if(connections[0] !== [source,target]){
-         this.service.findClass(sourceClass)['connections'].push([source,target]);
+         this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition]);
        }
      }
      else if(connections.length == 0){
-       this.service.findClass(sourceClass)['connections'].push([source,target]);
+       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition]);
      }
      else{
        for(var i = 0; i< connections.length;i++){
-         if(connections[i] == [source,target]){
+         if(connections[i] == [sourcePosition,target]){
            return;
          }
        }
-       this.service.findClass(sourceClass)['connections'].push([source,target]);
+       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition]);
      }
   }
  

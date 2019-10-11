@@ -37,12 +37,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(){
-    // console.log(this.name+" created");
     var jsPlumbInstance = this.classService.jsPlumbInstance;
-    //var jsPlumbInstance = jsPlumb.getInstance();
-     setTimeout(() =>
-     jsPlumbInstance.draggable(this.id), 
-     100);
+       
 
      //get all the dynamically created elements
      var boxes = document.querySelectorAll("app-class-box");
@@ -59,11 +55,17 @@ export class ClassBoxComponent implements OnInit, AfterViewInit, OnDestroy {
         this.classService.leftShift = this.classService.leftShift + 300;
      }
 
-    
-    jsPlumbInstance.addEndpoint(this.id,{anchor: "Bottom",uuid:(this.name+"_bottom")},this.classService.common);
-    jsPlumbInstance.addEndpoint(this.id,{anchor: "Right",uuid:(this.name+"_right")},this.classService.common);
-    jsPlumbInstance.addEndpoint(this.id,{anchor: "Top",uuid:(this.name+"_top")},this.classService.common);
-    jsPlumbInstance.addEndpoint(this.id,{anchor: "Left",uuid:(this.name+"_left")},this.classService.common);
+    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Bottom",uuid:(this.id+"_bottom")},this.classService.common);
+    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Right",uuid:(this.id+"_right")},this.classService.common);
+    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Top",uuid:(this.id+"_top")},this.classService.common);
+    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Left",uuid:(this.id+"_left")},this.classService.common);
+    setTimeout(() =>
+    this.classService.jsPlumbInstance.draggable(this.id), 
+    100);
+
+
+
+
 
 
     //no self connections
@@ -81,6 +83,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(){
     // console.log(this.name+" destoyed");
+    // this.classService.jsPlumbInstance.toggleDraggable(this.id);
   }
 
 
