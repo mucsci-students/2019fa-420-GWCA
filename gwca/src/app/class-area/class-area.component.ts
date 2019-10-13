@@ -61,7 +61,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   }
 
   ngOnDestroy(){
-    this.classBoxes = [];
   }
 
     //set up jsplumb instance after the view has initialized
@@ -85,8 +84,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
       var classes = this.service.allClasses;
   
       //empty back-end for re-insertion
-      this.service.allClasses = [];
-      //this.classBoxes = [];
 
 
   
