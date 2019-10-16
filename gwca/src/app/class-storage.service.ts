@@ -35,6 +35,7 @@ export class ClassStorageService {
   leftShift: number = 20;
   instance: number = 0;
 
+
   //jsPlumb endpoint settings
   common = {
     isTarget: true,
@@ -46,7 +47,7 @@ export class ClassStorageService {
       ["Arrow", {width: 15,length: 30,location: 1,id: "arrow"}]
     ],
     DoNotThrowErrors: true,
-    
+  
   };
 
 
@@ -55,6 +56,8 @@ export class ClassStorageService {
   constructor() {
     this.allClasses = [];
    }
+
+
 
   
   //gets 1st element of list for the view

@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewContainerRef,ViewChild,ComponentFactoryResolver, IterableDiffer, IterableDiffers, SimpleChanges, KeyValueDiffers, OnChanges, DoCheck, AfterViewInit, AfterViewChecked, AfterContentInit, OnDestroy } from '@angular/core';
+import { Component, OnInit,ComponentFactoryResolver, IterableDiffer, IterableDiffers, DoCheck, AfterViewInit, OnDestroy } from '@angular/core';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { jsPlumb, ElementRef } from 'jsplumb';
+import { jsPlumb, jsPlumbInstance} from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { async } from 'q';
+
+
 
 @Component({
   selector: 'app-class-area',
@@ -122,7 +123,11 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
               var target = classes[i]['connections'][j][1].split("_")[0]
               var targetPosition = classes[i]['connections'][j][1].split("_")[1];
               var targetElement = document.querySelector("app-class-box ."+target).id;
-              this.service.jsPlumbInstance.connect({uuids:[(srcElement+"_"+sourcePosition),(targetElement+"_"+targetPosition)]});
+              var connectionType = classes[i]['connections'][j][2];
+              this.service.jsPlumbInstance.connect({
+                uuids:[(srcElement+"_"+sourcePosition),(targetElement+"_"+targetPosition)],
+                paintStyle: {stroke: connectionType, lineWidth: '10px'},
+              });
              }
 
           }
@@ -163,7 +168,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   }
 
    //find the class in the back-end array and add the connection
-   insertConnection(source:string, target: string){
+   insertConnection(source:string, target: string,style: string){
     var sourceClass = source.split("_")[0];
 
     var sourcePosition = [source.split("_")[0],source.split("_")[2]].join("_");
@@ -173,11 +178,11 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
      var connections = this.service.findClass(sourceClass)['connections'];
      if(connections.length == 1){
        if(connections[0] !== [source,target]){
-         this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition]);
+         this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
        }
      }
      else if(connections.length == 0){
-       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition]);
+       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
      }
      else{
        for(var i = 0; i< connections.length;i++){
@@ -185,7 +190,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
            return;
          }
        }
-       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition]);
+       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
      }
   }
  
@@ -193,10 +198,11 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   updateConnections() : string[][] {
     //find all classes in the DOM and then iterate through all of them and add connections to the back-end
     var elements = document.querySelectorAll('.class-box');
+    var jsPlumbInstance = this.service.jsPlumbInstance;
     var all_connections: string[][] = [];
     for(var i = 0;i< elements.length;i++){
       //var connections = this.service.jsPlumbInstance.getConnections({source: elements[i].id});
-      this.service.jsPlumbInstance.selectEndpoints({source:elements[i].id}).each(function(endpoint){
+      jsPlumbInstance.selectEndpoints({source:elements[i].id}).each(function(endpoint){
 
         if(endpoint['connections'].length != 0){
           //find element in DOM
@@ -204,7 +210,8 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
             if(endpoint['connections'][j]['endpoints'][0] == endpoint){
               var target = endpoint['connections'][j]['endpoints'][1].getUuid();
               var source = endpoint.getUuid();
-              all_connections.push([source,target]);
+              var connectionStyle = endpoint['connections'][0].getPaintStyle()['stroke'];
+              all_connections.push([source,target,connectionStyle]);
             }
           }
         }
@@ -217,7 +224,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   connectionsUpdateWrapper(){
     var connections = this.updateConnections();
     for(var i = 0;i<connections.length;i++){
-      this.insertConnection(connections[i][0],connections[i][1]);
+      this.insertConnection(connections[i][0],connections[i][1],connections[i][2]);
     }
   }
   

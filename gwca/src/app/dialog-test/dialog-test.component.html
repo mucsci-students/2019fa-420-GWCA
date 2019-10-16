@@ -66,3 +66,14 @@
         <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
     </form>
 </span>
+<span *ngIf="buttonPressed === 'connection'">
+  <h1>Choose a connection type</h1>
+  <mat-form-field>
+    <mat-select placeholder = "choose a style..." [(ngModel)]="connectionType">
+      <mat-option value="yellow">Yellow</mat-option>
+      <mat-option value="purple">Purple</mat-option>
+      <mat-option value="red">Red</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>
+</span>

@@ -1,22 +1,28 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, Self, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, EventEmitter} from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
 import { jsPlumb } from 'jsplumb';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { DialogTestComponent } from '../dialog-test/dialog-test.component';
+
+
+
 
 @Component({
   selector: 'app-class-box',
   templateUrl: './class-box.component.html',
   styleUrls: ['./class-box.component.css']
 })
-export class ClassBoxComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ClassBoxComponent implements OnInit, AfterViewInit {
   name: string;
   variables: string[];
   methods: string[];
   id: string;
   index: number = 0;
+  dialogRef: MatDialogRef<DialogTestComponent>;
+  connectionType: string;
 
 
-
-  constructor(private classService: ClassStorageService) { 
+  constructor(private classService: ClassStorageService, public dialog: MatDialog) { 
   }
 
   ngOnInit() {
@@ -32,6 +38,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.variables = this.classService.allClasses[this.index]['variables'];
     this.methods = this.classService.allClasses[this.index]['methods'];
     this.classService.instance = this.classService.instance + 1;
+
+
 
   }
 
@@ -64,28 +72,50 @@ export class ClassBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     100);
 
 
-
-
-
+    //have to create local variables for jsplumb
+    var dialog = this.dialog;
+    var dialogRef = this.dialogRef;
+    var connectionType;;
+    var id = this.id;
 
     //no self connections
     jsPlumbInstance.bind("connection",function(){
       var connections = jsPlumbInstance.getConnections(this.id);
-      for(var i = 0;i<connections.length;i++){
-        if(connections[i]['source']['id'] == connections[i]['target']['id']){
-          jsPlumbInstance.deleteConnection(connections[i]);
+        if(connections[(connections.length - 1)]['source']['id'] == connections[(connections.length - 1)]['target']['id']){
+          jsPlumbInstance.deleteConnection(connections[(connections.length - 1)]);
         }
-      }
-    });
+        //otherwise open dialog so we can specify connection type
+        else{
+          if(id == connections[(connections.length - 1)]['source']['id']){
+            dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
+            dialogRef.componentInstance.buttonPressed = "connection";
+            dialogRef.afterClosed().subscribe(() => {
+              connectionType = dialogRef.componentInstance.connectionType;
+              connections[(connections.length - 1)].setPaintStyle({stroke: connectionType, lineWidth: '10px'});
+            });
+          }
+        }
+
+        
+      });
+
+
+
 
    
   }
 
-  ngOnDestroy(){
-    // console.log(this.name+" destoyed");
-    // this.classService.jsPlumbInstance.toggleDraggable(this.id);
-  }
 
+
+
+
+
+  // public dialogRef: MatDialogRef<DialogTestComponent>
+  // openDialog(){
+  //   //insert component here to generate and remove component
+  //   this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
+  //   this.dialogRef.componentInstance.buttonPressed = "connection";
+  // }
 
 
 }

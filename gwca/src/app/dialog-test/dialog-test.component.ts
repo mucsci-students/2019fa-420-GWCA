@@ -19,6 +19,7 @@ export class DialogTestComponent implements OnInit {
   //export
   //import value
   diagram: string;
+  connectionType: string;
 
   constructor(public service: ClassStorageService) { }
 
@@ -26,9 +27,6 @@ export class DialogTestComponent implements OnInit {
     this.choice = "";
     //gets class names to choose
     this.classNames = document.querySelectorAll("h2");
-    
-    
-    
   }
 
   search(Name: string){
@@ -68,8 +66,9 @@ export class DialogTestComponent implements OnInit {
     //check to see if input data
     this.replaceUndefined();
     this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
-  
   }
+
+
 
 
   /*
