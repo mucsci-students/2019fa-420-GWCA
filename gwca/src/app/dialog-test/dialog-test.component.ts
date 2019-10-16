@@ -19,6 +19,7 @@ export class DialogTestComponent implements OnInit {
   //export
   //import value
   diagram: string;
+  connectionType: string;
 
   constructor(public service: ClassStorageService) { }
 
@@ -26,10 +27,6 @@ export class DialogTestComponent implements OnInit {
     this.choice = "";
     //gets class names to choose
     this.classNames = document.querySelectorAll("h2");
-    
-    //gets actual classes
-    // this.classes = document.querySelectorAll(".class-box");
-    
   }
 
   search(Name: string){
@@ -54,32 +51,24 @@ export class DialogTestComponent implements OnInit {
     cls.remove();
   }
 
-  insertData(){
-    //remove spaces and replace with underscores
-    this.className = this.className.replace(/\s/g,"_");
-    //check to see if input data
+  replaceUndefined(){
     if(this.methods === undefined){
       this.methods = 'none';
     }
     if(this.variables === undefined){
       this.variables = 'none';
     }
-    //input into array based on values
-    if(this.variables == 'none' && this.methods.includes(",")){
-      this.service.createNew(this.className,this.methods.split(","),this.variables.split(" "));
-    }
-    else if(this.variables.includes(",") && this.methods.includes(",")){
-      this.service.createNew(this.className,this.methods.split(" "),this.variables.split(","));
-    }
-    else if(this.variables == 'none' && this.methods == 'none'){
-      this.service.createNew(this.className,this.methods.split(" "),this.variables.split(" "));
-    }
-    else{
-      this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
-    }
-    //console.log(this.service.allClasses);
-  
   }
+
+  insertData(){
+    //remove spaces and replace with underscores
+    this.className = this.className.replace(/\s/g,"_");
+    //check to see if input data
+    this.replaceUndefined();
+    this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
+  }
+
+
 
 
   /*
