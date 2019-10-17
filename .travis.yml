@@ -16,7 +16,7 @@ addons:
 
 cache:
   directories:
-    - ./gwca/node_modules
+    - ./node_modules
 
 install:
   - npm install
