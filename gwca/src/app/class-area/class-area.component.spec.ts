@@ -67,7 +67,7 @@ describe('ClassAreaComponent', () => {
     expect(new_button.querySelector('.new').textContent).toContain('New');
   }));
 
-  //clicking button opens dialog
+  // clicking button opens dialog
   it('click new button opens dialog',async(() => {
     spyOn(component,'openDialog');
     let new_button = fixture.debugElement.nativeElement.querySelector('.new');

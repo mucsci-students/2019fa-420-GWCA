@@ -248,6 +248,10 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         this.dialogRef.componentInstance.buttonPressed = "edit";
         this.dialogRef.componentInstance.name = "Edit Button";
         break;
+        case 'delete':
+          this.dialogRef.componentInstance.buttonPressed = "delete";
+          this.dialogRef.componentInstance.name = "Delete Button";
+          break;
       case 'import':
         this.dialogRef.componentInstance.buttonPressed = "import";
         this.dialogRef.componentInstance.name = "Import Button";
