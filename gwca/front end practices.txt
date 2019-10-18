@@ -1,9 +1,0 @@
-FRONT-END CODING PRACTICES:
-
-Naming:
-	Classes: hyphen-seperated words (ex: this-is-a-name)
-	ID: try to avoid as much as possible
-CSS:
-	1) Alphabetized styles
-	2) Line up colons
-
