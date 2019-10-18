@@ -51,6 +51,18 @@
       <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="insertData()">Submit</button>
     </form>
 </span>
+<!-- delete button contents -->
+<span *ngIf="buttonPressed === 'delete'">
+  <form class="delete-form">
+      <mat-form-field>
+          <mat-select placeholder="Choose a class..." [(value)]="choice">
+            <!-- <mat-option selected>None</mat-option> -->
+            <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
+          </mat-select> 
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="search(choice)">Deleted Class</button>
+  </form>
+</span> 
 <!-- export button contents -->
 <!-- line 59 actually serves our diagram.-->
 <span *ngIf="buttonPressed === 'export'">
@@ -65,4 +77,15 @@
       <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
         <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
     </form>
+</span>
+<span *ngIf="buttonPressed === 'connection'">
+  <h1>Choose a connection type</h1>
+  <mat-form-field>
+    <mat-select placeholder = "choose a style..." [(ngModel)]="connectionType">
+      <mat-option value="yellow">Yellow</mat-option>
+      <mat-option value="purple">Purple</mat-option>
+      <mat-option value="red">Red</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>
 </span>
