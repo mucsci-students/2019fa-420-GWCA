@@ -21,7 +21,7 @@ cache:
 install:
   - npm install
 
- before_script:
+before_script:
   - npm install -g @angular/cli
 
 script:
