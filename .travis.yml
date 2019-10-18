@@ -22,5 +22,4 @@ install:
   - npm install
 
 script:
-  - cd ./gwca
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
