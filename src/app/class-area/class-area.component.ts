@@ -8,7 +8,6 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 
 
-
 @Component({
   selector: 'app-class-area',
   templateUrl: './class-area.component.html',
@@ -231,7 +230,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
 
 
-
   //dialog
   public dialogRef: MatDialogRef<DialogTestComponent>
   openDialog(buttonName){
@@ -248,10 +246,10 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         this.dialogRef.componentInstance.buttonPressed = "edit";
         this.dialogRef.componentInstance.name = "Edit Button";
         break;
-        case 'delete':
-          this.dialogRef.componentInstance.buttonPressed = "delete";
-          this.dialogRef.componentInstance.name = "Delete Button";
-          break;
+      case 'delete':
+        this.dialogRef.componentInstance.buttonPressed = "delete";
+        this.dialogRef.componentInstance.name = "Delete Button";
+        break;
       case 'import':
         this.dialogRef.componentInstance.buttonPressed = "import";
         this.dialogRef.componentInstance.name = "Import Button";

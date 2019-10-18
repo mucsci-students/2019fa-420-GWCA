@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 
 /*
@@ -10,10 +9,6 @@ import { Injectable } from '@angular/core';
 *
 * If you can't figure out the workflow between these three files, ask somebody.
 */
-
-
-
-
 
 export interface fullClass {
   name: string;
@@ -57,9 +52,6 @@ export class ClassStorageService {
     this.allClasses = [];
    }
 
-
-
-  
   //gets 1st element of list for the view
   generate(){
     return this.allClasses[0];
@@ -74,7 +66,6 @@ export class ClassStorageService {
     }
     return null;
   }
-
 
   revertLeftShift(){
     this.leftShift = 20;
@@ -121,5 +112,4 @@ export class ClassStorageService {
       console.log(e);
     }
   }
-  
 }

@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DialogTestComponent } from './dialog-test.component';
 import { MatSelectModule, MatDialogModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
@@ -41,5 +40,4 @@ describe('DialogTestComponent', () => {
     component.insertData();
     expect(component.variables).not.toBe(undefined);
   }));
-
 });

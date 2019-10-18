@@ -1,5 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 
+
 import { ClassStorageService, fullClass } from './class-storage.service';
 
 describe('ClassStorageService', () => {
@@ -64,9 +65,5 @@ describe('ClassStorageService', () => {
     service.createNew(test.name,test.methods,test.variables);
     expect(service.findClass("a")).toEqual(null);
    });
-
-
-
-
 
 });

@@ -1,9 +1,7 @@
 //angular imports
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-
 //components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +22,7 @@ import { MatInputModule, MatSelectModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 
 import { CliComponent } from './cli/cli.component';
+import { NgTerminalModule, NgTerminalComponent } from 'ng-terminal';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
@@ -50,7 +49,8 @@ import { ObserversModule } from '@angular/cdk/observers';
     MatSelectModule,
     FormsModule,
     DragDropModule,
-    ObserversModule
+    ObserversModule,
+    NgTerminalModule
   ],
   entryComponents: [
     DialogTestComponent,
@@ -60,6 +60,8 @@ import { ObserversModule } from '@angular/cdk/observers';
     ClassStorageService,
     ClassAreaComponent,
     ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  exports: [ NgTerminalComponent ]
 })
 export class AppModule { }

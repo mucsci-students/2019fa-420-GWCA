@@ -5,8 +5,6 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 
 
-
-
 @Component({
   selector: 'app-class-box',
   templateUrl: './class-box.component.html',
@@ -98,24 +96,5 @@ export class ClassBoxComponent implements OnInit, AfterViewInit {
 
         
       });
-
-
-
-
-   
   }
-
-
-
-
-
-
-  // public dialogRef: MatDialogRef<DialogTestComponent>
-  // openDialog(){
-  //   //insert component here to generate and remove component
-  //   this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
-  //   this.dialogRef.componentInstance.buttonPressed = "connection";
-  // }
-
-
 }

@@ -11,6 +11,7 @@ export class DialogTestComponent implements OnInit {
   @Input() buttonPressed: string;
   @Input() name: string;
   classNames: NodeListOf<Element>;
+  classes: NodeListOf<Element>;
   choice: string;
   //input values for create new
   className: string;
@@ -19,6 +20,7 @@ export class DialogTestComponent implements OnInit {
   //export
   //import value
   diagram: string;
+  //exportString: 
   connectionType: string;
 
   constructor(public service: ClassStorageService) { }
@@ -67,8 +69,6 @@ export class DialogTestComponent implements OnInit {
     this.replaceUndefined();
     this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
   }
-
-
 
 
   /*
