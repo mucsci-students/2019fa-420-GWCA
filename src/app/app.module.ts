@@ -52,6 +52,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     DragDropModule,
     ObserversModule,
     NgTerminalModule
+    ObserversModule
   ],
   entryComponents: [
     DialogTestComponent,

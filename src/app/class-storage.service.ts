@@ -1,26 +1,23 @@
 
+import { Injectable } from '@angular/core';
 
 /*
-* This file is where the actual service is defined. This is what is referred to
+* This file is where the actual service is defined. This is what is referred to 
 * when I discussing adding/removing features to the back end of our project.
 * It's extremely important to understand that the majority of the data manipulation
-* in this project involves this file, dialog-test.component.ts, and
+* in this project involves this file, dialog-test.component.ts, and 
 * dialog-test.component.html
 *
 * If you can't figure out the workflow between these three files, ask somebody.
 */
-
-
-import { Injectable, Input, ViewChild, ViewContainerRef } from '@angular/core';
-import { jsPlumb } from 'jsplumb';
-import { jsYaml } from 'js-yaml';
-
 
 export interface fullClass {
   name: string;
   methods: string[];
   variables: string[];
 
+  //array with arrays inside where the first value is the source and the second is the target
+  connections: string[][];
 }
 
 @Injectable({
@@ -32,22 +29,31 @@ export class ClassStorageService {
   generateComponent: boolean;
   jsonString: string;
   jsPlumbInstance;
+  
+  leftShift: number = 20;
+  instance: number = 0;
+
+
   //jsPlumb endpoint settings
-  target = {
-    anchor: "Top",
-    endpoint: "Rectangle",
-    isTarget: true
+  common = {
+    isTarget: true,
+    isSource: true,
+    paintStyle: {fill: "green"},
+    maxConnections: -1,
+    connector: "Flowchart",
+    connectorOverlays: [
+      ["Arrow", {width: 15,length: 30,location: 1,id: "arrow"}]
+    ],
+    DoNotThrowErrors: true,
+  
   };
-  source = {
-    isSource: true
-  };
+
 
   //initialize the list that holds the classes
-
+  
   constructor() {
     this.allClasses = [];
    }
-
 
   //gets 1st element of list for the view
   generate(){
@@ -57,16 +63,21 @@ export class ClassStorageService {
   //searh array for class
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
-      if(this.allClasses[i]['name'] === name){
+      if(this.allClasses[i]['name'] == name){
         return this.allClasses[i];
       }
     }
     return null;
   }
 
+  revertLeftShift(){
+    this.leftShift = 20;
+    //console.log(this.leftShift);
+  }
+
   //push a new class into the array (front) and update our corresponding JSON model
   createNew(classname: string, methods: string[],variables: string[]){
-    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables});
+    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables,'connections':[]});
   }
 
   //remove duplicates in the array
@@ -81,9 +92,10 @@ export class ClassStorageService {
   }
 
 
+
  // this function outputs the current diagram as a JSON string
   diagramToJSON(){
-    var diagram = JSON.stringify(this.allClasses);
+    var diagram = JSON.stringify(this.allClasses);      
     this.jsonString = diagram;
   }
 
@@ -103,11 +115,5 @@ export class ClassStorageService {
       console.log(e);
     }
   }
-
-   //adds the connectors from jsplumb to the classes
-  addConnetor(){
-     for(var i = 0;i<this.allClasses.length;i++){
-        var el = document.getElementById(this.allClasses[i]['name']);
-     }
-  }
+  
 }

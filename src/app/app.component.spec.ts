@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 import { ClassAreaComponent } from './class-area/class-area.component';
 import { MatDialogModule, MatSelectModule } from '@angular/material';
+import { ClassBoxComponent } from './class-box/class-box.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -15,6 +16,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         ClassAreaComponent,
+        ClassBoxComponent,
       ],
     }).compileComponents();
   }));
@@ -30,7 +32,6 @@ describe('AppComponent', () => {
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('gwca');
   });
-
   // it('should render title in a h1 tag', () => {
   //   const fixture = TestBed.createComponent(AppComponent);
   //   fixture.detectChanges();

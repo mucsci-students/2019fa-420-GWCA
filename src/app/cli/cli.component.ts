@@ -4,7 +4,6 @@ import { IBufferLine } from 'xterm';
 import { Router } from '@angular/router';
 import { ClassStorageService } from '../class-storage.service';
 
-
 @Component({
   selector: 'app-cli',
   templateUrl: './cli.component.html',
