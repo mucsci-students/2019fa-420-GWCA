@@ -1,0 +1,8 @@
+span mat-form-field{
+    margin-bottom: 20px;
+    margin-top   : 20px;
+}
+
+pre{
+    white-space: inherit;
+}
