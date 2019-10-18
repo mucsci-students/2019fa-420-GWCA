@@ -1,14 +1,12 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-
 import { ClassAreaComponent } from './class-area.component';
 import { MatDialogModule, MatSelectModule, MatDialogRef } from '@angular/material';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { ComponentFactoryResolver, DebugElement } from '@angular/core';
-import { jsPlumb } from 'jsPlumb';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Router, Routes } from '@angular/router';
+import { Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { CliComponent } from '../cli/cli.component';
 import { routes } from '../app-routing.module';
