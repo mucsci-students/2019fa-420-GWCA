@@ -60,11 +60,11 @@
             <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
           </mat-select> 
       </mat-form-field>
-      <button mat-raised-button color="primary" type="button" (click)="search(choice)">Deleted Class</button>
+      <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="search(choice)">Submit</button>
   </form>
 </span> 
 <!-- export button contents -->
-<!-- line 59 actually serves our diagram.-->
+<!-- line 71 actually serves our diagram.-->
 <span *ngIf="buttonPressed === 'export'">
     <h1>Copy this:</h1>
     <code>
@@ -77,4 +77,41 @@
       <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
         <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
     </form>
+</span>
+<!-- delete attribute contents -->
+<span *ngIf="buttonPressed === 'delete_attribute'">
+  <form class="delete_attribute-form">
+    <span *ngIf="choice !== 'found'">
+      <mat-form-field>
+          <mat-select placeholder="Choose a class..." [(value)]="choice">
+            <!-- <mat-option selected>None</mat-option> -->
+             <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
+          </mat-select> 
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
+    </span>  
+      <span *ngIf="choice === 'found'"> <!--This also needs to me changed...Add function in copmonents part-->
+        <mat-form-field>
+          <!-- THIS SECTION NEEDS TO BE EDITED-->
+          <mat-label> Methods </mat-label>
+          <mat-select [(value)]="selected_1">
+              <mat-option>None</mat-option>
+              <mat-option value="option1">Option 1</mat-option>
+              <mat-option value="option2">Option 2</mat-option>
+              <mat-option value="option3">Option 3</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label> Variables </mat-label>
+          <mat-select [(value)]="selected_2">
+              <mat-option>None</mat-option>
+              <mat-option value="option1">Option 1</mat-option>
+              <mat-option value="option2">Option 2</mat-option>
+              <mat-option value="option3">Option 3</mat-option>
+          </mat-select>
+          <!-- THIS SECTION NEEDS TO BE EDITED-->
+        </mat-form-field>
+        <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
+      </span>
+  </form>
 </span>
