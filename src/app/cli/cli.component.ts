@@ -19,6 +19,7 @@ export class CliComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
+      this.child.write("Press ENTER to begin: \r\n");
       this.child.keyEventInput.subscribe(e => {
         console.log('keyboard event:' + e.domEvent.keyCode + ', ' + e.key);
 
@@ -45,16 +46,16 @@ export class CliComponent implements OnInit, AfterViewInit {
       })
     }
 
+    //this function taken in our input line, grabs the char that is a command, and runs it's corresponding code
     interpret(line : string ){
       var output : string = "";
       switch(line[0]){
         case "h": output = this.help(); break;
         case "q": this.router.navigate(['']); break;
-        case "a": output = "add(line)"; break;
-        case "e": output = "edit(line)"; break;
-        case "r": output = "remove(line)"; break;
+        case "a": output = "This will add a class [incomplete]"; break;
+        case "e": output = "This will add a edit [incomplete]"; break;
+        case "r": output = "This will add a remove [incomplete]"; break;
         case "c": output = ""; break;
-        case "l": output = "load(line)"; break;
         case "v": output = this.viewDiagram(); break;
         case "x": output = "copy this: " + this.exportDiagram(); break;
         default: output = "Error: Invalid Command. Type \"h\" for help"; break;
@@ -62,11 +63,14 @@ export class CliComponent implements OnInit, AfterViewInit {
       return output;
   }
 
+  //this outputs the current JSON to the terminal screen
   exportDiagram(){
     this.service.diagramToJSON();
     return this.service.jsonString;
   }
 
+  //This prints the current diagram to the screen in a human-readable format
+  //To "view" a diagram, you have to add a class through the gui first, as the CLI add is incomplete
   viewDiagram(){
     var diagram:string = "\n";
     let regex = /\n/gi
@@ -80,6 +84,8 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
     return diagram;
   }
+  
+  //this function prints out our help message
   help(){
     return `    Commands:\r
     ---------\r
@@ -87,7 +93,6 @@ export class CliComponent implements OnInit, AfterViewInit {
     c -> clear the screen\r
     e -> edit a class\r
     h -> print help message\r
-    l -> load in a diagram\r
     q -> quit and return to GUI\r
     r -> remove a class\r
     v -> view diagram\r
