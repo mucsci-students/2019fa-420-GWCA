@@ -18,7 +18,7 @@ import { ClassStorageService } from './class-storage.service'
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule, MatSelectModule } from '@angular/material';
+import { MatInputModule, MatSelectModule, MatMenuModule, MatToolbarModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 
 import { CliComponent } from './cli/cli.component';
@@ -50,7 +50,9 @@ import { ObserversModule } from '@angular/cdk/observers';
     FormsModule,
     DragDropModule,
     ObserversModule,
-    NgTerminalModule
+    NgTerminalModule,
+    MatMenuModule,
+    MatToolbarModule
   ],
   entryComponents: [
     DialogTestComponent,
