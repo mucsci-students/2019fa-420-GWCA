@@ -27,7 +27,7 @@
             <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
             <mat-hint>Seperated by commas</mat-hint>
           </mat-form-field>
-          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
+          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="editButton()">Update</button>  
         </span>
     </form>
 </span>
@@ -36,7 +36,7 @@
     <form class="new-form">
       <mat-form-field>
         <mat-label>Class Name</mat-label>
-        <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
+        <input matInput [(ngModel)]="className" minlength="1" (blur)="existenceCheck()" [ngModelOptions]="{standalone:true}"/>
       </mat-form-field>
       <mat-form-field>
         <mat-label>Methods</mat-label>
@@ -48,7 +48,9 @@
         <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
         <mat-hint>Seperated by commas</mat-hint>
       </mat-form-field>
-      <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="insertData()">Submit</button>
+      <span *ngIf="exists == false">
+        <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="addButton()">Submit</button>
+      </span>
     </form>
 </span>
 <!-- delete button contents -->
