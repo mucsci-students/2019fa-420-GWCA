@@ -138,11 +138,14 @@ export class ClassStorageService {
 
     //deletes class in array
     deleteClass (classname: String) {
+	var successVal = false;
 	for (var i = 0; i < this.allClasses.length; i++) {
 	    if (this.allClasses[i]['name'] === classname) {
 		this.allClasses.splice(i,1);
+		successVal = true;
 	    }
 	}
+	return successVal;
     }
 
  // this function outputs the current diagram as a JSON string
