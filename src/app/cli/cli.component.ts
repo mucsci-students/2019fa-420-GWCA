@@ -65,6 +65,7 @@ export class CliComponent implements OnInit, AfterViewInit {
 
     //wrapper class to delete class from backend given classname to delete
     deleteClass(classname) {
+	//if classname is invalid, function does nothing
 	this.service.deleteClass(classname);
     }
 
