@@ -61,7 +61,12 @@ export class CliComponent implements OnInit, AfterViewInit {
         default: output = "Error: Invalid Command. Type \"h\" for help"; break;
       }
       return output;
-  }
+    }
+
+    //wrapper class to delete class from backend given classname to delete
+    deleteClass(classname) {
+	this.service.deleteClass(classname);
+    }
 
   //this outputs the current JSON to the terminal screen
   exportDiagram(){
