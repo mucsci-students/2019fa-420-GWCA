@@ -62,7 +62,7 @@
             <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
           </mat-select> 
       </mat-form-field>
-      <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="search(choice)">Deleted Class</button>
+      <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="deleteClass(choice)">Deleted Class</button>
   </form>
 </span> 
 <!-- export button contents -->

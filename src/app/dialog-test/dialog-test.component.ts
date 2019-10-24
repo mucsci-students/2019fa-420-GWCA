@@ -117,5 +117,11 @@ export class DialogTestComponent implements OnInit {
 
   updateStoredDiagram(){
     this.service.diagramToJSON();
-  }  
+  }
+
+    //wrapper class for service delete method
+    //note: currently only deletes from back-end array
+    deleteClass(classname) {
+	this.service.deleteClass(classname);
+    }
 }
