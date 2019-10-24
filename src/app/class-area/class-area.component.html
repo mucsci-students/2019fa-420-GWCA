@@ -10,6 +10,7 @@
         </mat-menu>
         <button mat-raised-button color="primary" class="buttons import" (click)="openDialog('import')">Import</button>
         <button mat-raised-button color="primary" class="buttons export" (click)="openDialog('export');updateStoredDiagram();connectionsUpdateWrapper()">Export</button>
+        <button mat-raised-button color="primary" class="buttons help" (click)="openDialog('help')">Help</button>
         <div class="cli-container">
             <a routerLink="cli">
                 <button mat-raised-button color="primary"  class="cli-button">Switch to CLI</button>
