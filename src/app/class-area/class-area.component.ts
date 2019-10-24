@@ -195,7 +195,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   openDialog(buttonName){
     this.switchToCLI = false;
     //insert component here to generate and remove component
-    this.dialogRef = this.dialog.open(DialogTestComponent, {width: '250px'});
+    this.dialogRef = this.dialog.open(DialogTestComponent, {width: '30%'});
 
     switch(buttonName){
       case 'new':
@@ -222,6 +222,12 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         this.dialogRef.componentInstance.buttonPressed = "export";
         this.dialogRef.componentInstance.name = "Export Button";
         break;
+        case 'help':
+          //update width for help
+          this.dialogRef.updateSize('50%','80%');
+          this.dialogRef.componentInstance.buttonPressed = "help";
+          this.dialogRef.componentInstance.name = "Help";
+          break;
     }
     //listen for close without submit
     this.dialogRef.backdropClick().subscribe(() => {

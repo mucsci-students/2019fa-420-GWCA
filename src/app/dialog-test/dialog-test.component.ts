@@ -46,7 +46,7 @@ export class DialogTestComponent implements OnInit {
   //make sure class doesn't already exist
   existenceCheck(){
     var elementCheck = document.getElementsByClassName(this.className);
-    if(elementCheck.length == 0){
+    if(elementCheck.length == 0 && this.className != undefined){
       this.exists = false;
     }
     else{
