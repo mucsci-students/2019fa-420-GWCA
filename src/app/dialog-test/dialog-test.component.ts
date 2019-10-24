@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
+import { Subscription, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-test',
@@ -31,9 +32,11 @@ export class DialogTestComponent implements OnInit {
 
   ngOnInit() {
     this.choice = "";
+  
     //gets class names to choose
     this.classNames = document.querySelectorAll("h2");
-  }
+    }
+
 
   search(Name: string){
     this.className = this.service.findClass(Name)['name'];

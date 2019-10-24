@@ -22,3 +22,7 @@ pre{
 .chip::marker{
     content       : '' !important;
 }
+
+span button{
+    margin-left  : 40%;
+}
