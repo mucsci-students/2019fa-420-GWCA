@@ -16,6 +16,8 @@ export interface fullClass {
   variables: string[];
   //array with arrays inside where the first value is the source and the second is the target
   connections: string[][];
+  //position x,y
+  position: string[];
 }
 
 @Injectable({
@@ -37,7 +39,7 @@ export class ClassStorageService {
     isSource: true,
     paintStyle: {fill: "green"},
     maxConnections: -1,
-    connector: "Flowchart",
+    connector: ["Flowchart", {stub: [40, 60], gap: 10,alwaysRespectStubs: true}],
     connectorOverlays: [
       ["Arrow", {width: 15,length: 30,location: 1,id: "arrow"}]
     ],
@@ -65,6 +67,32 @@ export class ClassStorageService {
       }
     }
     return null;
+  }
+
+  //getters
+
+  getName(cls:fullClass){
+    return cls['name'];
+  }
+
+  getMethods(cls:fullClass){
+    return cls['methods'];
+  }
+
+  getVariables(cls:fullClass){
+    return cls['variables'];
+  }
+
+  getConnections(cls:fullClass){
+    return cls['connections'];
+  }
+
+  getPosition(cls:fullClass){
+    return cls['position'];
+  }
+
+  setPosition(cls:fullClass,x:string,y:string){
+    cls['position'] = [x,y];
   }
 
   revertLeftShift(){
@@ -109,19 +137,61 @@ export class ClassStorageService {
          var targetElement = document.querySelector("app-class-box ."+target).id;
 
          var connectionType = classes[i]['connections'][j][2];
-         this.jsPlumbInstance.connect({
+         var connection = this.jsPlumbInstance.connect({
            uuids:[(srcElement+"_"+sourcePosition),(targetElement+"_"+targetPosition)],
-           paintStyle: {stroke: connectionType, lineWidth: '10px'},
+           
          });
+         switch(connectionType){
+            //open diamond, solid line
+            //aggregation
+            case 'Aggregation':
+                connection.removeAllOverlays();
+                connection.setPaintStyle({stroke: 'purple', lineWidth: '10px'});
+                connection.addOverlay(["Label",{label:"Aggregation",location:0.5}]);
+              connection.addOverlay(["Diamond",{
+                cssClass: "unfilledDiamond",
+                width: 15,
+                length: 30,
+                location: 1
+              }]);
+              break;
+            //just a line
+            //association
+            case 'Association':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({stroke: 'green', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Association",location:0.5}]);
+              break;
+            //closed diamond, solid line
+            //composition
+            case 'Composition':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
+              connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+              break;
+            //closed arrow, solid line
+            //generalization
+            case 'Generalization':
+              connection.setPaintStyle({stroke: 'orange', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Generalization",location:0.5}]);
+              break;
+            //closed arrow, dashed line
+            //realization
+            case 'Realization':
+              connection.setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
+              connection.addOverlay(["Label",{label:"Realization",location:0.5}]);
+              break;
+          }
         }
+      }
 
-     }
     }
   }
 
   //push a new class into the array (front) and update our corresponding JSON model
   createNew(classname: string, methods: string[],variables: string[]){
-    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables,'connections':[]});
+    this.allClasses.unshift({'name':classname,'methods':methods,'variables':variables,'connections':[],'position':[]});
     this.pruneArray();
   }
 

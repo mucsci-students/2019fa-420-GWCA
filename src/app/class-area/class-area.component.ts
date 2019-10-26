@@ -1,4 +1,4 @@
-import { Component, OnInit,ComponentFactoryResolver, IterableDiffer, IterableDiffers, DoCheck, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit,ComponentFactoryResolver, IterableDiffer, IterableDiffers, DoCheck, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
@@ -15,6 +15,8 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 })
 export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDestroy {
   switchToCLI: boolean;
+  //generate components (new way) in the view
+  classBoxes = [];
  
   //NOTE: this is testing, ignore for now
   //listen for changes in arrays (insertions / deletions)
@@ -37,6 +39,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         if(event instanceof NavigationStart){
           if(router.url !== '/cli'){
             this.connectionsUpdateWrapper();
+            this.updatePosition();
             //this.removeAll();
             // this.classBoxes = [];
 
@@ -91,8 +94,17 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
   
       if(classes.length != 0){
-        this.service.reinitializeConnections();
-     
+        
+        for(var i=0;i<classes.length;i++){
+          //redraw position if previously placed
+          if(classes[i]['position'].length != 0){
+            var class_box = document.querySelector('.'+classes[i]['name']);
+            //redraw position
+            (<HTMLElement>class_box).style.left = classes[i]['position'][0];
+            (<HTMLElement>class_box).style.top = classes[i]['position'][1];
+          }
+          this.service.reinitializeConnections();
+        }
        }
   
     }
@@ -170,7 +182,25 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
               var target = endpoint['connections'][j]['endpoints'][1].getUuid();
               var source = endpoint.getUuid();
               var connectionStyle = endpoint['connections'][0].getPaintStyle()['stroke'];
-              all_connections.push([source,target,connectionStyle]);
+              switch(connectionStyle){
+                case 'purple':
+                  var connectionType = 'Aggregation';
+                  break;
+                case 'green':
+                    var connectionType = 'Association';
+                    break;
+                case 'red':
+                  var connectionType = 'Composition';
+                  break;
+                case 'orange':
+                  var connectionType = 'Generalization';
+                  break;
+                case 'yellow':
+                  var connectionType = 'Realization';
+                  break;
+              }
+
+              all_connections.push([source,target,connectionType]);
             }
           }
         }
@@ -185,6 +215,15 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
     for(var i = 0;i<connections.length;i++){
       this.insertConnection(connections[i][0],connections[i][1],connections[i][2]);
     }
+  }
+
+  updatePosition(){
+    var classes = document.querySelectorAll('.class-box');
+     for(var i = 0;i<classes.length;i++){
+      var cls = this.service.findClass(classes[i]['attributes'][3].value);
+      this.service.setPosition(cls,(<HTMLElement>classes[i]).style['left'],(<HTMLElement>classes[i]).style['top']);
+     }
+
   }
   
 
@@ -238,8 +277,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
       this.switchToCLI = true;
     });
   }
-  //generate components (new way) in the view
-  classBoxes = [];
+  
 
   createClass(){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);

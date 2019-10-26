@@ -85,9 +85,11 @@
     <h1>Choose a connection type</h1>
     <mat-form-field>
       <mat-select placeholder = "choose a style..." [(ngModel)]="connectionType">
-        <mat-option value="yellow">Yellow</mat-option>
-        <mat-option value="purple">Purple</mat-option>
-        <mat-option value="red">Red</mat-option>
+        <mat-option value="purple">Aggregation</mat-option>
+        <mat-option value="green">Association</mat-option>
+        <mat-option value="red">Composition</mat-option>
+        <mat-option value="orange">Generalization</mat-option>
+        <mat-option value="yellow">Realization</mat-option>
       </mat-select>
     </mat-form-field>
     <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>

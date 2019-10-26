@@ -6,7 +6,7 @@
     <div class="variables">
         <h4>Variables: </h4>
         <ul>
-            <li class="variable" *ngFor="let variable of variables">
+            <li class="variable" *ngFor="let variable of variables;trackBy:trackVariables">
                 {{variable}}
             </li>
         </ul>
@@ -14,7 +14,7 @@
     <div class="methods">
         <h4>Methods: </h4>
         <ul>
-            <li class="method" *ngFor="let method of methods">
+            <li class="method" *ngFor="let method of methods;trackBy:trackMethods">
                 {{method}}
             </li>
         </ul>

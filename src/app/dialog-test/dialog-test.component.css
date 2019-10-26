@@ -7,7 +7,7 @@ pre{
     white-space   : inherit;
 }
 
-.form form{
+span form, span mat-form-field{
     display       : flex;
     flex-direction: column;
 }

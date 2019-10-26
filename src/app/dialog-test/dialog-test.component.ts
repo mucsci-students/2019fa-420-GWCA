@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef, NgZone } from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
-import { Subscription, Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-test',
@@ -26,7 +26,7 @@ export class DialogTestComponent implements OnInit {
   //boolean to check to see if class already exists
   exists: boolean;
 
-  constructor(public service: ClassStorageService) { 
+  constructor(public service: ClassStorageService,public router:Router) { 
     this.exists = true;
   }
 
@@ -63,10 +63,14 @@ export class DialogTestComponent implements OnInit {
 
   updateClass(){
 
+    //remove original
+    
+    
     //update the back-end
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
     //var cls = document.querySelector('.'+CSS.escape(this.className));
-
+    
+    //setTimeout(() => {this.router.navigate(['/cli']).then(() => {this.router.navigate([''])})},100);
     //wrapper for re-inializing connections & endpoints
     this.service.reinitializeConnections();
     
