@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck} from '@angular/core';
-import { ClassStorageService, fullClass } from '../class-storage.service';
+import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 

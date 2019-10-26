@@ -69,61 +69,61 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   ngOnDestroy(){
   }
 
-    //set up jsplumb instance after the view has initialized
-    ngAfterViewInit(){
+  //set up jsplumb instance after the view has initialized
+  ngAfterViewInit(){
 
-      this.service.jsPlumbInstance = jsPlumb.getInstance({
-        DragOptions: {
-          drag: function(){
+    this.service.jsPlumbInstance = jsPlumb.getInstance({
+      DragOptions: {
+        drag: function(){
 
-          }
-        },
-
-      });
-      this.service.jsPlumbInstance.setContainer("classes-container");
-      this.service.jsPlumbInstance.reset();
-      this.service.revertLeftShift();
-  
-  
-      
-      
-      var classes = this.service.allClasses;
-  
-      //empty back-end for re-insertion
-
-
-  
-      if(classes.length != 0){
-        
-        for(var i=0;i<classes.length;i++){
-          //redraw position if previously placed
-          if(classes[i]['position'].length != 0){
-            var class_box = document.querySelector('.'+classes[i]['name']);
-            //redraw position
-            (<HTMLElement>class_box).style.left = classes[i]['position'][0];
-            (<HTMLElement>class_box).style.top = classes[i]['position'][1];
-          }
-          this.service.reinitializeConnections();
         }
-       }
-  
-    }
+      },
 
-
-
-
-
-  removeAll(){
-    //remove the classes and endpoints
+    });
+    this.service.jsPlumbInstance.setContainer("classes-container");
     this.service.jsPlumbInstance.reset();
+    this.service.revertLeftShift();
 
-      var class_boxes = document.querySelectorAll("app-class-box");
-      for(var i = 0;i<class_boxes.length;i++){
-        this.service.jsPlumbInstance.remove(class_boxes[i]);
-      }
 
     
+    
+    var classes = this.service.allClasses;
+
+    //empty back-end for re-insertion
+
+
+
+    if(classes.length != 0){
+      
+      for(var i=0;i<classes.length;i++){
+        //redraw position if previously placed
+        if(classes[i]['position'].length != 0){
+          var class_box = document.querySelector('.'+classes[i]['name']);
+          //redraw position
+          (<HTMLElement>class_box).style.left = classes[i]['position'][0];
+          (<HTMLElement>class_box).style.top = classes[i]['position'][1];
+        }
+        this.service.reinitializeConnections();
+      }
+    }
+
   }
+
+
+
+
+
+  // removeAll(){
+  //   //remove the classes and endpoints
+  //   this.service.jsPlumbInstance.reset();
+
+  //     var class_boxes = document.querySelectorAll("app-class-box");
+  //     for(var i = 0;i<class_boxes.length;i++){
+  //       this.service.jsPlumbInstance.remove(class_boxes[i]);
+  //     }
+
+    
+  // }
 
 
 
