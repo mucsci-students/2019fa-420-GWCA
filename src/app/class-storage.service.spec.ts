@@ -11,8 +11,8 @@ describe('ClassStorageService', () => {
   
   beforeEach(async(() => {
     service = TestBed.get(ClassStorageService);
-    test = {"name":"cherry","methods":["m1()","m2()","m3()"],"variables":["v1","v2","v3"],"connections":[]};
-    test2 = {"name":"cherry","methods":["m1()","m2()"],"variables":["v1","v2","v3"],"connections":[]};
+    test = {"name":"cherry","methods":["m1()","m2()","m3()"],"variables":["v1","v2","v3"],"connections":[],"position":[]};
+    test2 = {"name":"cherry","methods":["m1()","m2()"],"variables":["v1","v2","v3"],"connections":[],"position":[]};
   }));
 
 
@@ -65,5 +65,39 @@ describe('ClassStorageService', () => {
     service.createNew(test.name,test.methods,test.variables);
     expect(service.findClass("a")).toEqual(null);
    });
+
+   //getter tests
+   it('should return name',() => {
+    service.createNew(test.name,test.methods,test.variables);
+    expect(service.getName(test)).toEqual(test.name);
+   });
+
+   it('should return variables',() => {
+    service.createNew(test.name,test.methods,test.variables);
+    expect(service.getVariables(test)).toEqual(test.variables);
+   });
+
+   it('should return methods',() => {
+    service.createNew(test.name,test.methods,test.variables);
+    expect(service.getMethods(test)).toEqual(test.methods);
+   });
+
+   it('should return connections',() => {
+    service.createNew(test.name,test.methods,test.variables);
+    expect(service.getConnections(test)).toEqual(test.connections);
+   });
+
+   it('should return position',() => {
+    service.createNew(test.name,test.methods,test.variables);
+    expect(service.getPosition(test)).toEqual(test.position);
+   });
+
+   it('should update position',() => {
+    service.createNew(test.name,test.methods,test.variables);
+    service.setPosition(test,'10','20');
+    expect(service.getPosition(test)).toEqual(['10','20']);
+   });
+
+   
 
 });

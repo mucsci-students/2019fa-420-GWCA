@@ -7,7 +7,7 @@ pre{
     white-space   : inherit;
 }
 
-.form form{
+span form, span mat-form-field{
     display       : flex;
     flex-direction: column;
 }
@@ -21,4 +21,8 @@ pre{
 
 .chip::marker{
     content       : '' !important;
+}
+
+span button{
+    margin-left  : 40%;
 }

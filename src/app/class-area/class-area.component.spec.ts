@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, ComponentFixtureNoNgZone } from '@angular/core/testing';
 import { ClassAreaComponent } from './class-area.component';
-import { MatDialogModule, MatSelectModule, MatDialogRef } from '@angular/material';
+import { MatDialogModule, MatSelectModule, MatDialogRef, MatChipsModule, MatToolbarModule, MatMenuModule, MatCardModule } from '@angular/material';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -18,7 +18,7 @@ describe('ClassAreaComponent', () => {
   let router: Router;
   let location: Location;
   let service: ClassStorageService;
-  let test: fullClass = {'name': 'apple','variables':['v1','v2','v3'],'methods':['m1()','m2()','m3()'],'connections':[]};
+  let test: fullClass = {'name': 'apple','variables':['v1','v2','v3'],'methods':['m1()','m2()','m3()'],'connections':[],'position':[]};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,6 +31,10 @@ describe('ClassAreaComponent', () => {
         MatDialogModule,
         MatSelectModule,
         MatDialogModule,
+        MatChipsModule,
+        MatToolbarModule,
+        MatMenuModule,
+        MatCardModule,
         RouterTestingModule.withRoutes(routes),
       ],
       providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}},],
@@ -52,6 +56,39 @@ describe('ClassAreaComponent', () => {
     fixture.detectChanges();
     componentFactoryResolver = fixture.debugElement.injector.get(ComponentFactoryResolver);
     fixture.detectChanges();
+  });
+
+
+  //lifecycle hooks
+  it('should call revert left shift in ngAfterViewInit',() => {
+    spyOn(service,'revertLeftShift');
+    component.ngAfterViewInit();
+    expect(service.revertLeftShift).toHaveBeenCalled();
+  });
+
+  it('should not call reinitializeConnections in ngAfterViewInit',() => {
+    spyOn(service,'reinitializeConnections');
+    component.ngAfterViewInit();
+    expect(service.reinitializeConnections).not.toHaveBeenCalled();
+  });
+
+  it('should call reintializeConnections in ngAfterViewInit',() => {
+    spyOn(service,'reinitializeConnections');
+    service.createNew(test['name'],test['methods'],test['variables']);
+    component.ngAfterViewInit();
+    expect(service.reinitializeConnections).toHaveBeenCalled();
+  });
+
+  it('should initialize classBoxes (as empty)',() => {
+    component.ngOnInit();
+    expect(component.classBoxes.length).toEqual(0);
+  });
+
+  it('should call updateBackend on insertion',() => {
+    spyOn(component,'updateBackend');
+    service.createNew(test['name'],test['methods'],test['variables']);
+    component.ngDoCheck();
+    expect(component.updateBackend).toHaveBeenCalled();
   });
 
   //create component

@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef, NgZone } from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-test',
@@ -31,9 +32,11 @@ export class DialogTestComponent implements OnInit {
 
   ngOnInit() {
     this.choice = "";
+  
     //gets class names to choose
     this.classNames = document.querySelectorAll("h2");
-  }
+    }
+
 
   search(Name: string){
     this.className = this.service.findClass(Name)['name'];
@@ -60,10 +63,12 @@ export class DialogTestComponent implements OnInit {
 
   updateClass(){
 
+    //remove original
+    
+    
     //update the back-end
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
-    //var cls = document.querySelector('.'+CSS.escape(this.className));
-
+    
     //wrapper for re-inializing connections & endpoints
     this.service.reinitializeConnections();
     

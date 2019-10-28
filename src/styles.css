@@ -11,3 +11,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-chip-list-wrapper{
     margin-left   : -30px !important;
 }
+
+/* aggregate connection */
+.unfilledDiamond{
+    fill            : white;
+    outline-color   : purple;
+}
+
+#terminal-container{
+    height          : 100%;
+    width           : 100%;
+}
+
