@@ -100,11 +100,15 @@ export class ClassStorageService {
     //console.log(this.leftShift);
   }
 
+  //redraw all jsPlumb setttings & connections
   reinitializeConnections(){
     this.jsPlumbInstance.reset();
 
     var class_boxes = document.querySelectorAll("app-class-box");
-
+    //force break if no class boxes
+    if(class_boxes.length == 0){
+      return;
+    }
         //re-initialize data
         for(var i = 0;i<class_boxes.length;i++){
            this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Top",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_top")},this.common);
@@ -129,6 +133,10 @@ export class ClassStorageService {
       if(classes[i]['connections'].length !== 0){
         for(var j = 0;j<classes[i]['connections'].length;j++){
           //have to format the uuid a little to get the update element
+          //skip element if doesn't exist
+          if((document.getElementsByClassName((classes[i]['connections'][j][1]).split("_")[0])).length == 0){
+            continue;
+          }
          var source = classes[i]['connections'][j][0].split("_")[0];
          var sourcePosition = classes[i]['connections'][j][0].split("_")[1];
          var srcElement = document.querySelector("app-class-box ."+source).id;
@@ -137,6 +145,8 @@ export class ClassStorageService {
          var targetElement = document.querySelector("app-class-box ."+target).id;
 
          var connectionType = classes[i]['connections'][j][2];
+         //skip
+         
          var connection = this.jsPlumbInstance.connect({
            uuids:[(srcElement+"_"+sourcePosition),(targetElement+"_"+targetPosition)],
            
@@ -188,6 +198,9 @@ export class ClassStorageService {
 
     }
   }
+
+
+ 
 
   //push a new class into the array (front) and update our corresponding JSON model
   createNew(classname: string, methods: string[],variables: string[]){

@@ -1,23 +1,25 @@
 
-<div class="class-box" [ngClass]="name" id={{id}}>
-    <div class="name" >
-        <h2>{{name}}</h2>
-    </div>
-    <div class="variables">
+<mat-card class="class-box" [ngClass]="name" id={{id}}>
+    <mat-card-header >
+        <div class="name" >
+            <mat-card-title>{{name}}</mat-card-title>
+        </div>
+    </mat-card-header>
+    <mat-card-subtitle class="variables">
         <h4>Variables: </h4>
         <ul>
             <li class="variable" *ngFor="let variable of variables;trackBy:trackVariables">
                 {{variable}}
             </li>
         </ul>
-    </div>
-    <div class="methods">
+    </mat-card-subtitle>
+    <mat-card-subtitle class="methods">
         <h4>Methods: </h4>
         <ul>
             <li class="method" *ngFor="let method of methods;trackBy:trackMethods">
                 {{method}}
             </li>
         </ul>
-    </div>
-</div>
+    </mat-card-subtitle>
+</mat-card>
 

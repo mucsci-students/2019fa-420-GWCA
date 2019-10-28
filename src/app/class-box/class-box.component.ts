@@ -62,6 +62,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
      //get all the dynamically created elements
      var boxes = document.querySelectorAll("app-class-box");
 
+
      //keep track of the top shift value
      var topShift  = 20;
      for(var i = 0;i<boxes.length;i++){

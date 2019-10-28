@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogTestComponent } from './dialog-test.component';
-import { MatSelectModule, MatDialogModule, MatChipsModule } from '@angular/material';
+import { MatSelectModule, MatDialogModule, MatChipsModule, MatCardModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { jsPlumb } from 'jsplumb';
