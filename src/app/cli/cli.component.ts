@@ -23,7 +23,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     if(event.keyCode === 13){
       var output = this.interpret(this.input);
       if(output == ""){
-        this.term.clear();
+        this.term.reset();
       }
       else{
         this.term.write('\r\n');
@@ -61,32 +61,6 @@ export class CliComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
-    
-      // this.child.write("Press ENTER to begin: \r\n");
-      // this.child.keyEventInput.subscribe(e => {
-      //   console.log('keyboard event:' + e.domEvent.keyCode + ', ' + e.key);
-
-      //   const ev = e.domEvent;
-      //   const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
-
-      //   if (ev.keyCode === 13) {
-      //     var output:string = this.interpret(this.child.underlying.buffer.getLine(this.child.underlying.buffer.cursorY).translateToString(true,2));
-      //     if(output == ""){
-      //       this.child.underlying.clear();
-      //     }
-      //     else{
-      //       this.child.write('\r\n' + output);
-      //     }
-      //     this.child.write('\r\n> ');
-      //   } else if (ev.keyCode === 8) {
-      //     // Do not delete the prompt
-      //     if (this.child.underlying.buffer.cursorX > 2) {
-      //       this.child.write('\b \b');
-      //     }
-      //   } else if (printable) {
-      //     this.child.write(e.key);
-      //   }
-      // })
     }
 
 
@@ -96,9 +70,9 @@ export class CliComponent implements OnInit, AfterViewInit {
       switch(line[0]){
         case "h": output = this.help(); break;
         case "q": this.router.navigate(['']); break;
-        case "a": output = "This will add a class [incomplete]"; break;
-        case "e": output = "This will add a edit [incomplete]"; break;
-        case "r": output = "This will add a remove [incomplete]"; break;
+        case "a": output = this.addClass(line); break;
+        case "e": output = "This will add edit a class [incomplete]"; break;
+        case "r": output = this.removeClass(line); break;
         case "c": output = ""; break;
         case "v": output = this.viewDiagram(); break;
         case "x": output = "copy this: " + this.exportDiagram(); break;
@@ -128,7 +102,39 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
     return diagram;
   }
-  
+
+  //this function take in the input line, returns a class name for methods that require it.
+  grabClassNameFromInput(line: string){
+    var splitLine = line.split(" ");
+    var name = splitLine[1];
+    return name;
+  }
+
+  //this function adds a blank class with the given name.
+  addClass(line: string){
+    var name = this.grabClassNameFromInput(line);
+    this.service.createNew(name, [], []);
+    return "New Blank class \"" + name + "\" added! Type 'e' to edit attributes.";
+  }
+
+  //this funtion removes a class wit the given name.
+  removeClass(line: string){
+    var targetName = this.grabClassNameFromInput(line);
+    var targetIndex = this.service.findClassIndex(targetName);
+    this.service.removeClassByIndex(targetIndex);
+    return "Class \"" + targetName + "\" has been deleted";
+  }
+
+  //this grabs a class by name and returns it.
+  selectClass(name: string){
+    return this.service.findClass(name);
+  }
+
+  editClass(line: string){
+    var targetName = this.grabClassNameFromInput(line);
+    var targetClass = this.selectClass(targetName);
+  }
+
   //this function prints out our help message
   help(){
     return `    Commands:\r

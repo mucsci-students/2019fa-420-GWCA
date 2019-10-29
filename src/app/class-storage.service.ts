@@ -59,7 +59,7 @@ export class ClassStorageService {
     return this.allClasses[0];
   }
 
-  //searh array for class
+  //searh array for class by name, return it
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
       if(this.allClasses[i]['name'] == name){
@@ -67,6 +67,25 @@ export class ClassStorageService {
       }
     }
     return null;
+  }
+
+  //searh array for class by name, return its index
+  findClassIndex(name){
+    for(var i = 0;i<this.allClasses.length;i++){
+      if(this.allClasses[i]['name'] == name){
+        return i;
+      }
+    }
+    return null;
+  }
+
+  //this function takes in an index, and removes the class at that index
+  removeClassByIndex(index: number){
+    if (index !== -1){
+      this.allClasses.splice(index, 1);
+      return true;
+    }
+    return "index not valid";
   }
 
   //getters
