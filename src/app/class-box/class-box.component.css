@@ -36,8 +36,11 @@ mat-card-subtitle{
     margin-top      : 17px;
 }
 
-.editor{
-    position        : sticky;
+ .editor{
+    background-color: white;
+    box-shadow      : 0px 5px 10px lightgray;
+    position        : absolute;
+    
 }
 
 span button{

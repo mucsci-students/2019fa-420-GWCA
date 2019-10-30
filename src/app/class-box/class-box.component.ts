@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck} from '@angular/core';
+import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck, AfterViewChecked} from '@angular/core';
 import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
@@ -9,7 +9,7 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
   templateUrl: './class-box.component.html',
   styleUrls: ['./class-box.component.css']
 })
-export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
+export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterViewChecked {
   name: string;
   variables: string[];
   editorVariables: string;
@@ -166,6 +166,24 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
 
         
       });
+  }
+
+  ngAfterViewChecked(){
+    var editBox = document.querySelector('.editor');
+    if(editBox != undefined){
+      var classBox = document.querySelector('.'+this.name);
+      var y = (<HTMLElement>classBox).style.top;
+      var x = (<HTMLElement>classBox).style.left;
+      if(this.edit == 'variables'){
+        (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
+        
+      }
+      else if(this.edit == 'methods'){
+        (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
+      }
+      (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+      (<HTMLElement>editBox).style.width = '230px';
+    }
   }
 
   pullVariables(){
