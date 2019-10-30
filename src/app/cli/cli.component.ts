@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ViewEncapsulation, HostListener } from '@angular/core';
-import { NgTerminal} from 'ng-terminal';
 import { Terminal} from 'xterm';
 import { Router } from '@angular/router';
 import { ClassStorageService } from '../class-storage.service';
@@ -16,7 +15,6 @@ export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
   @ViewChild('terminal',{static:true}) terminalDiv: ElementRef;
-  @ViewChild('term', { static: true }) child: NgTerminal;
 
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
@@ -62,31 +60,7 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(){
     
-      // this.child.write("Press ENTER to begin: \r\n");
-      // this.child.keyEventInput.subscribe(e => {
-      //   console.log('keyboard event:' + e.domEvent.keyCode + ', ' + e.key);
-
-      //   const ev = e.domEvent;
-      //   const printable = !ev.altKey && !ev.ctrlKey && !ev.metaKey;
-
-      //   if (ev.keyCode === 13) {
-      //     var output:string = this.interpret(this.child.underlying.buffer.getLine(this.child.underlying.buffer.cursorY).translateToString(true,2));
-      //     if(output == ""){
-      //       this.child.underlying.clear();
-      //     }
-      //     else{
-      //       this.child.write('\r\n' + output);
-      //     }
-      //     this.child.write('\r\n> ');
-      //   } else if (ev.keyCode === 8) {
-      //     // Do not delete the prompt
-      //     if (this.child.underlying.buffer.cursorX > 2) {
-      //       this.child.write('\b \b');
-      //     }
-      //   } else if (printable) {
-      //     this.child.write(e.key);
-      //   }
-      // })
+     
     }
 
 
