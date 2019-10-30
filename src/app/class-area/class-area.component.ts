@@ -74,11 +74,8 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
     this.service.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
-        drag: function(){
-
-        }
+        zIndex: 1000
       },
-
     });
     this.service.jsPlumbInstance.setContainer("classes-container");
     this.service.jsPlumbInstance.reset();

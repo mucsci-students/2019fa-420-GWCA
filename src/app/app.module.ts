@@ -55,6 +55,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     MatToolbarModule,
     MatChipsModule,
     MatCardModule,
+    MatIconModule
   ],
   entryComponents: [
     DialogTestComponent,

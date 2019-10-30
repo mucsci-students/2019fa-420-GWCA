@@ -12,12 +12,16 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
   name: string;
   variables: string[];
+  editorVariables: string;
   methods: string[];
+  editorMethods: string;
   id: string;
   index: number = 0;
   dialogRef: MatDialogRef<DialogTestComponent>;
   connectionType: string;
   private iterableDiffer: IterableDiffer<object>;
+  //help choose what to edit
+  edit: string;
 
 
   constructor(public classService: ClassStorageService, public dialog: MatDialog,
@@ -27,6 +31,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
   }
 
   ngOnInit() {
+    this.edit = '';
     for(var i = this.classService.allClasses.length-1;i>0;i--){
       var test = document.getElementsByClassName(this.classService.allClasses[i]['name']);
       if(test.length == 0){
@@ -76,15 +81,19 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
      }
 
     var jsPlumbInstance = this.classService.jsPlumbInstance;
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Bottom",uuid:(this.id+"_bottom")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Right",uuid:(this.id+"_right")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Top",uuid:(this.id+"_top")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Left",uuid:(this.id+"_left")},this.classService.common);
+    //note this is kind of a hacky solution...
+
+    this.classService.addEndpoints(this.id);
+
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Right","Continuous"],uuid:(this.id+"_right")},this.classService.common);
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Top","Continuous"],uuid:(this.id+"_top")},this.classService.common);
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Left","Continuous"],uuid:(this.id+"_left")},this.classService.common);
+ 
     setTimeout(() =>
     this.classService.jsPlumbInstance.draggable(this.id,{
       drag:function(event){
         jsPlumbInstance.repaintEverything();
-      }
+      },zIndex: 1000
     }), 
     100);
 
@@ -159,6 +168,33 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
       });
   }
 
+  pullVariables(){
+    this.editorVariables = this.variables.join(",");
+    this.edit = 'variables';
+
+  }
+
+  pullMethods(){
+    this.editorMethods = this.methods.join(",");
+    this.edit = 'methods';
+  }
+
+  //editor change
+  editVariables(){
+    this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
+    this.updateValues();
+    this.edit = '';
+    console.log(this.variables);
+  }
+
+  editMethods(){
+    this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
+    this.updateValues();
+    this.edit = '';
+    
+    console.log(this.methods);
+  }
+
   //tracker methods for ngFor
   trackVariables(){
     return this.variables;
@@ -173,5 +209,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
     var cls = this.classService.findClass(this.name);
     this.variables = cls['variables'];
     this.methods = cls['methods'];
+
   }
 }

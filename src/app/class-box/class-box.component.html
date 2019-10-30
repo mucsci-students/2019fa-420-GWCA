@@ -6,7 +6,16 @@
         </div>
     </mat-card-header>
     <mat-card-subtitle class="variables">
-        <h4>Variables: </h4>
+        <div class="variable-header">
+            <h4>Variables: </h4>
+            <button mat-icon-button class="edit-button" (click)="pullVariables()">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </div>
+        <span *ngIf="edit == 'variables'" class="editor">
+                <textarea [(ngModel)]="editorVariables" matInput>{{editorVariables}}</textarea>
+                <button mat-raised-button color="primary" (click)="editVariables()">submit</button>
+        </span>
         <ul>
             <li class="variable" *ngFor="let variable of variables;trackBy:trackVariables">
                 {{variable}}
@@ -14,7 +23,16 @@
         </ul>
     </mat-card-subtitle>
     <mat-card-subtitle class="methods">
-        <h4>Methods: </h4>
+        <div class="method-header">
+            <h4>Methods: </h4>
+            <button mat-icon-button class="edit-button" (click)="pullMethods()">
+                    <mat-icon>edit</mat-icon>
+            </button>
+        </div>
+        <span *ngIf="edit == 'methods'" class="editor">
+                <textarea [(ngModel)]="editorMethods" matInput>{{editorMethods}}</textarea>
+                <button mat-raised-button color="primary" (click)="editMethods()">submit</button>
+        </span>
         <ul>
             <li class="method" *ngFor="let method of methods;trackBy:trackMethods">
                 {{method}}
@@ -22,4 +40,6 @@
         </ul>
     </mat-card-subtitle>
 </mat-card>
+
+
 

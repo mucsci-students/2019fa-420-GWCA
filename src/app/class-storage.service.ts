@@ -39,13 +39,16 @@ export class ClassStorageService {
     isSource: true,
     paintStyle: {fill: "green"},
     maxConnections: -1,
-    connector: ["Flowchart", {stub: [40, 60], gap: 10,alwaysRespectStubs: true}],
+    connector: ["Flowchart", {stub: [40, 60], gap: 10,alwaysRespectStubs: true},{anchors: ["Bottom","Top","Left","Right"]}],
     connectorOverlays: [
       ["Arrow", {width: 15,length: 30,location: 1,id: "arrow"}]
     ],
+    endpoint: "Dot",
     DoNotThrowErrors: true,
   
   };
+
+
 
 
   //initialize the list that holds the classes
@@ -100,8 +103,77 @@ export class ClassStorageService {
     //console.log(this.leftShift);
   }
 
+  addEndpoints(id:string){
+     /*this.jsPlumbInstance.addEndpoint(id,
+       {
+         anchor: [
+           [ 0.5, 0, 0, -1, 0, 0, "top" ],
+          //  [ 1, 0.5, 1, 0, 0, 0, "right" ],
+          //  [ 0.5, 1, 0, 1, 0, 0, "bottom" ],
+          //  [ 0, 0.5, -1, 0, 0, 0, "left" ],
+    
+         ],
+         uuid:(id+"_top"),
+         endpoint: ["Dot", { cssClass: "endpointClass", radius: 10, hoverClass: "endpointHoverClass" } ],
+         hoverPaintStyle: {fill: "red"},
+       },this.common
+     );
+    
+     this.jsPlumbInstance.addEndpoint(id,
+       {
+         anchor: [
+           [ 1, 0.5, 1, 0, 0, 0, "right" ],
+           [ 0.5, 0, 0, -1, 0, 0, "top" ],
+           [ 0.5, 1, 0, 1, 0, 0, "bottom" ],
+           [ 0, 0.5, -1, 0, 0, 0, "left" ],
+    
+         ],
+         uuid:(id+"_right"),
+         endpoint: ["Dot", { cssClass: "endpointClass", radius: 10, hoverClass: "endpointHoverClass" } ],
+         hoverPaintStyle: {fill: "red"},
+       },this.common
+     );
+
+     this.jsPlumbInstance.addEndpoint(id,
+       {
+         anchor: [
+           [ 0.5, 1, 0, 1, 0, 0, "bottom" ],
+           [ 1, 0.5, 1, 0, 0, 0, "right" ],
+           [ 0.5, 0, 0, -1, 0, 0, "top" ],
+           [ 0, 0.5, -1, 0, 0, 0, "left" ],
+    
+         ],
+         uuid:(id+"_bottom"),
+         endpoint: ["Dot", { cssClass: "endpointClass", radius: 10, hoverClass: "endpointHoverClass" } ],
+         hoverPaintStyle: {fill: "red"},
+       },this.common
+     );
+    
+    //left
+    this.jsPlumbInstance.addEndpoint(id,
+      {
+        anchor: [
+                  [ 0, 0.5, -1, 0, 0, 0, "left" ],
+                  [ 0.5, 1, 0, 1, 0, 0, "bottom" ],
+                  [ 1, 0.5, 1, 0, 0, 0, "right" ],
+                  [ 0.5, 0, 0, -1, 0, 0, "top" ],
+               ],
+               uuid:(id+"_left"),
+               endpoint: ["Dot", { cssClass: "endpointClass", radius: 10, hoverClass: "endpointHoverClass" } ],
+               hoverPaintStyle: {fill: "red"},
+      },this.common
+    );*/
+
+    //have only 2 continuous endpoints so that they can not overlap, but still move
+    this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["top","right"]}],uuid:(id+"_top"),hoverPaintStyle: {fill: "red"}},this.common);
+    this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["bottom","left"]}],uuid:(id+"_bottom"),hoverPaintStyle: {fill: "red"}},this.common);
+
+    
+  }
+
   //redraw all jsPlumb setttings & connections
   reinitializeConnections(){
+    console.log("Reinitializing connections");
     this.jsPlumbInstance.reset();
 
     var class_boxes = document.querySelectorAll("app-class-box");
@@ -111,10 +183,11 @@ export class ClassStorageService {
     }
         //re-initialize data
         for(var i = 0;i<class_boxes.length;i++){
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Top",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_top")},this.common);
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Bottom",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_bottom")},this.common);
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Right",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_right")},this.common);
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Left",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_left")},this.common);
+          this.addEndpoints(class_boxes[i]['childNodes'][0]['id']);
+          //  this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Top",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_top")},this.common);
+          //  this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Bottom",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_bottom")},this.common);
+          //  this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Right",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_right")},this.common);
+          //  this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Left",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_left")},this.common);
           
           // //re-bind the "no link to self rule"
           var jsPlumbInstance = this.jsPlumbInstance;
