@@ -174,14 +174,40 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       var classBox = document.querySelector('.'+this.name);
       var y = (<HTMLElement>classBox).style.top;
       var x = (<HTMLElement>classBox).style.left;
+
+      //in case just created
+      var position_x = document.querySelector('.'+this.name).getBoundingClientRect().left;
+      var position_y = document.querySelector('.'+this.name).getBoundingClientRect().top;
+      //variables
       if(this.edit == 'variables'){
-        (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
-        
+        //no drag (just created)
+        if(!y){
+
+          (<HTMLElement>editBox).style.top = (position_y - 10) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
       }
       else if(this.edit == 'methods'){
-        (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 60) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
       }
-      (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+      
       (<HTMLElement>editBox).style.width = '230px';
     }
   }
