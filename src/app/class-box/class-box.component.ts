@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCh
 import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
-import { Router } from '@angular/router';
 
 
 @Component({
@@ -26,7 +25,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
 
   constructor(public classService: ClassStorageService, public dialog: MatDialog,
-    private iterableDiffs: IterableDiffers, public router: Router) { 
+    private iterableDiffs: IterableDiffers) { 
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
   }
