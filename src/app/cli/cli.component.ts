@@ -71,7 +71,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         case "h": output = this.help(); break;
         case "q": this.router.navigate(['']); break;
         case "a": output = "This will add a class [incomplete]"; break;
-        case "e": output = "This will add a edit [incomplete]"; break;
+        case "e": output = 'NOT WORKING'; break;
         case "r": output = "This will add a remove [incomplete]"; break;
         case "c": output = ""; break;
         case "v": output = this.viewDiagram(); break;
@@ -86,6 +86,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     this.service.diagramToJSON();
     return this.service.jsonString;
   }
+
 
   //This prints the current diagram to the screen in a human-readable format
   //To "view" a diagram, you have to add a class through the gui first, as the CLI add is incomplete

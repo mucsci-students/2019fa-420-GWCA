@@ -31,3 +31,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     z-index         : 10;
 }
 
+.mat-icon-button{
+    line-height     : 0px !important;
+}
+
+
+.editor button{
+    width           : 100%;
+}

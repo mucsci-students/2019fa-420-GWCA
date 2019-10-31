@@ -168,6 +168,8 @@ export class ClassStorageService {
     this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["top","right"]}],uuid:(id+"_top"),hoverPaintStyle: {fill: "red"}},this.common);
     this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["bottom","left"]}],uuid:(id+"_bottom"),hoverPaintStyle: {fill: "red"}},this.common);
 
+    //fixes error where endpoints don't properly align with box
+    this.jsPlumbInstance.repaintEverything();
     
   }
 

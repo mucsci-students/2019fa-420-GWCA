@@ -3,7 +3,7 @@ import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { jsPlumb, jsPlumbInstance} from 'jsplumb';
+import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 

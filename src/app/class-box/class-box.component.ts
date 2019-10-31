@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCh
 import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
 
   constructor(public classService: ClassStorageService, public dialog: MatDialog,
-    private iterableDiffs: IterableDiffers) { 
+    private iterableDiffs: IterableDiffers, public router: Router) { 
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
   }
@@ -189,12 +190,13 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   pullVariables(){
     this.editorVariables = this.variables.join(",");
     this.edit = 'variables';
-
+    //this.classService.jsPlumbInstance.repaintEverything();
   }
 
   pullMethods(){
     this.editorMethods = this.methods.join(",");
     this.edit = 'methods';
+    //this.classService.jsPlumbInstance.repaintEverything();
   }
 
   //editor change
@@ -202,15 +204,14 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
     this.updateValues();
     this.edit = '';
-    console.log(this.variables);
+    this.classService.jsPlumbInstance.repaintEverything();
   }
 
   editMethods(){
     this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
     this.updateValues();
     this.edit = '';
-    
-    console.log(this.methods);
+    this.classService.jsPlumbInstance.repaintEverything();    
   }
 
   //tracker methods for ngFor
