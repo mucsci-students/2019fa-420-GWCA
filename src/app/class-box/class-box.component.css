@@ -23,3 +23,26 @@ mat-card-header *{
 mat-card-subtitle{
     padding-left    : 10px;
 }
+
+.variable-header, .method-header{
+    display         : flex;
+    flex-direction  : row;
+}
+
+.edit-button{
+    height          : 20px;
+    margin-right    : 10px;
+    margin-left     : auto;
+    margin-top      : 17px;
+}
+
+ .editor{
+    background-color: white;
+    box-shadow      : 0px 5px 10px lightgray;
+    position        : absolute;
+    
+}
+
+span button{
+    float           : right;
+}

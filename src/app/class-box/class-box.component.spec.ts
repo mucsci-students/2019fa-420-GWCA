@@ -2,8 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ClassBoxComponent } from './class-box.component';
 import { ClassStorageService, fullClass} from '../class-storage.service';
-import { MatDialogModule, MatCardModule } from '@angular/material';
-import { ExpectedConditions } from 'protractor';
+import { MatDialogModule, MatCardModule, MatIconModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
 
 describe('ClassBoxComponent', () => {
   let component: ClassBoxComponent;
@@ -17,7 +17,9 @@ describe('ClassBoxComponent', () => {
       declarations: [ClassBoxComponent],
       imports: [
         MatDialogModule,
-        MatCardModule
+        MatCardModule,
+        MatIconModule,
+        FormsModule
       ],
       providers: [ClassStorageService]
     })

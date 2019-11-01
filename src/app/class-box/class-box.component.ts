@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck} from '@angular/core';
+import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck, AfterViewChecked} from '@angular/core';
 import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
@@ -9,15 +9,19 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
   templateUrl: './class-box.component.html',
   styleUrls: ['./class-box.component.css']
 })
-export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
+export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterViewChecked {
   name: string;
   variables: string[];
+  editorVariables: string;
   methods: string[];
+  editorMethods: string;
   id: string;
   index: number = 0;
   dialogRef: MatDialogRef<DialogTestComponent>;
   connectionType: string;
   private iterableDiffer: IterableDiffer<object>;
+  //help choose what to edit
+  edit: string;
 
 
   constructor(public classService: ClassStorageService, public dialog: MatDialog,
@@ -27,6 +31,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
   }
 
   ngOnInit() {
+    this.edit = '';
     for(var i = this.classService.allClasses.length-1;i>0;i--){
       var test = document.getElementsByClassName(this.classService.allClasses[i]['name']);
       if(test.length == 0){
@@ -76,15 +81,19 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
      }
 
     var jsPlumbInstance = this.classService.jsPlumbInstance;
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Bottom",uuid:(this.id+"_bottom")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Right",uuid:(this.id+"_right")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Top",uuid:(this.id+"_top")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Left",uuid:(this.id+"_left")},this.classService.common);
+    //note this is kind of a hacky solution...
+
+    this.classService.addEndpoints(this.id);
+
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Right","Continuous"],uuid:(this.id+"_right")},this.classService.common);
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Top","Continuous"],uuid:(this.id+"_top")},this.classService.common);
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Left","Continuous"],uuid:(this.id+"_left")},this.classService.common);
+ 
     setTimeout(() =>
     this.classService.jsPlumbInstance.draggable(this.id,{
       drag:function(event){
         jsPlumbInstance.repaintEverything();
-      }
+      },zIndex: 1000
     }), 
     100);
 
@@ -159,6 +168,77 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
       });
   }
 
+  ngAfterViewChecked(){
+    var editBox = document.querySelector('.editor');
+    if(editBox != undefined){
+      var classBox = document.querySelector('.'+this.name);
+      var y = (<HTMLElement>classBox).style.top;
+      var x = (<HTMLElement>classBox).style.left;
+
+      //in case just created
+      var position_x = document.querySelector('.'+this.name).getBoundingClientRect().left;
+      var position_y = document.querySelector('.'+this.name).getBoundingClientRect().top;
+      //variables
+      if(this.edit == 'variables'){
+        //no drag (just created)
+        if(!y){
+
+          (<HTMLElement>editBox).style.top = (position_y - 10) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'methods'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 60) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      
+      (<HTMLElement>editBox).style.width = '230px';
+    }
+  }
+
+  pullVariables(){
+    this.editorVariables = this.variables.join(",");
+    this.edit = 'variables';
+    //this.classService.jsPlumbInstance.repaintEverything();
+  }
+
+  pullMethods(){
+    this.editorMethods = this.methods.join(",");
+    this.edit = 'methods';
+    //this.classService.jsPlumbInstance.repaintEverything();
+  }
+
+  //editor change
+  editVariables(){
+    this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
+    this.updateValues();
+    this.edit = '';
+    this.classService.jsPlumbInstance.repaintEverything();
+  }
+
+  editMethods(){
+    this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
+    this.updateValues();
+    this.edit = '';
+    this.classService.jsPlumbInstance.repaintEverything();    
+  }
+
   //tracker methods for ngFor
   trackVariables(){
     return this.variables;
@@ -173,5 +253,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
     var cls = this.classService.findClass(this.name);
     this.variables = cls['variables'];
     this.methods = cls['methods'];
+
   }
 }

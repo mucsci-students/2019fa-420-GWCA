@@ -22,9 +22,9 @@
     "@angular/platform-browser-dynamic": "~8.2.0",
     "@angular/router": "~8.2.0",
     "jsplumb": "^2.12.0",
-    "ng-terminal": "^2.2.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
+    "xterm": "^4.2.0",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
