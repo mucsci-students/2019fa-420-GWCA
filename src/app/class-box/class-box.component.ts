@@ -92,6 +92,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     setTimeout(() =>
     this.classService.jsPlumbInstance.draggable(this.id,{
       drag:function(event){
+        jsPlumbInstance.revalidate(this.id);
         jsPlumbInstance.repaintEverything();
       },zIndex: 1000
     }), 
@@ -101,8 +102,13 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     //have to create local variables for jsplumb
     var dialog = this.dialog;
     var dialogRef = this.dialogRef;
-    var connectionType;;
+    var connectionType;
     var id = this.id;
+
+
+    //auto connect before binding connections
+    this.autoConnect();
+
 
     //no self connections
     jsPlumbInstance.bind("connection",function(){
@@ -166,6 +172,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
         
       });
+
+    
   }
 
   ngAfterViewChecked(){
@@ -212,6 +220,82 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     }
   }
 
+  //auto generate composition connection on class creation
+  autoConnect(){
+    var established_connections: string[][] = [];
+    var noMethods = (this.methods.length >= 1 && this.methods[0] != 'none') ? true : false;
+    var noVariables = (this.variables.length >= 1 && this.variables[0] != 'none') ? true : false;
+    if(noMethods){
+      for(var i = 0;i<this.methods.length;i++){
+        var methodType = this.methods[i].split(" ")[0];
+        var cls = this.classService.findClass(methodType);
+        if(cls != null){
+          var target = document.querySelector('.'+cls['name']);
+          var targetId = (<HTMLElement>target).id + '_top';
+          var notAlreadyConnected = true;
+          if(established_connections.length != 0){
+            for(var j = 0;j< established_connections.length;j++){
+              if(established_connections[j] == [this.id+"_bottom",targetId]){
+                notAlreadyConnected = false;
+                break;
+              }
+            }
+          }
+          else{
+            notAlreadyConnected = true;
+          }
+          if(notAlreadyConnected){
+            var connection = this.classService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            //composition
+            connection.removeAllOverlays();
+            connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
+            connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
+            connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+            established_connections.push([this.id+'_bottom',targetId]);
+          }
+          else{
+            continue;
+          }
+        }
+      }
+    }
+    if(noVariables){
+      for(var i = 0;i<this.variables.length;i++){
+        var variableType = this.variables[i].split(" ")[0];
+        var cls = this.classService.findClass(variableType);
+        if(cls != null){
+          var target = document.querySelector('.'+cls['name']);
+          var targetId = (<HTMLElement>target).id + '_top';
+          var notAlreadyConnected = true;
+          if(established_connections.length != 0){
+            for(var j = 0;j< established_connections.length;j++){
+              if(established_connections[j] == [this.id+"_bottom",targetId]){
+                notAlreadyConnected = false;
+                break;
+              }
+            }
+          }
+          else{
+            notAlreadyConnected = true;
+          }
+          if(notAlreadyConnected){
+            var connection = this.classService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            //composition
+            connection.removeAllOverlays();
+            connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
+            connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
+            connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+            established_connections.push([this.id+'_bottom',targetId]);
+          }
+          else{
+            continue;
+          }
+        }
+      }
+    }
+    console.log(this.classService.jsPlumbInstance.getAllConnections());
+  }
+
   pullVariables(){
     this.editorVariables = this.variables.join(",");
     this.edit = 'variables';
@@ -229,14 +313,17 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
     this.updateValues();
     this.edit = '';
-    this.classService.jsPlumbInstance.repaintEverything();
+    // var box = document.querySelector('#'+this.id);
+    // var y = parseInt((<HTMLElement>box).style.top.split("p")[0]);
+    // console.log(y);
+    // (<HTMLElement>box).style.top = (y + 1) + 'px';
+    // this.classService.jsPlumbInstance.repaintEverything();
   }
 
   editMethods(){
     this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
     this.updateValues();
     this.edit = '';
-    this.classService.jsPlumbInstance.repaintEverything();    
   }
 
   //tracker methods for ngFor
@@ -253,6 +340,5 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     var cls = this.classService.findClass(this.name);
     this.variables = cls['variables'];
     this.methods = cls['methods'];
-
   }
 }
