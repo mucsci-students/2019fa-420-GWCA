@@ -30,7 +30,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         this.term.writeln(output);
       }
       this.input = '';
-      this.term.write('\r\n$');
+      this.term.write('\r\n>');
     }
     else if(event.keyCode === 8){
       this.term.write('\b \b');
@@ -51,9 +51,9 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.input = '';
-    this.term = new Terminal;
+    this.term = new Terminal();
     this.term.open(this.terminalDiv.nativeElement);
-    this.term.write('\r\n$');
+    this.term.write('\r\n>');
     
 
 
@@ -71,7 +71,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         case "h": output = this.help(); break;
         case "q": this.router.navigate(['']); break;
         case "a": output = this.addClass(line); break;
-        case "e": output = "This will add edit a class [incomplete]"; break;
+        case "e": output = this.editClass(line); break;
         case "r": output = this.removeClass(line); break;
         case "c": output = ""; break;
         case "v": output = this.viewDiagram(); break;
@@ -113,16 +113,26 @@ export class CliComponent implements OnInit, AfterViewInit {
   //this function adds a blank class with the given name.
   addClass(line: string){
     var name = this.grabClassNameFromInput(line);
-    this.service.createNew(name, [], []);
-    return "New Blank class \"" + name + "\" added! Type 'e' to edit attributes.";
+    if (name){
+      this.service.createNew(name, ["none"], ["none"]);
+      return "New Blank class \"" + name + "\" added! Type 'e' to edit attributes.";
+    }
+    else{
+      return "Error: Invalid Syntax. \n\rThe format for this command is: a <class_name>";
+    }
   }
 
   //this funtion removes a class wit the given name.
   removeClass(line: string){
     var targetName = this.grabClassNameFromInput(line);
-    var targetIndex = this.service.findClassIndex(targetName);
-    this.service.removeClassByIndex(targetIndex);
-    return "Class \"" + targetName + "\" has been deleted";
+    if (targetName){
+      var target = this.selectClass(targetName);
+      this.service.removeClassByIndex(this.service.allClasses.indexOf(target));
+      return "Class \"" + targetName + "\" has been deleted";
+    }
+    else{
+      return "Error: Invalid Syntax. \n\rThe format for this command is: r <class_name>";
+    }
   }
 
   //this grabs a class by name and returns it.
@@ -133,6 +143,13 @@ export class CliComponent implements OnInit, AfterViewInit {
   editClass(line: string){
     var targetName = this.grabClassNameFromInput(line);
     var targetClass = this.selectClass(targetName);
+    var choppedLine = line.split("[");
+    var inputVariables = choppedLine[1];
+    inputVariables = inputVariables.replace("]","");
+    var inputMethods = choppedLine[2]; 
+    inputMethods = inputMethods.replace("]","");
+    return "input variables = " + inputVariables + "\n\r input  methods = " + inputMethods;
+
   }
 
   //this function prints out our help message
