@@ -354,10 +354,23 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       var newSource = this.editorName +'_'+ source;
       connections[i][0] = newSource;
     }
+    this.id = this.id.replace(this.name,this.editorName);
     this.classService.findClass(this.name)['name'] = this.editorName;
+    var element = document.querySelector('.'+this.name);
     this.edit = '';
     this.name = this.editorName;
     this.classService.findClass(this.name)['connections'] = connections;
+
+    var id = this.id;
+    //reset id of endpoints on name change
+    this.classService.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
+      endpoint['elementId'] = id;
+    });
+    //re-add endpoints & connections
+    //this.classService.jsPlumbInstance.deleteEveryEndpoint({source: this.id});
+    //var element = document.querySelector('#'+this.id);
+    //this.classService.addEndpoints(this.id);
+    //this.classService.reinitializeConnections();
   }
 
   //tracker methods for ngFor

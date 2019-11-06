@@ -299,6 +299,7 @@ export class ClassStorageService {
   insertConnection(source:string, target: string,style: string){
     var sourceClass = source.split("_")[0];
 
+
     var sourcePosition = [source.split("_")[0],source.split("_")[2]].join("_");
     var targetPosition = [target.split("_")[0],target.split("_")[2]].join("_");
 
