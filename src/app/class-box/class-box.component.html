@@ -1,8 +1,11 @@
 
 <mat-card class="class-box" [ngClass]="name" id={{id}}>
     <mat-card-header >
-        <div class="name" >
+        <div class="name-header">
             <mat-card-title>{{name}}</mat-card-title>
+            <button mat-icon-button class="edit-button" (click)="pullName()">
+                    <mat-icon>edit</mat-icon>
+            </button>
         </div>
     </mat-card-header>
     <mat-card-subtitle class="variables">
@@ -41,5 +44,11 @@
 <span *ngIf="edit == 'variables'" class="editor">
     <textarea [(ngModel)]="editorVariables" matInput>{{editorVariables}}</textarea>
     <button mat-raised-button color="primary" (click)="editVariables()">update</button>
+</span>
+<span *ngIf="edit == 'name'" class="editor">
+        <textarea [(ngModel)]="editorName" (ngModelChange)="existenceCheck()" matInput>{{editorName}}</textarea>
+        <span *ngIf="exists == false">
+            <button mat-raised-button color="primary" (click)="editName()">update</button>
+        </span>
 </span>
 
