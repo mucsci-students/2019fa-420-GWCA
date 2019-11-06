@@ -121,7 +121,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
       else{
         this.service.createNew(name, ["none"], ["none"]);
-        return '\x1b[1;32m' + "New Blank class \"" + name + "\" added! Type \'edit " + name + "\' to edit attributes.";
+        return '\x1b[1;32m' + "New Blank class \"" + name + "\" added! Use \'edit " + name + "\...' to configure attributes.";
       }
     }
     else{
@@ -139,7 +139,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         return '\x1b[1;32m' + "Class \"" + targetName + "\" has been deleted";
       }
       else{
-        return '\x1b[1;31m' + "Errot: Class \"" + targetName + "\" not found. Type 'view' to view classes.";
+        return '\x1b[1;31m' + "Error: Class \"" + targetName + "\" not found. Type 'view' to view classes.";
       }
     }
     else{
@@ -236,7 +236,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     var choppedLine = line.split(" ");
     console.log(choppedLine[2]);
     if(choppedLine.length < 2){
-      return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\n\rFormat:\tclone <class_name> <clone_name>";
+      return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tclone <class_name> <clone_name>";
     }
     else{
       this.service.createNew(choppedLine[2], targetClass.methods, targetClass.variables);
