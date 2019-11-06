@@ -1,12 +1,21 @@
 
 <mat-card class="class-box" [ngClass]="name" id={{id}}>
     <mat-card-header >
-        <div class="name" >
+        <div class="name-header">
             <mat-card-title>{{name}}</mat-card-title>
+            <button mat-icon-button class="edit-button" (click)="pullName()">
+                    <mat-icon>edit</mat-icon>
+            </button>
         </div>
     </mat-card-header>
     <mat-card-subtitle class="variables">
-        <h4>Variables: </h4>
+        <div class="variable-header">
+            <h4>Variables: </h4>
+            <button mat-icon-button class="edit-button" (click)="pullVariables()">
+                <mat-icon>edit</mat-icon>
+            </button>
+        </div>
+        
         <ul>
             <li class="variable" *ngFor="let variable of variables;trackBy:trackVariables">
                 {{variable}}
@@ -14,7 +23,13 @@
         </ul>
     </mat-card-subtitle>
     <mat-card-subtitle class="methods">
-        <h4>Methods: </h4>
+        <div class="method-header">
+            <h4>Methods: </h4>
+            <button mat-icon-button class="edit-button" (click)="pullMethods()">
+                    <mat-icon>edit</mat-icon>
+            </button>
+        </div>
+        
         <ul>
             <li class="method" *ngFor="let method of methods;trackBy:trackMethods">
                 {{method}}
@@ -22,4 +37,18 @@
         </ul>
     </mat-card-subtitle>
 </mat-card>
+<span *ngIf="edit == 'methods'" class="editor">
+    <textarea [(ngModel)]="editorMethods" matInput>{{editorMethods}}</textarea>
+    <button mat-raised-button color="primary" (click)="editMethods()">update</button>
+</span>
+<span *ngIf="edit == 'variables'" class="editor">
+    <textarea [(ngModel)]="editorVariables" matInput>{{editorVariables}}</textarea>
+    <button mat-raised-button color="primary" (click)="editVariables()">update</button>
+</span>
+<span *ngIf="edit == 'name'" class="editor">
+        <textarea [(ngModel)]="editorName" (ngModelChange)="existenceCheck()" matInput>{{editorName}}</textarea>
+        <span *ngIf="exists == false">
+            <button mat-raised-button color="primary" (click)="editName()">update</button>
+        </span>
+</span>
 

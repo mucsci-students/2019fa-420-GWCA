@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck} from '@angular/core';
+import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCheck, AfterViewChecked} from '@angular/core';
 import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
@@ -9,15 +9,21 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
   templateUrl: './class-box.component.html',
   styleUrls: ['./class-box.component.css']
 })
-export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
+export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterViewChecked {
   name: string;
+  editorName: string;
   variables: string[];
+  editorVariables: string;
   methods: string[];
+  editorMethods: string;
+  exists: boolean;
   id: string;
   index: number = 0;
   dialogRef: MatDialogRef<DialogTestComponent>;
   connectionType: string;
   private iterableDiffer: IterableDiffer<object>;
+  //help choose what to edit
+  edit: string;
 
 
   constructor(public classService: ClassStorageService, public dialog: MatDialog,
@@ -27,6 +33,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
   }
 
   ngOnInit() {
+    this.exists = true;
+    this.edit = '';
     for(var i = this.classService.allClasses.length-1;i>0;i--){
       var test = document.getElementsByClassName(this.classService.allClasses[i]['name']);
       if(test.length == 0){
@@ -76,15 +84,20 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
      }
 
     var jsPlumbInstance = this.classService.jsPlumbInstance;
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Bottom",uuid:(this.id+"_bottom")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Right",uuid:(this.id+"_right")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Top",uuid:(this.id+"_top")},this.classService.common);
-    this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: "Left",uuid:(this.id+"_left")},this.classService.common);
+    //note this is kind of a hacky solution...
+
+    this.classService.addEndpoints(this.id);
+
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Right","Continuous"],uuid:(this.id+"_right")},this.classService.common);
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Top","Continuous"],uuid:(this.id+"_top")},this.classService.common);
+     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Left","Continuous"],uuid:(this.id+"_left")},this.classService.common);
+ 
     setTimeout(() =>
     this.classService.jsPlumbInstance.draggable(this.id,{
       drag:function(event){
+        jsPlumbInstance.revalidate(this.id);
         jsPlumbInstance.repaintEverything();
-      }
+      },zIndex: 1000
     }), 
     100);
 
@@ -92,8 +105,13 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
     //have to create local variables for jsplumb
     var dialog = this.dialog;
     var dialogRef = this.dialogRef;
-    var connectionType;;
+    var connectionType;
     var id = this.id;
+
+
+    //auto connect before binding connections
+    this.autoConnect();
+
 
     //no self connections
     jsPlumbInstance.bind("connection",function(){
@@ -157,6 +175,202 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
 
         
       });
+
+    
+  }
+
+  ngAfterViewChecked(){
+    var editBox = document.querySelector('.editor');
+    if(editBox != undefined){
+      var classBox = document.querySelector('.'+this.name);
+      var y = (<HTMLElement>classBox).style.top;
+      var x = (<HTMLElement>classBox).style.left;
+
+      //in case just created
+      var position_x = document.querySelector('.'+this.name).getBoundingClientRect().left;
+      var position_y = document.querySelector('.'+this.name).getBoundingClientRect().top;
+      //variables
+      if(this.edit == 'variables'){
+        //no drag (just created)
+        if(!y){
+
+          (<HTMLElement>editBox).style.top = (position_y - 10) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'methods'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 60) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'name'){
+
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y - 60) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 10) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      
+      (<HTMLElement>editBox).style.width = '230px';
+    }
+  }
+
+  //auto generate composition connection on class creation
+  autoConnect(){
+    var established_connections: string[][] = [];
+    var noMethods = (this.methods.length >= 1 && this.methods[0] != 'none') ? true : false;
+    var noVariables = (this.variables.length >= 1 && this.variables[0] != 'none') ? true : false;
+    if(noMethods){
+      for(var i = 0;i<this.methods.length;i++){
+        var methodType = this.methods[i].split(" ")[0];
+        var cls = this.classService.findClass(methodType);
+        if(cls != null){
+          var target = document.querySelector('.'+cls['name']);
+          var targetId = (<HTMLElement>target).id + '_top';
+          var notAlreadyConnected = true;
+          if(established_connections.length != 0){
+            for(var j = 0;j< established_connections.length;j++){
+              if(established_connections[j] == [this.id+"_bottom",targetId]){
+                notAlreadyConnected = false;
+                break;
+              }
+            }
+          }
+          else{
+            notAlreadyConnected = true;
+          }
+          if(notAlreadyConnected){
+            var connection = this.classService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            //composition
+            connection.removeAllOverlays();
+            connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
+            connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
+            connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+            established_connections.push([this.id+'_bottom',targetId]);
+          }
+          else{
+            continue;
+          }
+        }
+      }
+    }
+    if(noVariables){
+      for(var i = 0;i<this.variables.length;i++){
+        var variableType = this.variables[i].split(" ")[0];
+        var cls = this.classService.findClass(variableType);
+        if(cls != null){
+          var target = document.querySelector('.'+cls['name']);
+          var targetId = (<HTMLElement>target).id + '_top';
+          var notAlreadyConnected = true;
+          if(established_connections.length != 0){
+            for(var j = 0;j< established_connections.length;j++){
+              if(established_connections[j] == [this.id+"_bottom",targetId]){
+                notAlreadyConnected = false;
+                break;
+              }
+            }
+          }
+          else{
+            notAlreadyConnected = true;
+          }
+          if(notAlreadyConnected){
+            var connection = this.classService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            //composition
+            connection.removeAllOverlays();
+            connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
+            connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
+            connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+            established_connections.push([this.id+'_bottom',targetId]);
+          }
+          else{
+            continue;
+          }
+        }
+      }
+    }
+  }
+
+  pullVariables(){
+    this.editorVariables = this.variables.join(",");
+    this.edit = 'variables';
+    //this.classService.jsPlumbInstance.repaintEverything();
+  }
+
+  pullMethods(){
+    this.editorMethods = this.methods.join(",");
+    this.edit = 'methods';
+    //this.classService.jsPlumbInstance.repaintEverything();
+  }
+
+  pullName(){
+    this.editorName = this.name;
+    this.edit = 'name';
+  }
+
+  //editor change
+  editVariables(){
+    this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
+    this.updateValues();
+    this.edit = '';
+  }
+
+  editMethods(){
+    this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
+    this.updateValues();
+    this.edit = '';
+  }
+
+  editName(){
+    this.classService.connectionsUpdateWrapper();
+    //update connections with new name
+    var connections = this.classService.findClass(this.name)['connections'];
+    for(var i = 0;i<connections.length;i++){
+      var source = connections[i][0].split("_")[1];
+      var newSource = this.editorName +'_'+ source;
+      connections[i][0] = newSource;
+    }
+    this.id = this.id.replace(this.name,this.editorName);
+    this.classService.findClass(this.name)['name'] = this.editorName;
+    var element = document.querySelector('.'+this.name);
+    this.edit = '';
+    this.name = this.editorName;
+    this.classService.findClass(this.name)['connections'] = connections;
+
+    var id = this.id;
+    //reset id of endpoints on name change
+    this.classService.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
+      endpoint['elementId'] = id;
+    });
+    //re-add endpoints & connections
+    //this.classService.jsPlumbInstance.deleteEveryEndpoint({source: this.id});
+    //var element = document.querySelector('#'+this.id);
+    //this.classService.addEndpoints(this.id);
+    //this.classService.reinitializeConnections();
   }
 
   //tracker methods for ngFor
@@ -174,4 +388,19 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck {
     this.variables = cls['variables'];
     this.methods = cls['methods'];
   }
+
+  existenceCheck(){
+    if(this.editorName){
+      var cls = document.querySelector('.'+this.editorName);
+    }
+    if(cls == null){
+      this.exists = false;
+    }
+    else{
+      this.exists = true;
+    }
+  }
+
 }
+
+  

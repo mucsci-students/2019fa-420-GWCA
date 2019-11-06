@@ -17,10 +17,11 @@
 
 
 mat-toolbar{
-    color         : white;
+    color           : white;
     background-color: #673ab7;
     
 }
+
 
 mat-toolbar button{
     box-shadow     : none !important;

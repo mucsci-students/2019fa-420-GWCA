@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ViewEncapsulation, HostListener } from '@angular/core';
-import { NgTerminal} from 'ng-terminal';
 import { Terminal} from 'xterm';
 import { Router } from '@angular/router';
 import { ClassStorageService, fullClass } from '../class-storage.service';
@@ -19,7 +18,6 @@ export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
   @ViewChild('terminal',{static:true}) terminalDiv: ElementRef;
-  @ViewChild('term', { static: true }) child: NgTerminal;
 
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
@@ -87,6 +85,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     this.service.diagramToJSON();
     return this.service.jsonString;
   }
+
 
   //This prints the current diagram to the screen in a human-readable format
   //To "view" a diagram, you have to add a class through the gui first, as the CLI add is incomplete
