@@ -11,10 +11,12 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 })
 export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterViewChecked {
   name: string;
+  editorName: string;
   variables: string[];
   editorVariables: string;
   methods: string[];
   editorMethods: string;
+  exists: boolean;
   id: string;
   index: number = 0;
   dialogRef: MatDialogRef<DialogTestComponent>;
@@ -31,6 +33,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   }
 
   ngOnInit() {
+    this.exists = true;
     this.edit = '';
     for(var i = this.classService.allClasses.length-1;i>0;i--){
       var test = document.getElementsByClassName(this.classService.allClasses[i]['name']);
@@ -198,6 +201,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
         }
         else if(y && x){
+          //if dragged
           (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
           (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
         }
@@ -211,7 +215,23 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
         }
         else if(y && x){
+          //if dragged
           (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'name'){
+
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y - 60) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 10) + 'px';
           (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
         }
       }
@@ -293,7 +313,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
         }
       }
     }
-    console.log(this.classService.jsPlumbInstance.getAllConnections());
   }
 
   pullVariables(){
@@ -308,22 +327,37 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     //this.classService.jsPlumbInstance.repaintEverything();
   }
 
+  pullName(){
+    this.editorName = this.name;
+    this.edit = 'name';
+  }
+
   //editor change
   editVariables(){
     this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
     this.updateValues();
     this.edit = '';
-    // var box = document.querySelector('#'+this.id);
-    // var y = parseInt((<HTMLElement>box).style.top.split("p")[0]);
-    // console.log(y);
-    // (<HTMLElement>box).style.top = (y + 1) + 'px';
-    // this.classService.jsPlumbInstance.repaintEverything();
   }
 
   editMethods(){
     this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
     this.updateValues();
     this.edit = '';
+  }
+
+  editName(){
+    this.classService.connectionsUpdateWrapper();
+    //update connections with new name
+    var connections = this.classService.findClass(this.name)['connections'];
+    for(var i = 0;i<connections.length;i++){
+      var source = connections[i][0].split("_")[1];
+      var newSource = this.editorName +'_'+ source;
+      connections[i][0] = newSource;
+    }
+    this.classService.findClass(this.name)['name'] = this.editorName;
+    this.edit = '';
+    this.name = this.editorName;
+    this.classService.findClass(this.name)['connections'] = connections;
   }
 
   //tracker methods for ngFor
@@ -341,4 +375,19 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.variables = cls['variables'];
     this.methods = cls['methods'];
   }
+
+  existenceCheck(){
+    if(this.editorName){
+      var cls = document.querySelector('.'+this.editorName);
+    }
+    if(cls == null){
+      this.exists = false;
+    }
+    else{
+      this.exists = true;
+    }
+  }
+
 }
+
+  
