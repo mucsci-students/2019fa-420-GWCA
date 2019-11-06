@@ -22,7 +22,6 @@ import { MatInputModule, MatSelectModule, MatMenuModule, MatToolbarModule, MatCh
 import { MatIconModule } from '@angular/material/icon';
 
 import { CliComponent } from './cli/cli.component';
-import { NgTerminalModule, NgTerminalComponent } from 'ng-terminal';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
@@ -50,11 +49,11 @@ import { ObserversModule } from '@angular/cdk/observers';
     FormsModule,
     DragDropModule,
     ObserversModule,
-    NgTerminalModule,
     MatMenuModule,
     MatToolbarModule,
     MatChipsModule,
     MatCardModule,
+    MatIconModule
   ],
   entryComponents: [
     DialogTestComponent,
@@ -65,7 +64,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     ClassAreaComponent,
     ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  exports: [ NgTerminalComponent ]
+  schemas: [],
+  exports: [  ]
 })
 export class AppModule { }

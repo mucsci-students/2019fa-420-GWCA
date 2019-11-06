@@ -34,8 +34,10 @@ export class DialogTestComponent implements OnInit {
     this.choice = "";
   
     //gets class names to choose
-    this.classNames = document.querySelectorAll("h2");
-    }
+    //aggregation for realizing 
+    this.classNames = document.querySelectorAll("mat-card-title");
+  }
+
 
 
   search(Name: string){
