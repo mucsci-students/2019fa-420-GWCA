@@ -3,7 +3,6 @@ import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 
-
 @Component({
   selector: 'app-class-box',
   templateUrl: './class-box.component.html',
@@ -26,7 +25,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   edit: string;
 
 
-  constructor(public classService: ClassStorageService, public dialog: MatDialog,
+  constructor(public service: ClassStorageService, public dialog: MatDialog,
     private iterableDiffs: IterableDiffers) { 
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
@@ -35,18 +34,18 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   ngOnInit() {
     this.exists = true;
     this.edit = '';
-    for(var i = this.classService.allClasses.length-1;i>0;i--){
-      var test = document.getElementsByClassName(this.classService.allClasses[i]['name']);
+    for(var i = this.service.allClasses.length-1;i>0;i--){
+      var test = document.getElementsByClassName(this.service.allClasses[i]['name']);
       if(test.length == 0){
         this.index = i;
         break;
       }
     }
-    this.name = this.classService.allClasses[this.index]['name'];
-    this.id = this.name + "_" + this.classService.instance;
-    this.variables = this.classService.allClasses[this.index]['variables'];
-    this.methods = this.classService.allClasses[this.index]['methods'];
-    this.classService.instance = this.classService.instance + 1;
+    this.name = this.service.allClasses[this.index]['name'];
+    this.id = this.name + "_" + this.service.instance;
+    this.variables = this.service.allClasses[this.index]['variables'];
+    this.methods = this.service.allClasses[this.index]['methods'];
+    this.service.instance = this.service.instance + 1;
 
 
 
@@ -54,7 +53,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
   
   ngDoCheck(){
-    let changes = this.iterableDiffer.diff(this.classService.allClasses);
+    let changes = this.iterableDiffer.diff(this.service.allClasses);
     if(changes){
         changes.forEachAddedItem(r =>
            this.updateValues()
@@ -64,7 +63,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   }
 
   ngAfterViewInit(){
-    var jsPlumbInstance = this.classService.jsPlumbInstance;
+    var jsPlumbInstance = this.service.jsPlumbInstance;
        
 
      //get all the dynamically created elements
@@ -74,29 +73,51 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
      //keep track of the top shift value
      var topShift  = 20;
      for(var i = 0;i<boxes.length;i++){
-      if(this.classService.leftShift > 900){
-        this.classService.leftShift = 20;
+      if(this.service.leftShift > 900){
+        this.service.leftShift = 20;
         topShift = topShift + 300;
       }
-        (<HTMLElement>boxes[i]).style.left = this.classService.leftShift + 'px';
+        (<HTMLElement>boxes[i]).style.left = this.service.leftShift + 'px';
         (<HTMLElement>boxes[i]).style.top = topShift + 'px';
-        this.classService.leftShift = this.classService.leftShift + 300;
+        this.service.leftShift = this.service.leftShift + 300;
      }
 
-    var jsPlumbInstance = this.classService.jsPlumbInstance;
+    var jsPlumbInstance = this.service.jsPlumbInstance;
     //note this is kind of a hacky solution...
 
-    this.classService.addEndpoints(this.id);
+    this.service.addEndpoints(this.id);
 
-     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Right","Continuous"],uuid:(this.id+"_right")},this.classService.common);
-     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Top","Continuous"],uuid:(this.id+"_top")},this.classService.common);
-     //this.classService.jsPlumbInstance.addEndpoint(this.id,{anchor: ["Left","Continuous"],uuid:(this.id+"_left")},this.classService.common);
+    var id = this.id;
+
  
     setTimeout(() =>
-    this.classService.jsPlumbInstance.draggable(this.id,{
+    this.service.jsPlumbInstance.draggable(this.id,{
       drag:function(event){
-        jsPlumbInstance.revalidate(this.id);
+        jsPlumbInstance.revalidate(id);
         jsPlumbInstance.repaintEverything();
+        //line overlap algorithm
+        var sourceConnections = jsPlumbInstance.getConnections({source: id});
+        // var targetConnections = jsPlumbInstance.getConnections({target: id});
+        if(sourceConnections.length != 0){
+          for(var i =0;i<sourceConnections.length;i++){
+            var connection = sourceConnections[i]['canvas'].getBoundingClientRect();
+            var classBoxes = document.querySelectorAll('.class-box');
+            for(var j = 0;j<classBoxes.length;j++){
+              var classBox = classBoxes[j].getBoundingClientRect();
+              var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
+              if(!overlap){
+                //console.log('overlap');
+                //(<HTMLElement>classBoxes[j]).style.left = (connection.left + connection.width + 20) + 'px';
+                (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
+                jsPlumbInstance.repaintEverything();
+              }
+            }
+          }
+        }
+        // if(targetConnections.length != 0){
+        //   console.log(targetConnections);
+        // }
+
       },zIndex: 1000
     }), 
     100);
@@ -106,7 +127,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     var dialog = this.dialog;
     var dialogRef = this.dialogRef;
     var connectionType;
-    var id = this.id;
 
 
     //auto connect before binding connections
@@ -173,7 +193,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           }
         }
 
-        
       });
 
     
@@ -248,7 +267,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     if(noMethods){
       for(var i = 0;i<this.methods.length;i++){
         var methodType = this.methods[i].split(" ")[0];
-        var cls = this.classService.findClass(methodType);
+        var cls = this.service.findClass(methodType);
         if(cls != null){
           var target = document.querySelector('.'+cls['name']);
           var targetId = (<HTMLElement>target).id + '_top';
@@ -265,7 +284,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
             notAlreadyConnected = true;
           }
           if(notAlreadyConnected){
-            var connection = this.classService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            var connection = this.service.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
             //composition
             connection.removeAllOverlays();
             connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
@@ -282,7 +301,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     if(noVariables){
       for(var i = 0;i<this.variables.length;i++){
         var variableType = this.variables[i].split(" ")[0];
-        var cls = this.classService.findClass(variableType);
+        var cls = this.service.findClass(variableType);
         if(cls != null){
           var target = document.querySelector('.'+cls['name']);
           var targetId = (<HTMLElement>target).id + '_top';
@@ -299,7 +318,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
             notAlreadyConnected = true;
           }
           if(notAlreadyConnected){
-            var connection = this.classService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            var connection = this.service.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
             //composition
             connection.removeAllOverlays();
             connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
@@ -334,36 +353,36 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
   //editor change
   editVariables(){
-    this.classService.findClass(this.name)['variables'] = this.editorVariables.split(",");
+    this.service.findClass(this.name)['variables'] = this.editorVariables.split(",");
     this.updateValues();
     this.edit = '';
   }
 
   editMethods(){
-    this.classService.findClass(this.name)['methods'] = this.editorMethods.split(",");
+    this.service.findClass(this.name)['methods'] = this.editorMethods.split(",");
     this.updateValues();
     this.edit = '';
   }
 
   editName(){
-    this.classService.connectionsUpdateWrapper();
+    this.service.connectionsUpdateWrapper();
     //update connections with new name
-    var connections = this.classService.findClass(this.name)['connections'];
+    var connections = this.service.findClass(this.name)['connections'];
     for(var i = 0;i<connections.length;i++){
       var source = connections[i][0].split("_")[1];
       var newSource = this.editorName +'_'+ source;
       connections[i][0] = newSource;
     }
     this.id = this.id.replace(this.name,this.editorName);
-    this.classService.findClass(this.name)['name'] = this.editorName;
+    this.service.findClass(this.name)['name'] = this.editorName;
     var element = document.querySelector('.'+this.name);
     this.edit = '';
     this.name = this.editorName;
-    this.classService.findClass(this.name)['connections'] = connections;
+    this.service.findClass(this.name)['connections'] = connections;
 
     var id = this.id;
     //reset id of endpoints on name change
-    this.classService.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
+    this.service.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
       endpoint['elementId'] = id;
     });
     //re-add endpoints & connections
@@ -384,7 +403,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
   //update values on edit
   updateValues(){
-    var cls = this.classService.findClass(this.name);
+    var cls = this.service.findClass(this.name);
     this.variables = cls['variables'];
     this.methods = cls['methods'];
   }
