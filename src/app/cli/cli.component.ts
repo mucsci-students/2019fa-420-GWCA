@@ -54,6 +54,8 @@ export class CliComponent implements OnInit, AfterViewInit {
     this.input = '';
     this.term = new Terminal();
     this.term.open(this.terminalDiv.nativeElement);
+    this.term.write('\x1b[1;35m' + "Welcome To UML-CLI! \r\n" + '\x1b[1;37m');
+    this.term.write(this.help());
     this.term.write('\x1b[1;37m' + '\r\n>');
   }
 
@@ -75,7 +77,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         case "view": output = this.viewDiagram(); break;
         case "export": output = "copy this: " + this.exportDiagram(); break;
         case "clone": output = this.cloneClass(line); break;
-        default: output = '\x1b[1;31m' + "Error: Invalid Command. Type \"help\" for help"; break;
+        default: output = '\x1b[1;31m' + "Error: Invalid Command \"" + input[0] + "\". Type \"help\" for help"; break;
       }
       return output;
   }
@@ -124,7 +126,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
     }
     else{
-      return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tadd <class_name>";
+      return '\x1b[1;33m' + "Format:\tadd <class_name>";
     }
   }
 
@@ -142,7 +144,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
     }
     else{
-      return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tremove <class_name>";
+      return '\x1b[1;33m' + "Format:\tremove <class_name>";
     }
   }
 
@@ -165,7 +167,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     var bracketLine = line.split("[");
     console.log("bl length: " + bracketLine.length);
     if(choppedLine.length < 3 || bracketLine.length < 3){
-      return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tedit <class_name> [var1,var2,...] [method1(),method2,...]";
+      return '\x1b[1;33m' + "Format:\tedit <class_name> [var1,var2,...] [method1(),method2(),...]";
     }
     else{
       var inputVariables = bracketLine[1]
@@ -235,7 +237,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     var choppedLine = line.split(" ");
     console.log(choppedLine[2]);
     if(choppedLine.length < 2){
-      return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tclone <class_name> <clone_name>";
+      return '\x1b[1;33m' + "Format:\tclone <class_name> <clone_name>";
     }
     else{
       this.service.createNew(choppedLine[2], targetClass.methods, targetClass.variables);
