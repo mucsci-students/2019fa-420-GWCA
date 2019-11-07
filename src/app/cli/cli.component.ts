@@ -12,6 +12,7 @@ import { ClassStorageService } from '../class-storage.service';
     ],
   encapsulation: ViewEncapsulation.None,
 })
+
 export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
@@ -23,14 +24,14 @@ export class CliComponent implements OnInit, AfterViewInit {
     if(event.keyCode === 13){
       var output = this.interpret(this.input);
       if(output == ""){
-        this.term.clear();
+        this.term.reset();
       }
       else{
         this.term.write('\r\n');
         this.term.writeln(output);
       }
       this.input = '';
-      this.term.write('\r\n$');
+      this.term.write('> ');
     }
     else if(event.keyCode === 8){
       this.term.write('\b \b');
@@ -53,15 +54,15 @@ export class CliComponent implements OnInit, AfterViewInit {
     this.input = '';
     this.term = new Terminal;
     this.term.open(this.terminalDiv.nativeElement);
-    this.term.write('\r\n$');
-    
+    this.term.write('> ');
+
 
 
 
   }
 
   ngAfterViewInit(){
-    
+
       // this.child.write("Press ENTER to begin: \r\n");
       // this.child.keyEventInput.subscribe(e => {
       //   console.log('keyboard event:' + e.domEvent.keyCode + ', ' + e.key);
@@ -113,6 +114,12 @@ export class CliComponent implements OnInit, AfterViewInit {
     return this.service.jsonString;
   }
 
+  //this imports the JSON file stored on the users machine.
+  importDiagram(){
+
+  }
+
+
   //This prints the current diagram to the screen in a human-readable format
   //To "view" a diagram, you have to add a class through the gui first, as the CLI add is incomplete
   viewDiagram(){
@@ -128,7 +135,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
     return diagram;
   }
-  
+
   //this function prints out our help message
   help(){
     return `    Commands:\r

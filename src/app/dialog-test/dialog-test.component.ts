@@ -21,18 +21,18 @@ export class DialogTestComponent implements OnInit {
   //export
   //import value
   diagram: string;
-  //exportString: 
+  //exportString:
   connectionType: string;
   //boolean to check to see if class already exists
   exists: boolean;
 
-  constructor(public service: ClassStorageService) { 
+  constructor(public service: ClassStorageService) {
     this.exists = true;
   }
 
   ngOnInit() {
     this.choice = "";
-  
+
     //gets class names to choose
     this.classNames = document.querySelectorAll("h2");
     }
@@ -57,22 +57,22 @@ export class DialogTestComponent implements OnInit {
     }
   }
 
-  
+
 
 
 
   updateClass(){
 
     //remove original
-    
-    
+
+
     //update the back-end
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
-    
+
     //wrapper for re-inializing connections & endpoints
     this.service.reinitializeConnections();
-    
-    
+
+
   }
 
   replaceUndefined(){
@@ -92,6 +92,8 @@ export class DialogTestComponent implements OnInit {
     this.service.createNew(this.className,this.methods.split(","),this.variables.split(","));
     this.exists = true;
   }
+
+
 
   //wrapper for the add button functionality
   addButton(){
@@ -122,5 +124,5 @@ export class DialogTestComponent implements OnInit {
 
   updateStoredDiagram(){
     this.service.diagramToJSON();
-  }  
+  }
 }

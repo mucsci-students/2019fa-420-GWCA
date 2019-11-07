@@ -26,6 +26,7 @@ import { NgTerminalModule, NgTerminalComponent } from 'ng-terminal';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
+import { FileUploadComponent } from './file-upload/file-upload.component';
 
 
 @NgModule({
@@ -35,6 +36,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     ClassBoxComponent,
     ClassAreaComponent,
     CliComponent,
+    FileUploadComponent,
 
   ],
   imports: [
