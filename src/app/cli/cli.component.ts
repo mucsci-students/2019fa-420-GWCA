@@ -114,7 +114,7 @@ export class CliComponent implements OnInit, AfterViewInit {
   addClass(line: string){
     var name = this.grabClassNameFromInput(line);
     if (name){
-      var additon = this.selectClass(name);
+      var additon = this.service.findClass(name);
       if(additon){
         return '\x1b[1;31m' + "Error: Class \"" + name + "\" already exists.";
       }
@@ -132,7 +132,7 @@ export class CliComponent implements OnInit, AfterViewInit {
   removeClass(line: string){
     var targetName = this.grabClassNameFromInput(line);
     if (targetName){
-      var target = this.selectClass(targetName);
+      var target = this.service.findClass(targetName);
       if(target){
         this.service.removeClassByIndex(this.service.allClasses.indexOf(target));
         return '\x1b[1;32m' + "Class \"" + targetName + "\" has been deleted";
@@ -145,20 +145,20 @@ export class CliComponent implements OnInit, AfterViewInit {
       return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tremove <class_name>";
     }
   }
-
-  //this grabs a class by name and returns it.
-  selectClass(name: string){
-    return this.service.findClass(name);
-  }
+  selectClass
+  // //this grabs a class by name and returns it.
+  // selectClass(name: string){
+  //   return this.service.findClass(name);
+  // }
 
   //this takes in a class name, and what you want
   editClass(line: string){
     var targetName = this.grabClassNameFromInput(line);
-    var targetClass = this.selectClass(targetName);
+    var targetClass = this.service.findClass(targetName);
     var addedClass = false;
     if(!targetClass){
       this.addClass(line);
-      var targetClass = this.selectClass(targetName);
+      var targetClass = this.service.findClass(targetName);
       addedClass = true;
     }
     var choppedLine = line.split(" ");
@@ -231,10 +231,10 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   cloneClass(line: string){
     var targetName = this.grabClassNameFromInput(line);
-    var targetClass = this.selectClass(targetName);
+    var targetClass = this.service.findClass(targetName);
     var choppedLine = line.split(" ");
     console.log(choppedLine[2]);
-    if(choppedLine.length < 2){
+    if(choppedLine.length < 3){
       return '\x1b[1;31m' + "Error:\tInvalid Syntax." + '\x1b[1;33m' + "\n\rFormat:\tclone <class_name> <clone_name>";
     }
     else{
