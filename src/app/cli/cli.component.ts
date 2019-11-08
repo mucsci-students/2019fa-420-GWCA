@@ -50,10 +50,15 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.input = '';
-    this.term = new Terminal();
+    this.term = new Terminal({ 
+      fontSize: 48,
+      fontFamily: 'OCR A Std, monospace',
+      cursorBlink: true,
+      cursorStyle: "block",
+      rightClickSelectsWord: true});
     this.term.open(this.terminalDiv.nativeElement);
-    this.term.write('\x1b[1;35m' + "Welcome To UML-CLI! \r\n" + '\x1b[1;37m');
-    this.term.write(this.help());
+    this.term.write('\x1b[1;35m' + "\t\t\t\tWelcome To UML-CLI! \r\n" + '\x1b[1;37m');
+    this.term.write(this.fullHelp());
     this.term.write('\x1b[1;37m' + '\r\n>');
   }
 
@@ -61,50 +66,106 @@ export class CliComponent implements OnInit, AfterViewInit {
 
 
   //this function taken in our input line, grabs the char that is a command, and runs it's corresponding code
-  interpret(line : string, currTerm: Terminal){
-    var output : string = "";
+  interpret(line: string, currTerm: Terminal){
+    var output: string = "";
     var input = line.replace(">","").split(" ");
     switch(input[0]){
-      case "help": output = this.help(); break;
+      case "help": output = this.fullHelp(); break;
+      case "man": output = this.man(input[1]); break;
       case "quit": this.router.navigate(['']); break;
-      case "add": output = this.addClass(line); break;
+      case "exit": this.router.navigate(['']); break;
+      case "add": output = this.add(line); break;
       case "edit": output = this.editClass(line); break;
       case "remove": output = this.removeClass(line); break;
       case "clear": output = ""; break;
       case "view": output = this.viewDiagram(); break;
       case "export": output = "copy this: " + this.exportDiagram(); break;
       case "clone": output = this.cloneClass(line); break;
-      default: output = '\x1b[1;31m' + "Error: Invalid Command \"" + input[0] + "\". Type \"help\" for help"; break;
+      case "": output = '\x1b[1;31m' + "Error: Invalid Command. Type \"help\" for commands"; break;
+      default: output = '\x1b[1;31m' + "Error: Invalid Command \'" + input[0] + "\' Type \"help\" for commands"; break;
     }
     return output;
   }
 
   //this function prints out our help message
-  help(){
-    return `    Commands:\r
-    ---------\r
-    add    -> add a class:\r
-    clear  -> clear the screen\r
-    clone  -> clone a class\r
-    edit   -> edit a class\r
-    export -> export diagram\r
-    help   -> print help message\r
-    quit   -> quit and return to GUI\r
-    remove -> remove a class\r
-    view   -> view diagram\r`
+  man(command: string){
+    var manmsg: string = "";
+    switch(command){
+      case "help":  
+        manmsg = '\x1b[1;33m' + "You may need more help than I can offer..."; 
+        break;
+      case "quit":  
+        manmsg = '\x1b[1;33m' + "Format:\tquit"; 
+        break;
+      case "add":   
+        manmsg = '\x1b[1;33m' + `Formats:\n\r  Classes:   add <class_name>\n\r  Variables: add -v <class_name> <var_name>\n\r  Methods:   add -m <class_name> <method_name>`; break;
+      case "edit":  manmsg = '\x1b[1;33m' + "Format:\tedit <class_name> [var1,var2,...] [method1(),method2(),...]"; break;
+      case "remove": manmsg = '\x1b[1;33m' + "Format:\tremove <class_name>"; break;
+      case "clear": manmsg = '\x1b[1;33m' + "Format:\tclear"; break;
+      case "view":  manmsg = '\x1b[1;33m' + "Format:\tview"; break;
+      case "export": manmsg = '\x1b[1;33m' + "Format:\texport"; break;
+      default:  manmsg = '\x1b[1;33m' + "Format:\tman <command>"; break;
+    }
+    return manmsg;
+  }
+
+  fullHelp(){
+    return `Commands:\r
+---------\r
+add    -> add a class or attribute\r
+clear  -> clear the screen\r
+clone  -> clone a class\r
+edit   -> edit a class\r
+export -> export diagram\r
+help   -> print help message\r
+man    -> view a command's manual page\r
+quit   -> quit and return to GUI\r
+remove -> remove a class\r
+view   -> view diagram\r
+\x1b[1;33mtype "help <command>" for further info\r`;
   }
 
   //  this function adds a blank class with the given name.
-  addClass(line: string){
-    var name = this.grabClassNameFromInput(line);
+  add(line: string){
+    var command = line.split(" ");
+    var name = command[1];
     if (name){
-      var additon = this.service.findClass(name);
-      if(additon){
-        return '\x1b[1;31m' + "Error: Class \"" + name + "\" already exists.";
+      if(name == "-v" || name == "-m"){
+        var addition = this.service.findClass(command[2]);
+        if(addition){
+            if(name == "-v" && command.length == 5){
+              var varName = command[3] + " " + command[4];
+              if(addition.variables[0] == "none"){
+                addition.variables.pop();
+              }
+              addition.variables.push(varName);
+              return '\x1b[1;32m' + "Variable \"" + varName + "\" added to class \"" + name + "\" successfully."
+            }
+            else if(name == "-v" && command.length != 5){
+              return '\x1b[1;33m' + "Format:\tadd -v <class_name> <var_name>";
+            }
+            else if(name == "-m" && command.length == 4){
+             var methodName = command[3];
+             if(addition.methods[0] == "none"){
+              addition.methods.pop();
+            }
+            addition.methods.push(methodName);
+            return '\x1b[1;32m' + "Method \"" + methodName + "\" added to class \"" + name + "\" successfully."
+            }
+          }
+          else{
+            return '\x1b[1;31m' + "Error: Class \"" + name + "\" cannot be found.";
+          }
       }
       else{
-        this.service.createNew(name, ["none"], ["none"]);
-        return '\x1b[1;32m' + "New Blank class \"" + name + "\" added! Use \'edit " + name + "\...' to configure attributes.";
+        var addition = this.service.findClass(name);
+        if(addition){
+          return '\x1b[1;31m' + "Error: Class \"" + name + "\" already exists.";
+        }
+        else{
+          this.service.createNew(name, ["none"], ["none"]);
+          return '\x1b[1;32m' + "New Blank class \"" + name + "\" added!";
+        }
       }
     }
     else{
@@ -118,7 +179,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     var targetClass = this.service.findClass(targetName);
     var addedClass = false;
     if(!targetClass){
-      this.addClass(line);
+      this.add(line);
       var targetClass = this.service.findClass(targetName);
       addedClass = true;
     }
@@ -174,6 +235,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         diagram += "Class:\t\t" + this.service.allClasses[i].name + "\r\n";
         diagram += "Methods:\t" + this.service.allClasses[i].methods.toString().replace(regex, " ") + "\r\n";
         diagram += "Variables:\t" + this.service.allClasses[i].variables.toString().replace(regex, " ") + "\r\n";
+        diagram += "Connections:\t" + this.service.allClasses[i].connections.toString().replace(regex, " ") + "\r\n";
         diagram += "---------------------------------------------------\r\n";
         diagram += "\n";
     }
