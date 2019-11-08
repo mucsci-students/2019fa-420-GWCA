@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ArrayType, collectExternalReferences } from '@angular/compiler';
 import { getMatTooltipInvalidPositionError } from '@angular/material';
-import { delay } from 'q';
 
 @Component({
   selector: 'app-cli',
@@ -57,7 +56,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       cursorStyle: "block",
       rightClickSelectsWord: true});
     this.term.open(this.terminalDiv.nativeElement);
-    this.term.write('\x1b[1;35m' + "\t\t\t\tWelcome To UML-CLI! \r\n" + '\x1b[1;37m');
+    this.term.write('\x1b[1;35m' + "\t\t\t\tWelcome To GNUML! \r\n" + '\x1b[1;37m');
     this.term.write(this.fullHelp());
     this.term.write('\x1b[1;37m' + '\r\n>');
   }
@@ -81,6 +80,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       case "view": output = this.viewDiagram(); break;
       case "export": output = "copy this: " + this.exportDiagram(); break;
       case "clone": output = this.cloneClass(line); break;
+      case "neofetch": output = this.neofetch(); break;
       case "": output = '\x1b[1;31m' + "Error: Invalid Command. Type \"help\" for commands"; break;
       default: output = '\x1b[1;31m' + "Error: Invalid Command \'" + input[0] + "\' Type \"help\" for commands"; break;
     }
@@ -104,24 +104,26 @@ export class CliComponent implements OnInit, AfterViewInit {
       case "clear": manmsg = '\x1b[1;33m' + "Format:\tclear"; break;
       case "view":  manmsg = '\x1b[1;33m' + "Format:\tview"; break;
       case "export": manmsg = '\x1b[1;33m' + "Format:\texport"; break;
+      case "neofetch": manmsg = '\x1b[1;33m' + "Format:\tneofetch"; break;
       default:  manmsg = '\x1b[1;33m' + "Format:\tman <command>"; break;
     }
     return manmsg;
   }
 
   fullHelp(){
-    return `Commands:\r
----------\r
-add    -> add a class or attribute\r
-clear  -> clear the screen\r
-clone  -> clone a class\r
-edit   -> edit a class\r
-export -> export diagram\r
-help   -> print help message\r
-man    -> view a command's manual page\r
-quit   -> quit and return to GUI\r
-remove -> remove a class\r
-view   -> view diagram\r
+    return ` Commands:\r
+ ---------\r
+ add      -> add a class or attribute\r
+ clear    -> clear the screen\r
+ clone    -> clone a class\r
+ edit     -> edit a class\r
+ export   -> export diagram\r
+ help     -> print help message\r
+ man      -> view a command's manual page\r
+ neofetch -> view system information\r
+ quit     -> quit and return to GUI\r
+ remove   -> remove a class\r
+ view     -> view diagram\r
 \x1b[1;33mtype "help <command>" for further info\r`;
   }
 
@@ -286,6 +288,24 @@ view   -> view diagram\r
     }
   }
 
+  neofetch(){
+    return '\x1b[1;31m' + `⣿⣿⣿⣿⣿⣿⣿⡿⢟⣋⣭⣥⣭⣭⣍⡉⠉⠙⠛⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿\r
+⣿⣿⣿⣿⣿⡏⠁⠠⠶⠛⠻⠿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠉⠻⢿⣿⣿⣿⣿⣿\r
+⣿⣿⣿⣿⠟⠄⢀⡴⢊⣴⣶⣶⣾⣿⣿⣿⣿⢿⡄⠄⠄⠄⠄⠄⠄⠙⢿⣿⣿⣿\r
+⣿⣿⡿⠁⠄⠙⡟⠁⣾⣿⣿⣿⣿⣿⣿⣿⣿⣎⠃⠄⠄⠄⠄⠄⠄⠄⠈⢻⣿⣿\r
+⣿⡟⠄⠄⠄⠄⡇⠰⠟⠛⠛⠿⠿⠟⢋⢉⠍⢩⣠⡀⠄⠄⠄⠄⠄⠄⠄⠄⢹⣿\r
+⣿⠁⠄⠄⠄⠄⠰⠁⣑⣬⣤⡀⣾⣦⣶⣾⣖⣼⣿⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⢿\r
+⡏⠄⠄⠄⠄⠄⠄⠄⠨⣿⠟⠰⠻⠿⣣⡙⠿⣿⠋⠄⢀⡀⣀⠄⣀⣀⢀⣀⣀⢸\r
+⡇⠄⠄⠄⠄⠄⠄⠄⠄⣠⠄⠚⠛⠉⠭⣉⢁⣿⠄⢀⡿⢾⣅⢸⡗⠂⢿⣀⡀⢸\r
+⡇⠄⠄⠄⠄⠄⠄⠄⠄⠘⢧⣄⠄⣻⣿⣿⣾⠟⣀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸\r
+⣿⠄⠄⠄⠄⠄⠄⠄⠄⢠⡀⠄⠄⣿⣿⠟⢁⣴⣿⢸⡄⠄⢦⣤⣤⣤⣤⣄⡀⣼\r
+⣿⣧⠄⠄⠄⠄⠄⠄⢠⡸⣿⠒⠄⠈⠛⠄⠁⢹⡟⣾⡇⠄⠈⢿⣿⣿⣿⣿⣿⣿\r
+⣿⣿⣧⣠⣴⣦⠄⠄⢸⣷⡹⣧⣖⡔⠄⠱⣮⣻⣷⣿⣿⠄⠄⠘⣿⣿⣿⣿⣿⣿\r
+⣿⣿⣿⣿⣿⡇⠄⠄⠸⠿⠿⠚⠛⠁⠂⠄⠉⠉⡅⢰⡆⢰⡄⠄⠘⣿⣿⣿⣿⣿\r
+⣿⣿⣿⣿⣿⣷⣤⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣿⠄⣷⠘⣧⣠⣾⣿⣿⣿⣿⣿\r
+⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣄⣀⣀⡀⠄⣀⣀⣹⣦⣽⣾⣿⣿⣿⣿⣿⣿⣿⣿\r` + '\x1b[1;35m' + `\nGNUML COLONEL VERSION:\t3.0.0\n\r`
+
+  }
   //  this updates the variables of the passed in class with the passed in values
   updateVariables(target: fullClass, values: string){
     var valsArray = values.split(",");
