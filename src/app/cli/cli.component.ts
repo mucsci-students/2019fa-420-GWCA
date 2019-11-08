@@ -45,8 +45,6 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-
   constructor(private router : Router, public service : ClassStorageService ) {
    }
 
@@ -59,64 +57,48 @@ export class CliComponent implements OnInit, AfterViewInit {
     this.term.write('\x1b[1;37m' + '\r\n>');
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit(){}
+
+
+  //this function taken in our input line, grabs the char that is a command, and runs it's corresponding code
+  interpret(line : string, currTerm: Terminal){
+    var output : string = "";
+    var input = line.replace(">","").split(" ");
+    switch(input[0]){
+      case "help": output = this.help(); break;
+      case "quit": this.router.navigate(['']); break;
+      case "add": output = this.addClass(line); break;
+      case "edit": output = this.editClass(line); break;
+      case "remove": output = this.removeClass(line); break;
+      case "clear": output = ""; break;
+      case "view": output = this.viewDiagram(); break;
+      case "export": output = "copy this: " + this.exportDiagram(); break;
+      case "clone": output = this.cloneClass(line); break;
+      default: output = '\x1b[1;31m' + "Error: Invalid Command \"" + input[0] + "\". Type \"help\" for help"; break;
     }
-
-
-    //this function taken in our input line, grabs the char that is a command, and runs it's corresponding code
-    interpret(line : string, currTerm: Terminal){
-      var output : string = "";
-      var input = line.replace(">","").split(" ");
-      switch(input[0]){
-        case "help": output = this.help(); break;
-        case "quit": this.router.navigate(['']); break;
-        case "add": output = this.addClass(line); break;
-        case "edit": output = this.editClass(line); break;
-        case "remove": output = this.removeClass(line); break;
-        case "clear": output = ""; break;
-        case "view": output = this.viewDiagram(); break;
-        case "export": output = "copy this: " + this.exportDiagram(); break;
-        case "clone": output = this.cloneClass(line); break;
-        default: output = '\x1b[1;31m' + "Error: Invalid Command \"" + input[0] + "\". Type \"help\" for help"; break;
-      }
-      return output;
+    return output;
   }
 
-  //this outputs the current JSON to the terminal screen
-  exportDiagram(){
-    this.service.diagramToJSON();
-    return this.service.jsonString;
+  //this function prints out our help message
+  help(){
+    return `    Commands:\r
+    ---------\r
+    add    -> add a class:\r
+    clear  -> clear the screen\r
+    clone  -> clone a class\r
+    edit   -> edit a class\r
+    export -> export diagram\r
+    help   -> print help message\r
+    quit   -> quit and return to GUI\r
+    remove -> remove a class\r
+    view   -> view diagram\r`
   }
 
-
-  //This prints the current diagram to the screen in a human-readable format
-  //To "view" a diagram, you have to add a class through the gui first, as the CLI add is incomplete
-  viewDiagram(){
-    var diagram:string = '\x1b[1;36m';
-    let regex = /\n/gi
-    for(var i = 0; i < this.service.allClasses.length; i++){
-        diagram += "---------------------------------------------------\r\n";
-        diagram += "Class:\t\t" + this.service.allClasses[i].name + "\r\n";
-        diagram += "Methods:\t" + this.service.allClasses[i].methods.toString().replace(regex, " ") + "\r\n";
-        diagram += "Variables:\t" + this.service.allClasses[i].variables.toString().replace(regex, " ") + "\r\n";
-        diagram += "---------------------------------------------------\r\n";
-        diagram += "\n";
-    }
-    return diagram;
-  }
-
-  //this function take in the input line, returns a class name for methods that require it.
-  grabClassNameFromInput(line: string){
-    var splitLine = line.split(" ");
-    var name = splitLine[1];
-    return name;
-  }
-
-  //this function adds a blank class with the given name.
+  //  this function adds a blank class with the given name.
   addClass(line: string){
     var name = this.grabClassNameFromInput(line);
     if (name){
-      var additon = this.selectClass(name);
+      var additon = this.service.findClass(name);
       if(additon){
         return '\x1b[1;31m' + "Error: Class \"" + name + "\" already exists.";
       }
@@ -130,37 +112,14 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
-  //this funtion removes a class with the given name.
-  removeClass(line: string){
-    var targetName = this.grabClassNameFromInput(line);
-    if (targetName){
-      var target = this.selectClass(targetName);
-      if(target){
-        this.service.removeClassByIndex(this.service.allClasses.indexOf(target));
-        return '\x1b[1;32m' + "Class \"" + targetName + "\" has been deleted";
-      }
-      else{
-        return '\x1b[1;31m' + "Error: Class \"" + targetName + "\" not found. Type 'view' to view classes.";
-      }
-    }
-    else{
-      return '\x1b[1;33m' + "Format:\tremove <class_name>";
-    }
-  }
-
-  //this grabs a class by name and returns it.
-  selectClass(name: string){
-    return this.service.findClass(name);
-  }
-
-  //this takes in a class name, and what you want
+  //  this takes in a class name, and what you want
   editClass(line: string){
     var targetName = this.grabClassNameFromInput(line);
-    var targetClass = this.selectClass(targetName);
+    var targetClass = this.service.findClass(targetName);
     var addedClass = false;
     if(!targetClass){
       this.addClass(line);
-      var targetClass = this.selectClass(targetName);
+      var targetClass = this.service.findClass(targetName);
       addedClass = true;
     }
     var choppedLine = line.split(" ");
@@ -188,7 +147,70 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   }
 
-  //this is a helper for edit. It updates the attribute of a given class with the passed in value.
+  //  this funtion removes a class with the given name.
+  removeClass(line: string){
+    var targetName = this.grabClassNameFromInput(line);
+    if (targetName){
+      var target = this.service.findClass(targetName);
+      if(target){
+        this.service.removeClassByIndex(this.service.allClasses.indexOf(target));
+        return '\x1b[1;32m' + "Class \"" + targetName + "\" has been deleted";
+      }
+      else{
+        return '\x1b[1;31m' + "Error: Class \"" + targetName + "\" not found. Type 'view' to view classes.";
+      }
+    }
+    else{
+      return '\x1b[1;33m' + "Format:\tremove <class_name>";
+    }
+  }
+
+  //  This prints the current diagram to the screen in an (arguably) human-readable format.
+  viewDiagram(){
+    var diagram:string = '\x1b[1;36m';
+    let regex = /\n/gi
+    for(var i = 0; i < this.service.allClasses.length; i++){
+        diagram += "---------------------------------------------------\r\n";
+        diagram += "Class:\t\t" + this.service.allClasses[i].name + "\r\n";
+        diagram += "Methods:\t" + this.service.allClasses[i].methods.toString().replace(regex, " ") + "\r\n";
+        diagram += "Variables:\t" + this.service.allClasses[i].variables.toString().replace(regex, " ") + "\r\n";
+        diagram += "---------------------------------------------------\r\n";
+        diagram += "\n";
+    }
+    return diagram;
+  }
+
+  //this outputs the current JSON to the terminal screen
+  exportDiagram(){
+    this.service.diagramToJSON();
+    return this.service.jsonString;
+  }
+
+  //  this takes the name of a given class and a "new" name. It copies the class, 
+  //  renaming it to the "new" name in the process
+  cloneClass(line: string){
+    var targetName = this.grabClassNameFromInput(line);
+    var targetClass = this.service.findClass(targetName);
+    var choppedLine = line.split(" ");
+    console.log(choppedLine[2]);
+    if(choppedLine.length < 2){
+      return '\x1b[1;33m' + "Format:\tclone <class_name> <clone_name>";
+    }
+    else{
+      this.service.createNew(choppedLine[2], targetClass.methods, targetClass.variables);
+      return '\x1b[1;32m' + "Class \"" + targetName + "\" cloned successfully.";
+    }
+  }
+
+
+  // this helper function grabs the class name from commands that include one
+  grabClassNameFromInput(line: string){
+    var splitLine = line.split(" ");
+    var name = splitLine[1];
+    return name;
+  }
+
+  //  this is a helper for edit. It updates the attribute of a given class with the passed in value.
   updateAttribute(target: fullClass, value: string, field: string){
     switch(field){
       case "variables":
@@ -202,7 +224,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
-  //this updates the variables of the passed in class with the passed in values
+  //  this updates the variables of the passed in class with the passed in values
   updateVariables(target: fullClass, values: string){
     var valsArray = values.split(",");
     target.variables.length = 0;
@@ -217,7 +239,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
-  //this updates the methods of the passed in class with the passed in methods
+  //  this updates the methods of the passed in class with the passed in methods
   updateMethods(target: fullClass, methods: string){
     var methodsArray = methods.split(",");
     target.methods.length = 0;
@@ -229,35 +251,5 @@ export class CliComponent implements OnInit, AfterViewInit {
         target.methods.push(methodsArray[i]);
       }
     }
-  }
-
-  cloneClass(line: string){
-    var targetName = this.grabClassNameFromInput(line);
-    var targetClass = this.selectClass(targetName);
-    var choppedLine = line.split(" ");
-    console.log(choppedLine[2]);
-    if(choppedLine.length < 2){
-      return '\x1b[1;33m' + "Format:\tclone <class_name> <clone_name>";
-    }
-    else{
-      this.service.createNew(choppedLine[2], targetClass.methods, targetClass.variables);
-      return '\x1b[1;32m' + "Class \"" + targetName + "\" cloned successfully.";
-    }
-
-  }
-
-  //this function prints out our help message
-  help(){
-    return `    Commands:\r
-    ---------\r
-    add    -> add a class:\r
-    clear  -> clear the screen\r
-    clone  -> clone a class\r
-    edit   -> edit a class\r
-    export -> export diagram\r
-    help   -> print help message\r
-    quit   -> quit and return to GUI\r
-    remove -> remove a class\r
-    view   -> view diagram\r`
   }
 }
