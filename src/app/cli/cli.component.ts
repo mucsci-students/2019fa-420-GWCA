@@ -51,7 +51,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     this.input = '';
     this.term = new Terminal({ 
       fontSize: 48,
-      fontFamily: 'OCR A Std, monospace',
+      fontFamily: 'monospace',
       cursorBlink: true,
       cursorStyle: "block",
       rightClickSelectsWord: true});
@@ -124,7 +124,7 @@ export class CliComponent implements OnInit, AfterViewInit {
  quit     -> quit and return to GUI\r
  remove   -> remove a class\r
  view     -> view diagram\r
-\x1b[1;33mtype "help <command>" for further info\r`;
+\x1b[1;33m type "help <command>" for further info\r`;
   }
 
   //  this function adds a blank class with the given name.
@@ -212,15 +212,15 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   //  this funtion removes a class with the given name.
   removeClass(line: string){
-    var targetName = this.grabClassNameFromInput(line);
-    if (targetName){
-      var target = this.service.findClass(targetName);
+    var arg1 = this.grabClassNameFromInput(line);
+    if (arg1){
+      var target = this.service.findClass(arg1);
       if(target){
         this.service.removeClassByIndex(this.service.allClasses.indexOf(target));
-        return '\x1b[1;32m' + "Class \"" + targetName + "\" has been deleted";
+        return '\x1b[1;32m' + "Class \"" + arg1 + "\" has been deleted";
       }
       else{
-        return '\x1b[1;31m' + "Error: Class \"" + targetName + "\" not found. Type 'view' to view classes.";
+        return '\x1b[1;31m' + "Error: Class \"" + arg1 + "\" not found. Type 'view' to view classes.";
       }
     }
     else{
@@ -288,13 +288,15 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
+  //   outputs "system status" information
   neofetch(){
+    console.log(this.getBrowserName());
     return '\x1b[1;31m' + `⣿⣿⣿⣿⣿⣿⣿⡿⢟⣋⣭⣥⣭⣭⣍⡉⠉⠙⠛⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿\r
-⣿⣿⣿⣿⣿⡏⠁⠠⠶⠛⠻⠿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠉⠻⢿⣿⣿⣿⣿⣿\r
-⣿⣿⣿⣿⠟⠄⢀⡴⢊⣴⣶⣶⣾⣿⣿⣿⣿⢿⡄⠄⠄⠄⠄⠄⠄⠙⢿⣿⣿⣿\r
-⣿⣿⡿⠁⠄⠙⡟⠁⣾⣿⣿⣿⣿⣿⣿⣿⣿⣎⠃⠄⠄⠄⠄⠄⠄⠄⠈⢻⣿⣿\r
-⣿⡟⠄⠄⠄⠄⡇⠰⠟⠛⠛⠿⠿⠟⢋⢉⠍⢩⣠⡀⠄⠄⠄⠄⠄⠄⠄⠄⢹⣿\r
-⣿⠁⠄⠄⠄⠄⠰⠁⣑⣬⣤⡀⣾⣦⣶⣾⣖⣼⣿⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⢿\r
+⣿⣿⣿⣿⣿⡏⠁⠠⠶⠛⠻⠿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠉⠻⢿⣿⣿⣿⣿⣿` + '\x1b[1;35m' + `\tColonel:\tGNUML 3.0.0\n\r` + '\x1b[1;31m' +
+`⣿⣿⣿⣿⠟⠄⢀⡴⢊⣴⣶⣶⣾⣿⣿⣿⣿⢿⡄⠄⠄⠄⠄⠄⠄⠙⢿⣿⣿⣿` + '\x1b[1;35m' + `\tTERMINAL:\tGNUML\n\r` + '\x1b[1;31m' +
+`⣿⣿⡿⠁⠄⠙⡟⠁⣾⣿⣿⣿⣿⣿⣿⣿⣿⣎⠃⠄⠄⠄⠄⠄⠄⠄⠈⢻⣿⣿` + '\x1b[1;35m' + `\tTERMINAL FONT:\tMonospace\n\r` + '\x1b[1;31m' +
+`⣿⡟⠄⠄⠄⠄⡇⠰⠟⠛⠛⠿⠿⠟⢋⢉⠍⢩⣠⡀⠄⠄⠄⠄⠄⠄⠄⠄⢹⣿` + '\x1b[1;35m' + `\tBrowser:\t` + this.getBrowserName() +`\n\r` + '\x1b[1;31m' +
+`⣿⠁⠄⠄⠄⠄⠰⠁⣑⣬⣤⡀⣾⣦⣶⣾⣖⣼⣿⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⢿\r
 ⡏⠄⠄⠄⠄⠄⠄⠄⠨⣿⠟⠰⠻⠿⣣⡙⠿⣿⠋⠄⢀⡀⣀⠄⣀⣀⢀⣀⣀⢸\r
 ⡇⠄⠄⠄⠄⠄⠄⠄⠄⣠⠄⠚⠛⠉⠭⣉⢁⣿⠄⢀⡿⢾⣅⢸⡗⠂⢿⣀⡀⢸\r
 ⡇⠄⠄⠄⠄⠄⠄⠄⠄⠘⢧⣄⠄⣻⣿⣿⣾⠟⣀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸\r
@@ -303,7 +305,7 @@ export class CliComponent implements OnInit, AfterViewInit {
 ⣿⣿⣧⣠⣴⣦⠄⠄⢸⣷⡹⣧⣖⡔⠄⠱⣮⣻⣷⣿⣿⠄⠄⠘⣿⣿⣿⣿⣿⣿\r
 ⣿⣿⣿⣿⣿⡇⠄⠄⠸⠿⠿⠚⠛⠁⠂⠄⠉⠉⡅⢰⡆⢰⡄⠄⠘⣿⣿⣿⣿⣿\r
 ⣿⣿⣿⣿⣿⣷⣤⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣿⠄⣷⠘⣧⣠⣾⣿⣿⣿⣿⣿\r
-⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣄⣀⣀⡀⠄⣀⣀⣹⣦⣽⣾⣿⣿⣿⣿⣿⣿⣿⣿\r` + '\x1b[1;35m' + `\nGNUML COLONEL VERSION:\t3.0.0\n\r`
+⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣤⣄⣀⣀⡀⠄⣀⣀⣹⣦⣽⣾⣿⣿⣿⣿⣿⣿⣿⣿\r`
 
   }
   //  this updates the variables of the passed in class with the passed in values
@@ -320,6 +322,27 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
+  // this does the browser detection for our neofetch command
+  getBrowserName() {
+  const agent = window.navigator.userAgent.toLowerCase()
+  switch (true) {
+    case agent.indexOf('edge') > -1:
+      return 'Edge';
+    case agent.indexOf('opr') > -1 && !!(<any>window).opr:
+      return 'Opera';
+    case agent.indexOf('chrome') > -1 && !!(<any>window).chrome:
+      return 'Chrome';
+    case agent.indexOf('trident') > -1:
+      return 'Internet Explorer';
+    case agent.indexOf('firefox') > -1:
+      return 'Firefox';
+    case agent.indexOf('safari') > -1:
+      return 'Safari';
+    default:
+      return '*notices niche browser* UwU what\'s this??';
+  }
+}
 
   //  this updates the methods of the passed in class with the passed in methods
   updateMethods(target: fullClass, methods: string){
