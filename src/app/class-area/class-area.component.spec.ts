@@ -38,6 +38,7 @@ describe('ClassAreaComponent', () => {
         MatCardModule,
         MatIconModule,
         FormsModule,
+        MatChipsModule,
         RouterTestingModule.withRoutes(routes),
       ],
       providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}},],
