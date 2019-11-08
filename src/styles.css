@@ -39,3 +39,27 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .editor button{
     width           : 100%;
 }
+
+.class-box .mat-chip-list-wrapper{
+    flex-direction  : column;
+    float           : left;
+    margin-left     : 20px !important;
+    margin-bottom   : 10px;
+}
+
+.methods mat-chip, .variables mat-chip{
+    width           : 100px;
+}
+
+.class-box{
+    display         : flex !important;
+    flex-direction  : column !important;
+}
+
+mat-card-subtitle{
+    margin-bottom   : 0 !important;
+}
+
+mat-chip mat-icon{
+    margin-left     : auto !important;
+}

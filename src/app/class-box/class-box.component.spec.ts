@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ClassBoxComponent } from './class-box.component';
 import { ClassStorageService, fullClass} from '../class-storage.service';
-import { MatDialogModule, MatCardModule, MatIconModule } from '@angular/material';
+import { MatDialogModule, MatCardModule, MatIconModule, MatChipsModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 
 describe('ClassBoxComponent', () => {
@@ -19,7 +19,8 @@ describe('ClassBoxComponent', () => {
         MatDialogModule,
         MatCardModule,
         MatIconModule,
-        FormsModule
+        FormsModule,
+        MatChipsModule,
       ],
       providers: [ClassStorageService]
     })

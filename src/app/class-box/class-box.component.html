@@ -16,11 +16,11 @@
             </button>
         </div>
         
-        <ul>
-            <li class="variable" *ngFor="let variable of variables;trackBy:trackVariables">
-                {{variable}}
-            </li>
-        </ul>
+        <mat-chip-list>
+            <mat-chip (click)="editChip(variable)" (removed)="removeVariable(variable)" class="mat-chip-list-stacked variable" *ngFor="let variable of variables;trackBy:trackVariables">
+                {{variable}} <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
     </mat-card-subtitle>
     <mat-card-subtitle class="methods">
         <div class="method-header">
@@ -30,11 +30,11 @@
             </button>
         </div>
         
-        <ul>
-            <li class="method" *ngFor="let method of methods;trackBy:trackMethods">
-                {{method}}
-            </li>
-        </ul>
+        <mat-chip-list>
+            <mat-chip (click)="editChip(method)" (removed)="removeMethod(method)" class="mat-chip-list-stacked methods" *ngFor="let method of methods;trackBy:trackMethods">
+                {{method}} <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
     </mat-card-subtitle>
 </mat-card>
 <span *ngIf="edit == 'methods'" class="editor">
@@ -51,4 +51,6 @@
             <button mat-raised-button color="primary" (click)="editName()">update</button>
         </span>
 </span>
+
+
 
