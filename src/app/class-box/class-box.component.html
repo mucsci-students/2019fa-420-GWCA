@@ -41,14 +41,14 @@
         </mat-chip-list>
     </mat-card-subtitle>
 </mat-card>
-<span *ngIf="edit == 'methods'" class="editor">
+<!-- <span *ngIf="edit == 'methods'" class="editor">
     <textarea [(ngModel)]="editorMethods" matInput>{{editorMethods}}</textarea>
     <button mat-raised-button color="primary" (click)="editMethods()">update</button>
 </span>
 <span *ngIf="edit == 'variables'" class="editor">
     <textarea [(ngModel)]="editorVariables" matInput>{{editorVariables}}</textarea>
     <button mat-raised-button color="primary" (click)="editVariables()">update</button>
-</span>
+</span> -->
 <span *ngIf="edit == 'name'" class="editor">
     <textarea [(ngModel)]="editorName" (ngModelChange)="existenceCheck()" matInput>{{editorName}}</textarea>
     <span *ngIf="exists == false">

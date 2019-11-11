@@ -281,37 +281,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       var position_x = document.querySelector('.'+this.name).getBoundingClientRect().left;
       var position_y = document.querySelector('.'+this.name).getBoundingClientRect().top;
       //variables
-      if(this.edit == 'variables'){
-        //no drag (just created)
-        if(!y){
-
-          (<HTMLElement>editBox).style.top = (position_y - 10) + 'px';
-          
-        }
-        if(!x){
-          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
-        }
-        else if(y && x){
-          //if dragged
-          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
-          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
-        }
-      }
-      else if(this.edit == 'methods'){
-        if(!y){
-          (<HTMLElement>editBox).style.top = (position_y + 60) + 'px';
-          
-        }
-        if(!x){
-          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
-        }
-        else if(y && x){
-          //if dragged
-          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
-          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
-        }
-      }
-      else if(this.edit == 'name'){
+      if(this.edit == 'name'){
 
         if(!y){
           (<HTMLElement>editBox).style.top = (position_y - 60) + 'px';
@@ -404,6 +374,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
   //wrapper for opening editors
   openEditor(edit,input){
+    //open chip editor
     this.edit = edit;
     switch(this.edit){
       case 'chip':
@@ -429,34 +400,13 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     }
   }
 
-  pullVariables(){
-    this.editorVariables = this.variables.join(",");
-    this.edit = 'variables';
-  }
-
-  pullMethods(){
-    this.editorMethods = this.methods.join(",");
-    this.edit = 'methods';
-  }
 
   pullName(){
     this.editorName = this.name;
     this.edit = 'name';
   }
 
-  //editor change
-  editVariables(){
-    this.service.findClass(this.name)['variables'] = this.editorVariables.split(",");
-    this.updateValues();
-    this.edit = '';
-  }
-
-  editMethods(){
-    this.service.findClass(this.name)['methods'] = this.editorMethods.split(",");
-    this.updateValues();
-    this.edit = '';
-  }
-
+  //edit name
   editName(){
     this.service.connectionsUpdateWrapper();
     //update connections with new name
