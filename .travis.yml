@@ -27,4 +27,4 @@ before_script:
 script:
   - ng build
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
-  - npm run coveralls
+  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --test-coverage

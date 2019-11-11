@@ -409,15 +409,17 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       case 'chip':
         this.editorVariables = input;
         if(this.variables.includes(input)){
-          this.variables[this.variables.indexOf(input)] = input + '_-';
+          this.editorMethods = input;
+          this.variables[this.variables.indexOf(input)] = input;
         }
         else{
-          this.methods[this.methods.indexOf(input)] = input + '_-';
+          this.editorMethods = input;
+          this.methods[this.methods.indexOf(input)] = input;
         }
         //se editor position
         setTimeout(function(){
           var editor = document.querySelector('.editor.chip');
-          var chip = document.querySelector('.'+input+'_-').getBoundingClientRect();
+          var chip = document.querySelector('.'+input).getBoundingClientRect();
           var chipX = chip['x'];
           var chipY = chip['y'];
           (<HTMLElement>editor).style.top = (chipY - 70) + 'px';
@@ -486,17 +488,18 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
   updateChip(){
     for(var i = 0;i<this.variables.length;i++){
-      if(this.variables[i].includes('_-')){
+      if(this.variables[i].includes(this.editorMethods)){
         this.variables[i] = this.editorVariables;
       }
     }
     for(var i = 0;i<this.methods.length;i++){
-      if(this.methods[i].includes('_-')){
+      if(this.methods[i].includes(this.editorMethods)){
         this.methods[i] = this.editorVariables;
       }
     }
     this.updateValues();
     this.edit = '';
+    this.editorMethods = ''
   }
 
   //tracker methods for ngFor
