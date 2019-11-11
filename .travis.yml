@@ -23,8 +23,6 @@ install:
 
 before_script:
   - npm install -g @angular/cli
-  - npm install -g codecov
-  - npm install coveralls
 
 script:
   - ng build
