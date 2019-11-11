@@ -3,7 +3,7 @@
     <mat-card-header >
         <div class="name-header">
             <mat-card-title>{{name}}</mat-card-title>
-            <button mat-icon-button class="edit-button" (click)="pullName()">
+            <button mat-icon-button class="edit-button" (click)="openEditor('name','name')">
                 <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button class="delete-button" (click)="deleteClass()">
@@ -14,11 +14,7 @@
     <mat-card-subtitle class="variables">
         <div class="variable-header">
             <h4>Variables: </h4>
-            <!-- <button mat-icon-button class="edit-button" (click)="pullVariables()">
-                <mat-icon>edit</mat-icon>
-            </button> -->
-        </div>
-        
+        </div>     
         <mat-chip-list>
             <mat-chip (click)="openEditor('chip',variable)" (removed)="removeVariable(variable)" 
             *ngFor="let variable of variables;trackBy:trackVariables" class="{{variable}} mat-chip mat-standard-chip">
@@ -29,11 +25,7 @@
     <mat-card-subtitle class="methods">
         <div class="method-header">
             <h4>Methods: </h4>
-            <!-- <button mat-icon-button class="edit-button" (click)="pullMethods()">
-                    <mat-icon>edit</mat-icon>
-            </button> -->
         </div>
-        
         <mat-chip-list>
             <mat-chip (click)="openEditor('chip',method)" (removed)="removeMethod(method)" class="{{method}} mat-chip mat-standard-chip" *ngFor="let method of methods;trackBy:trackMethods">
                 {{method}} <mat-icon matChipRemove>cancel</mat-icon>
@@ -41,14 +33,6 @@
         </mat-chip-list>
     </mat-card-subtitle>
 </mat-card>
-<!-- <span *ngIf="edit == 'methods'" class="editor">
-    <textarea [(ngModel)]="editorMethods" matInput>{{editorMethods}}</textarea>
-    <button mat-raised-button color="primary" (click)="editMethods()">update</button>
-</span>
-<span *ngIf="edit == 'variables'" class="editor">
-    <textarea [(ngModel)]="editorVariables" matInput>{{editorVariables}}</textarea>
-    <button mat-raised-button color="primary" (click)="editVariables()">update</button>
-</span> -->
 <span *ngIf="edit == 'name'" class="editor">
     <textarea [(ngModel)]="editorName" (ngModelChange)="existenceCheck()" matInput>{{editorName}}</textarea>
     <span *ngIf="exists == false">

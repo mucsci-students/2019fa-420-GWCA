@@ -14,6 +14,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   variables: string[];
   editorVariables: string;
   methods: string[];
+  //Note: this currently is used for all editing, I will make a better name for it soon.
   editorMethods: string;
   exists: boolean;
   id: string;
@@ -376,7 +377,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   openEditor(edit,input){
     //open chip editor
     this.edit = edit;
-    switch(this.edit){
+    switch(edit){
       case 'chip':
         this.editorVariables = input;
         if(this.variables.includes(input)){
@@ -397,6 +398,11 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editor).style.left = (chipX - 20) + 'px';
         },1);
 
+        break;
+      case 'name':
+        this.pullName();
+        break;
+
     }
   }
 
@@ -416,6 +422,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       var newSource = this.editorName +'_'+ source;
       connections[i][0] = newSource;
     }
+
+    var oldId = this.id;
     this.id = this.id.replace(this.name,this.editorName);
     this.service.findClass(this.name)['name'] = this.editorName;
     var element = document.querySelector('.'+this.name);
@@ -428,6 +436,11 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.service.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
       endpoint['elementId'] = id;
     });
+
+    //update id jsPlumb stores
+    this.service.jsPlumbInstance.setIdChanged(oldId,this.id);
+
+
 
   }
 

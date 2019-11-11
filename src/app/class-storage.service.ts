@@ -140,7 +140,6 @@ export class ClassStorageService {
 
   //redraw all jsPlumb setttings & connections
   reinitializeConnections(){
-    console.log(this.allClasses[0].connections);
     this.jsPlumbInstance.reset();
 
     var class_boxes = document.querySelectorAll("app-class-box");
