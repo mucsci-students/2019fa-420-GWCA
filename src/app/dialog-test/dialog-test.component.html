@@ -40,13 +40,13 @@
           <input matInput [(ngModel)]="className" minlength="1"  (ngModelChange)="existenceCheck()" [ngModelOptions]="{standalone:true}"/>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Methods</mat-label>
-          <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
+          <mat-label>State variables</mat-label>
+          <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
           <mat-hint>Seperated by commas</mat-hint>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>State variables</mat-label>
-          <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
+          <mat-label>Methods</mat-label>
+          <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
           <mat-hint>Seperated by commas</mat-hint>
         </mat-form-field>
         <span *ngIf="exists == false">
