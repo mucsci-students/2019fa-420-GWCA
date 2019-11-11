@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls"
+    "coveralls": "ng test --watch=false --code-coverage && cat ./coverage/lcov.info | coveralls"
   },
   "private": true,
   "dependencies": {
