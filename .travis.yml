@@ -25,10 +25,10 @@ before_script:
   - npm install -g @angular/cli
   - npm install -g codecov
   - npm install coveralls
-  - ng test --watch=false --code-coverage
 
 script:
   - ng build
   - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  - ng test --code-coverage --watch=false
   - codecov
   - cat ./coverage/coverage.lcov | ./node_modules/coveralls/bin/coveralls.js
