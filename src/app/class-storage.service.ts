@@ -130,6 +130,9 @@ export class ClassStorageService {
     this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["left","right","bottom","top"]}],uuid:(id+"_left"),hoverPaintStyle: {fill: "red"}},this.common);
     this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["right","left","top","botttom"]}],uuid:(id+"_right"),hoverPaintStyle: {fill: "red"}},this.common);
 
+    //allow to just drag connection to div to be able to make connections
+    this.jsPlumbInstance.makeTarget(id,{anchor: ["Continuous",{faces: ["top","bottom","left","right"]}]},this.common);
+
     //fixes error where endpoints don't properly align with box
     this.jsPlumbInstance.repaintEverything();
     
@@ -137,7 +140,7 @@ export class ClassStorageService {
 
   //redraw all jsPlumb setttings & connections
   reinitializeConnections(){
-    console.log("Reinitializing connections");
+    console.log(this.allClasses[0].connections);
     this.jsPlumbInstance.reset();
 
     var class_boxes = document.querySelectorAll("app-class-box");
@@ -178,6 +181,8 @@ export class ClassStorageService {
          var targetPosition = classes[i]['connections'][j][1].split("_")[1];
          var targetElement = document.querySelector("app-class-box ."+target).id;
 
+        //  console.log(srcElement+"_"+sourcePosition);
+        //  console.log(targetElement+"_"+targetPosition);
          var connectionType = classes[i]['connections'][j][2];
          //skip
          
@@ -298,6 +303,13 @@ export class ClassStorageService {
             if(endpoint['connections'][j]['endpoints'][0] == endpoint){
               var target = endpoint['connections'][j]['endpoints'][1].getUuid();
               var source = endpoint.getUuid();
+              //if source or target undefined
+              if(!source){
+                source = endpoint['connections'][j]['endpoints'][0]['elementId'] + "_" + endpoint['connections'][j]['endpoints'][0]['_continuousAnchorEdge'];
+              }
+              if(!target){
+                target = endpoint['connections'][j]['endpoints'][1]['elementId'] + "_" + endpoint['connections'][j]['endpoints'][1]['_continuousAnchorEdge'];
+              }
               var connectionStyle = endpoint['connections'][0].getPaintStyle()['stroke'];
               switch(connectionStyle){
                 case 'purple':

@@ -40,6 +40,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width           : 100%;
 }
 
+.editor.chip{
+    display         : flex;
+    max-width       : 150px;
+}
+
+mat-chip{
+    min-width       : 75px;
+}
+
+.editor.chip button{
+    font-size       : 12px;
+    padding         : 0;
+}
+
 .class-box .mat-chip-list-wrapper{
     flex-direction  : column;
     float           : left;
@@ -47,8 +61,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-bottom   : 10px;
 }
 
-.methods mat-chip, .variables mat-chip{
-    width           : 100px;
+mat-chip mat-icon{
+    padding-left    : 10px;
 }
 
 .class-box{

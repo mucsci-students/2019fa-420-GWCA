@@ -326,7 +326,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
         }
       }
-      
       (<HTMLElement>editBox).style.width = '230px';
     }
   }
@@ -334,10 +333,10 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   editChip(chip,newValue){
     var variable = this.variables.includes(chip);
     if(variable){
-      this.variables[this.variables.indexOf(chip)] = 'test';
+      this.variables[this.variables.indexOf(chip)] = newValue;
     }
     else{
-      this.methods[this.methods.indexOf(chip)] = 'test';
+      this.methods[this.methods.indexOf(chip)] = newValue;
     }
   }
 
@@ -403,6 +402,31 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     }
   }
 
+  //wrapper for opening editors
+  openEditor(edit,input){
+    this.edit = edit;
+    switch(this.edit){
+      case 'chip':
+        this.editorVariables = input;
+        if(this.variables.includes(input)){
+          this.variables[this.variables.indexOf(input)] = input + '_-';
+        }
+        else{
+          this.methods[this.methods.indexOf(input)] = input + '_-';
+        }
+        //se editor position
+        setTimeout(function(){
+          var editor = document.querySelector('.editor.chip');
+          var chip = document.querySelector('.'+input+'_-').getBoundingClientRect();
+          var chipX = chip['x'];
+          var chipY = chip['y'];
+          (<HTMLElement>editor).style.top = (chipY - 70) + 'px';
+          (<HTMLElement>editor).style.left = (chipX - 20) + 'px';
+        },1);
+
+    }
+  }
+
   pullVariables(){
     this.editorVariables = this.variables.join(",");
     this.edit = 'variables';
@@ -453,6 +477,26 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       endpoint['elementId'] = id;
     });
 
+  }
+
+  //this will change later
+  deleteClass(){
+    this.service.jsPlumbInstance.remove(this.id);
+  }
+
+  updateChip(){
+    for(var i = 0;i<this.variables.length;i++){
+      if(this.variables[i].includes('_-')){
+        this.variables[i] = this.editorVariables;
+      }
+    }
+    for(var i = 0;i<this.methods.length;i++){
+      if(this.methods[i].includes('_-')){
+        this.methods[i] = this.editorVariables;
+      }
+    }
+    this.updateValues();
+    this.edit = '';
   }
 
   //tracker methods for ngFor
