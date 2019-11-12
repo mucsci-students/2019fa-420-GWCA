@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "coveralls": "ng test --watch=false --browsers=ChromeHeadless --code-coverage && cat ./coverage/lcov.info | coveralls"
+    "coveralls": "ng test --watch=false --browsers=ChromeHeadless --code-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "private": true,
   "dependencies": {
