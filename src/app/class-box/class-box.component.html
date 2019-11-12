@@ -1,23 +1,47 @@
 
-<div class="class-box" [ngClass]="name" id={{id}}>
-    <div class="name" >
-        <h2>{{name}}</h2>
-    </div>
-    <div class="variables">
-        <h4>Variables: </h4>
-        <ul>
-            <li class="variable" *ngFor="let variable of variables">
-                {{variable}}
-            </li>
-        </ul>
-    </div>
-    <div class="methods">
-        <h4>Methods: </h4>
-        <ul>
-            <li class="method" *ngFor="let method of methods">
-                {{method}}
-            </li>
-        </ul>
-    </div>
-</div>
+<mat-card class="class-box" [ngClass]="name" id={{id}}>
+    <mat-card-header >
+        <div class="name-header">
+            <mat-card-title>{{name}}</mat-card-title>
+            <button mat-icon-button class="edit-button" (click)="openEditor('name','name')">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button class="delete-button" (click)="deleteClass()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </mat-card-header>
+    <mat-card-subtitle class="variables">
+        <div class="variable-header">
+            <h4>Variables: </h4>
+        </div>     
+        <mat-chip-list>
+            <mat-chip (click)="openEditor('chip',variable)" (removed)="removeVariable(variable)" 
+            *ngFor="let variable of variables;trackBy:trackVariables" class="{{variable}} mat-chip mat-standard-chip">
+                {{variable}} <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </mat-card-subtitle>
+    <mat-card-subtitle class="methods">
+        <div class="method-header">
+            <h4>Methods: </h4>
+        </div>
+        <mat-chip-list>
+            <mat-chip (click)="openEditor('chip',method)" (removed)="removeMethod(method)" class="{{method}} mat-chip mat-standard-chip" *ngFor="let method of methods;trackBy:trackMethods">
+                {{method}} <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </mat-card-subtitle>
+</mat-card>
+<span *ngIf="edit == 'name'" class="editor">
+    <textarea [(ngModel)]="editorName" (ngModelChange)="existenceCheck()" matInput>{{editorName}}</textarea>
+    <span *ngIf="exists == false">
+        <button mat-raised-button color="primary" (click)="editName()">update</button>
+    </span>
+</span>
+<span *ngIf="edit == 'chip'" class="editor chip">
+    <input [(ngModel)]="editorVariables" value='{{editorVariables}}' matInput>
+    <button mat-raised-button color="primary" (click)="updateChip()">update</button>
+</span>
+
 

@@ -1,0 +1,6 @@
+@import '../../../node_modules/xterm/css/xterm.css';
+
+.terminal, .xterm-screen, canvas{
+    height   : 100vh !important;
+    width    : 100vw !important;
+}

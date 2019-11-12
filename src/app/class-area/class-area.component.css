@@ -7,19 +7,24 @@
 
 
 .class-container{
-    height        : 255px;
+    /* height        : 255px; */
     margin        : 20px;
     position      : absolute;
-    width         : 255px;
+    /* width         : 255px; */
 
 }
 
-.legend{
-    border        : 1px solid black;
-    float         : right;
-    margin-right  : 10px;
-    margin-top    : 20px;
-    width         : 100px;
+
+
+mat-toolbar{
+    color           : white;
+    background-color: #673ab7;
+    
+}
+
+
+mat-toolbar button{
+    box-shadow     : none !important;
 }
 
 ul{
@@ -31,24 +36,7 @@ li{
     flex-direction: row;
 }
 
-.circle{
-    background    : green;
-    border-radius : 50%;
-    height        : 10px;
-    margin-top    : 2px;
-    margin-right  : 2px;
-    width         : 10px;
-}
 
-.square{
-    background    : red;
-    height        : 10px;
-    margin-top    : 2px;
-    margin-right  : 2px;
-    width         : 10px;
-
-
-}
 
 app-class-box{
     margin-left   : 20px;
@@ -58,8 +46,17 @@ app-class-box{
     
 }
 
+h3{
+    margin-right : 20px;
+}
+
+.cli-container{
+    margin-left   : auto;
+}
+
 .cli-button{
     float         : right;
+    
 }
 pre {
     white-space   : inherit;

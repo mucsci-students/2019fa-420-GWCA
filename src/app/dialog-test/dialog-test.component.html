@@ -1,91 +1,215 @@
-<h1 mat-dialog-title>{{name}}</h1>
-<!-- edit button contents -->
-<span *ngIf="buttonPressed === 'edit'">
-    <form class="edit-form">
+<div class="form">
+  <h1 mat-dialog-title>{{name}}</h1>
+  <!-- edit button contents -->
+  <span *ngIf="buttonPressed === 'edit'">
+      <form class="edit-form">
+        <span *ngIf="choice !== 'found'">
+          <mat-form-field>
+              <mat-select placeholder="Choose a class..." [(value)]="choice">
+                <!-- <mat-option selected>None</mat-option> -->
+                <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
+              </mat-select> 
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
+        </span>  
+
+          <span *ngIf="choice === 'found'">
+            <mat-form-field class="input-data">
+              <mat-label>Class Name</mat-label>
+              <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Methods</mat-label>
+                <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
+              <mat-hint>Seperated by commas</mat-hint>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>State variables</mat-label>
+              <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
+              <mat-hint>Seperated by commas</mat-hint>
+            </mat-form-field>
+            <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="editButton()">Update</button>  
+          </span>
+      </form>
+  </span>
+  <!-- new button contents -->
+  <span *ngIf="buttonPressed === 'new'">
+      <form class="new-form">
+        <mat-form-field>
+          <mat-label>Class Name</mat-label>
+          <input matInput [(ngModel)]="className" minlength="1"  (ngModelChange)="existenceCheck()" [ngModelOptions]="{standalone:true}"/>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>State variables</mat-label>
+          <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
+          <mat-hint>Seperated by commas</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Methods</mat-label>
+          <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
+          <mat-hint>Seperated by commas</mat-hint>
+        </mat-form-field>
+        <span *ngIf="exists == false">
+          <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="addButton()">Submit</button>
+        </span>
+      </form>
+  </span>
+  <!-- delete button contents -->
+  <span *ngIf="buttonPressed === 'delete'">
+    <form class="delete-form">
+        <mat-form-field>
+            <mat-select placeholder="Choose a class..." [(value)]="choice">
+              <!-- <mat-option selected>None</mat-option> -->
+              <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
+            </mat-select> 
+        </mat-form-field>
+        <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="search(choice)">Deleted Class</button>
+    </form>
+  </span> 
+  <!-- export button contents -->
+  <!-- line 59 actually serves our diagram.-->
+  <span *ngIf="buttonPressed === 'export'">
+      <h1>Copy this:</h1>
+      <code>
+        <pre>{{service.jsonString}}</pre>
+      </code>
+  </span>
+  <!-- import button contents -->
+  <span *ngIf="buttonPressed === 'import'">
+      <form>
+        <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
+          <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
+      </form>
+  </span>
+  <span *ngIf="buttonPressed === 'connection'">
+    <h1>Choose a connection type</h1>
+    <mat-form-field>
+      <mat-select placeholder = "choose a style..." [(ngModel)]="connectionType">
+        <mat-option value="purple">Aggregation</mat-option>
+        <mat-option value="green">Association</mat-option>
+        <mat-option value="red">Composition</mat-option>
+        <mat-option value="orange">Generalization</mat-option>
+        <mat-option value="yellow">Realization</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>
+  </span>
+  <!-- delete attribute contents -->
+  <span *ngIf="buttonPressed === 'delete_attribute'">
+    <form class="delete_attribute-form">
       <span *ngIf="choice !== 'found'">
         <mat-form-field>
             <mat-select placeholder="Choose a class..." [(value)]="choice">
               <!-- <mat-option selected>None</mat-option> -->
-               <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
+              <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
             </mat-select> 
         </mat-form-field>
         <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
       </span>  
-
-        <span *ngIf="choice === 'found'">
-          <mat-form-field class="input-data">
-            <mat-label>Class Name</mat-label>
-            <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
+        <span *ngIf="choice === 'found'"> <!--This also needs to me changed...Add function in copmonents part-->
+          <mat-form-field>
+            <!-- THIS SECTION NEEDS TO BE EDITED-->
+            <mat-label> Methods </mat-label>
+            <mat-select [(value)]="selected_1">
+                <mat-option>None</mat-option>
+                <mat-option value="option1">Option 1</mat-option>
+                <mat-option value="option2">Option 2</mat-option>
+                <mat-option value="option3">Option 3</mat-option>
+              </mat-select>
           </mat-form-field>
           <mat-form-field>
-            <mat-label>Methods</mat-label>
-              <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
-            <mat-hint>Seperated by commas</mat-hint>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>State variables</mat-label>
-            <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
-            <mat-hint>Seperated by commas</mat-hint>
+            <mat-label> Variables </mat-label>
+            <mat-select [(value)]="selected_2">
+                <mat-option>None</mat-option>
+                <mat-option value="option1">Option 1</mat-option>
+                <mat-option value="option2">Option 2</mat-option>
+                <mat-option value="option3">Option 3</mat-option>
+            </mat-select>
+            <!-- THIS SECTION NEEDS TO BE EDITED-->
           </mat-form-field>
           <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
         </span>
     </form>
-</span>
-<!-- new button contents -->
-<span *ngIf="buttonPressed === 'new'">
-    <form class="new-form">
-      <mat-form-field>
-        <mat-label>Class Name</mat-label>
-        <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Methods</mat-label>
-        <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
-        <mat-hint>Seperated by commas</mat-hint>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>State variables</mat-label>
-        <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
-        <mat-hint>Seperated by commas</mat-hint>
-      </mat-form-field>
-      <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="insertData()">Submit</button>
-    </form>
-</span>
-<!-- delete button contents -->
-<span *ngIf="buttonPressed === 'delete'">
-  <form class="delete-form">
-      <mat-form-field>
-          <mat-select placeholder="Choose a class..." [(value)]="choice">
-            <!-- <mat-option selected>None</mat-option> -->
-            <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-          </mat-select> 
-      </mat-form-field>
-      <button mat-raised-button color="primary" type="button" (click)="search(choice)">Deleted Class</button>
-  </form>
-</span> 
-<!-- export button contents -->
-<!-- line 59 actually serves our diagram.-->
-<span *ngIf="buttonPressed === 'export'">
-    <h1>Copy this:</h1>
-    <code>
-      <pre>{{service.jsonString}}</pre>
-    </code>
-</span>
-<!-- import button contents -->
-<span *ngIf="buttonPressed === 'import'">
-    <form>
-      <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
-        <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
-    </form>
-</span>
-<span *ngIf="buttonPressed === 'connection'">
-  <h1>Choose a connection type</h1>
-  <mat-form-field>
-    <mat-select placeholder = "choose a style..." [(ngModel)]="connectionType">
-      <mat-option value="yellow">Yellow</mat-option>
-      <mat-option value="purple">Purple</mat-option>
-      <mat-option value="red">Red</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>
-</span>
+  </span>
+  <span *ngIf="buttonPressed == 'help'">
+    <div class="textbox">
+      <h4>How to use the UML editor:</h4>
+      <hr>
+      <h5>Creating a class</h5>
+      <ol>
+        <li>Press the new button</li>
+        <li>input into the fields the data you want the class to have</li>
+          <ul>
+            <li><strong>Note: </strong>You have to click somewhere else in the box currently to be able to submit</li>
+          </ul>
+        <li>There is a name,methods, and variables section</li>
+        <li>The name method is the only required field to fill in to create a class</li>
+        <li>Once complete press the submit button, and the class will be created in the page</li>
+      </ol>
+      <h5>Editing a class</h5>
+      <ol>
+        <li>Press the edit button</li>
+        <li>The will be a dropdown selection that will allow you to chooose the class you want to edit from the currently
+          existing classes
+        </li>
+        <li>Once you make your choice, then you can press the button to see the input fields (same as the new fields)
+          auto-populate with data already existing.
+        </li>
+        <li>Make any changes you want to the data, and once complete, press the button for the class to be updated in the page</li>
+        <li><strong>Note: </strong>You can also edit the class in the GUI directly</li>
+        <ul>
+          <li>To edit the class name, you just press the edit button in the top right corner</li>
+          <li>To edit the attributes, just click on the actual attribute and you can directly edit it</li>
+          <li>You can also delete attributes by pressing the X at the end of the attribute</li>
+        </ul>
+      </ol>
+      <!-- allow for Zach to enter his data for the delete -->
+      <!-- or input here once delete functionality is complete -->
+      <h5>Exporting data</h5>
+      <ol>
+        <li>Press the export button</li>
+        <li>The current data for the classses will be displayed in a popup menu, in the form of JSON</li>
+        <li>Copy the text and paste it somewhere to keep it for later</li>
+        <li><strong>Note:</strong> upcoming functionality will include allowing the user to download a file holding the data</li>
+      </ol>
+      <h5>Importing data</h5>
+      <ol>
+        <li>Press the import button</li>
+        <li>paste the data previously exported, from the export button into this popup and press the submit 
+          button to regenerate the data</li>
+        <li><strong>Note:</strong> upcoming functionality will include allowing the user to input the downloaded file
+         taken from the export button, to generate the data</li>
+      </ol>
+      <h5>Making connections</h5>
+      <ol>
+        <li>Once there are classes on the page, the user can connect the classes by dragging from one of the "circles" (endpoints)
+          from one to another
+        </li>
+        <li>You can also just drag from an endpoint to a class box and it will make a connection</li>
+        <li>When a connection is made the user will be able to specify a "type" of relationship between classes</li>
+        <li>After a connection is made if you click on the connection, you can pick the type of connection again in the same format as before</li>
+        <li><strong>Note: </strong>Connections to itself are forcibly removed</li>
+      </ol>
+      <h5>CLI</h5>
+      <!-- feel free to add more here -->
+      <ol>
+        <li>Press the "Switch to CLI" button</li>
+        <li>The user will then be directed to the CLI part of the application</li>
+        <li>You will be greeted with a list of commands, and their functionality</li>
+        <li>You can always enter help to get the list of commands again</li>
+        <li>You can also press man command to get specific information about the command</li>
+      </ol>
+      <h5>Known bugs & upcoming functionality</h5>
+      <ol>
+        <mat-chip-list>
+          <li class="chip"><mat-chip color="warn" selected>Bug </mat-chip>Can drag classes over one another, Completion: (TBD)</li>
+          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Allow for downloading/saving the data to a file, Completion: (TBD)</li>
+          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>JSON to YAML change Completion: (TBD)</li>
+          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Try to force connections to not overlap classes, Completion: (TBD)</li>
+          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>UX changes, Completion: (TBD)</li>
+        </mat-chip-list>
+      </ol>
+      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>  
+    </div>
+  </span>
+</div>

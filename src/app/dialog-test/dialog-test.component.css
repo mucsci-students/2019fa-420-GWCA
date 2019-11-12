@@ -1,8 +1,28 @@
 span mat-form-field{
-    margin-bottom: 20px;
-    margin-top   : 20px;
+    margin-bottom : 20px;
+    margin-top    : 20px;
 }
 
 pre{
-    white-space: inherit;
+    white-space   : inherit;
+}
+
+span form, span mat-form-field{
+    display       : flex;
+    flex-direction: column;
+}
+
+.textbox button{
+    float         : right;
+    margin-bottom : 10px;
+}
+
+
+
+.chip::marker{
+    content       : '' !important;
+}
+
+span button{
+    margin-left  : 40%;
 }
