@@ -14,6 +14,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   variables: string[];
   editorVariables: string;
   methods: string[];
+  //Note: this currently is used for all editing, I will make a better name for it soon.
   editorMethods: string;
   exists: boolean;
   id: string;
@@ -281,37 +282,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       var position_x = document.querySelector('.'+this.name).getBoundingClientRect().left;
       var position_y = document.querySelector('.'+this.name).getBoundingClientRect().top;
       //variables
-      if(this.edit == 'variables'){
-        //no drag (just created)
-        if(!y){
-
-          (<HTMLElement>editBox).style.top = (position_y - 10) + 'px';
-          
-        }
-        if(!x){
-          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
-        }
-        else if(y && x){
-          //if dragged
-          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 50) + 'px';
-          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
-        }
-      }
-      else if(this.edit == 'methods'){
-        if(!y){
-          (<HTMLElement>editBox).style.top = (position_y + 60) + 'px';
-          
-        }
-        if(!x){
-          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
-        }
-        else if(y && x){
-          //if dragged
-          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 130) + 'px';
-          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
-        }
-      }
-      else if(this.edit == 'name'){
+      if(this.edit == 'name'){
 
         if(!y){
           (<HTMLElement>editBox).style.top = (position_y - 60) + 'px';
@@ -404,8 +375,9 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
   //wrapper for opening editors
   openEditor(edit,input){
+    //open chip editor
     this.edit = edit;
-    switch(this.edit){
+    switch(edit){
       case 'chip':
         this.editorVariables = input;
         if(this.variables.includes(input)){
@@ -426,37 +398,21 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editor).style.left = (chipX - 20) + 'px';
         },1);
 
+        break;
+      case 'name':
+        this.pullName();
+        break;
+
     }
   }
 
-  pullVariables(){
-    this.editorVariables = this.variables.join(",");
-    this.edit = 'variables';
-  }
-
-  pullMethods(){
-    this.editorMethods = this.methods.join(",");
-    this.edit = 'methods';
-  }
 
   pullName(){
     this.editorName = this.name;
     this.edit = 'name';
   }
 
-  //editor change
-  editVariables(){
-    this.service.findClass(this.name)['variables'] = this.editorVariables.split(",");
-    this.updateValues();
-    this.edit = '';
-  }
-
-  editMethods(){
-    this.service.findClass(this.name)['methods'] = this.editorMethods.split(",");
-    this.updateValues();
-    this.edit = '';
-  }
-
+  //edit name
   editName(){
     this.service.connectionsUpdateWrapper();
     //update connections with new name
@@ -466,6 +422,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       var newSource = this.editorName +'_'+ source;
       connections[i][0] = newSource;
     }
+
+    var oldId = this.id;
     this.id = this.id.replace(this.name,this.editorName);
     this.service.findClass(this.name)['name'] = this.editorName;
     var element = document.querySelector('.'+this.name);
@@ -478,6 +436,11 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.service.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
       endpoint['elementId'] = id;
     });
+
+    //update id jsPlumb stores
+    this.service.jsPlumbInstance.setIdChanged(oldId,this.id);
+
+
 
   }
 
