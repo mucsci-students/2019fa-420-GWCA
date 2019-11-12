@@ -26,7 +26,10 @@ before_script:
 
 script:
   - ng build
-  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage
+  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage | .node_modules/coveralls/bin/coveralls.js
+
+after_script:
+  - cat ./coverage/*/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 
   
