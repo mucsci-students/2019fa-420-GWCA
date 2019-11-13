@@ -1,5 +1,4 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, ViewEncapsulation, HostListener } from '@angular/core';
-import { NgTerminal} from 'ng-terminal';
 import { Terminal} from 'xterm';
 import { Router } from '@angular/router';
 import { ClassStorageService } from '../class-storage.service';
@@ -17,7 +16,6 @@ export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
   @ViewChild('terminal',{static:true}) terminalDiv: ElementRef;
-  @ViewChild('term', { static: true }) child: NgTerminal;
 
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {

@@ -20,10 +20,10 @@ export class FileUploadComponent implements OnInit {
   }
 
   uploadFileToActivity() {
-    FileUploadService.postFile(this.fileToUpload).subscribe(data => {
+    //FileUploadService.postFile(this.fileToUpload).subscribe(data => {
       // do something, if upload success
-      }, error => {
-        console.log(error);
-      });
+    //  }, error => {
+        //console.log(error);
+      //});
   }
 }

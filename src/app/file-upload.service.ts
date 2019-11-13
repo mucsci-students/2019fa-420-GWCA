@@ -2,8 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of, from } from 'rxjs';
-import { map, catchError } from 'rxjs/operators'
-
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +19,11 @@ export class FileUploadService {
     return this.httpClient
       .post(endpoint, formData, { headers: new HttpHeaders })
       .pipe(map(() => { return true; }))
-      .catchError((e) => this.handleError(e));
+      .pipe(catchError((e) => this.handleError(e)));
+  }
+
+  private handleError(error: any) {
+    console.error('An error has occured', error);
+    return Promise.reject(error);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit,ComponentFactoryResolver, IterableDiffer, IterableDif
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
+import { FileDownloadComponent } from '../file-download/file-download.component'
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb, jsPlumbInstance} from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -17,13 +18,13 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
- 
+
   //NOTE: this is testing, ignore for now
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
     ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
-    private router: Router) {
+    private router: Router, public fileDownload: FileDownloadComponent) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
 
@@ -85,8 +86,8 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
     this.service.revertLeftShift();
 
 
-    
-    
+
+
     var classes = this.service.allClasses;
 
     //empty back-end for re-insertion
@@ -94,7 +95,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
 
     if(classes.length != 0){
-      
+
       for(var i=0;i<classes.length;i++){
         //redraw position if previously placed
         if(classes[i]['position'].length != 0){
@@ -110,7 +111,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   }
 
 
-  
+
 
 
 
@@ -123,7 +124,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   //       this.service.jsPlumbInstance.remove(class_boxes[i]);
   //     }
 
-    
+
   // }
 
 
@@ -165,7 +166,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
        this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
      }
   }
- 
+
 
   updateConnections() : string[][] {
     //find all classes in the DOM and then iterate through all of them and add connections to the back-end
@@ -226,7 +227,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
      }
 
   }
-  
+
 
 
 
@@ -278,7 +279,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
       this.switchToCLI = true;
     });
   }
-  
+
 
   createClass(){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
@@ -295,5 +296,5 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
   updateStoredDiagram(){
     this.service.diagramToJSON();
-  }  
+  }
 }

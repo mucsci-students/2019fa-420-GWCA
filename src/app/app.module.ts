@@ -22,11 +22,11 @@ import { MatInputModule, MatSelectModule, MatMenuModule, MatToolbarModule, MatCh
 import { MatIconModule } from '@angular/material/icon';
 
 import { CliComponent } from './cli/cli.component';
-import { NgTerminalModule, NgTerminalComponent } from 'ng-terminal';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
 import { FileUploadComponent } from './file-upload/file-upload.component';
+import { FileDownloadComponent } from './file-download/file-download.component';
 
 
 @NgModule({
@@ -37,6 +37,7 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
     ClassAreaComponent,
     CliComponent,
     FileUploadComponent,
+    FileDownloadComponent,
 
   ],
   imports: [
@@ -52,7 +53,6 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
     FormsModule,
     DragDropModule,
     ObserversModule,
-    NgTerminalModule,
     MatMenuModule,
     MatToolbarModule,
     MatChipsModule,
@@ -65,9 +65,10 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
   providers: [
     ClassStorageService,
     ClassAreaComponent,
+    FileDownloadComponent
     ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  exports: [ NgTerminalComponent ]
+  exports: [  ]
 })
 export class AppModule { }
