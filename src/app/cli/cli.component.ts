@@ -131,11 +131,14 @@ export class CliComponent implements OnInit, AfterViewInit {
   add(line: string){
     var command = line.split(" ");
     var name = command[1];
+    var flag = "";
     if (name){
       if(name == "-v" || name == "-m"){
-        var addition = this.service.findClass(command[2]);
+        flag = name;
+        name = command[2];
+        var addition = this.service.findClass(name);
         if(addition){
-            if(name == "-v" && command.length == 5){
+            if(flag == "-v" && command.length == 5){
               var varName = command[3] + " " + command[4];
               if(addition.variables[0] == "none"){
                 addition.variables.pop();
@@ -143,10 +146,10 @@ export class CliComponent implements OnInit, AfterViewInit {
               addition.variables.push(varName);
               return '\x1b[1;32m' + "Variable \"" + varName + "\" added to class \"" + name + "\" successfully."
             }
-            else if(name == "-v" && command.length != 5){
+            else if(flag == "-v" && command.length != 5){
               return '\x1b[1;33m' + "Format:\tadd -v <class_name> <var_name>";
             }
-            else if(name == "-m" && command.length == 4){
+            else if(flag == "-m" && command.length == 4){
              var methodName = command[3];
              if(addition.methods[0] == "none"){
               addition.methods.pop();
@@ -154,6 +157,12 @@ export class CliComponent implements OnInit, AfterViewInit {
             addition.methods.push(methodName);
             return '\x1b[1;32m' + "Method \"" + methodName + "\" added to class \"" + name + "\" successfully."
             }
+          }
+          else if(name == "" && flag == "-v"){
+            return '\x1b[1;31m' + "Error: too many spaces between '-v' and class name";
+          }
+          else if(name == "" && flag == "-m"){
+            return '\x1b[1;31m' + "Error: too many spaces between '-m' and class name";
           }
           else{
             return '\x1b[1;31m' + "Error: Class \"" + name + "\" cannot be found.";
