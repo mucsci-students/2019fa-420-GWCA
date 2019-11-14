@@ -54,18 +54,6 @@
         </span>
       </form>
   </span>
-  <!-- delete button contents -->
-  <span *ngIf="buttonPressed === 'delete'">
-    <form class="delete-form">
-        <mat-form-field>
-            <mat-select placeholder="Choose a class..." [(value)]="choice">
-              <!-- <mat-option selected>None</mat-option> -->
-              <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select> 
-        </mat-form-field>
-        <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="deleteClass()">Deleted Class</button>
-    </form>
-  </span> 
   <!-- export button contents -->
   <!-- line 59 actually serves our diagram.-->
   <span *ngIf="buttonPressed === 'export'">
@@ -93,37 +81,6 @@
       </mat-select>
     </mat-form-field>
     <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>
-  </span>
-  <!-- delete attribute contents -->
-  <span *ngIf="buttonPressed === 'delete_attribute'">
-    <form class="delete_attribute-form">
-      <span *ngIf="choice !== 'found'">
-        <mat-form-field>
-            <mat-select placeholder="Choose a class..." [(value)]="choice">
-              <!-- <mat-option selected>None</mat-option> -->
-              <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select> 
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
-      </span>  
-        <span *ngIf="choice === 'found'"> <!--This also needs to me changed...Add function in copmonents part-->
-          <mat-form-field>
-            <!-- THIS SECTION NEEDS TO BE EDITED-->
-            <mat-label> Methods </mat-label>
-            <mat-select [(value)]="select_1">
-              <mat-option *ngFor="let method of classMethods" value="{{method.innerHTML}}" >{{method.innerHTML}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label> Variables </mat-label>
-            <mat-select [(value)]="select_2">
-              <mat-option *ngFor="let variable of classVariables" value="{{variable.innerHTML}}" >{{variable.innerHTML}}</mat-option>
-            </mat-select>
-            <!-- THIS SECTION NEEDS TO BE EDITED-->
-          </mat-form-field>
-          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
-        </span>
-    </form>
   </span>
   <span *ngIf="buttonPressed == 'help'">
     <div class="textbox">
