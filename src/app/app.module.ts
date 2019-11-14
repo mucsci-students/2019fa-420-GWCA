@@ -24,6 +24,7 @@ import { CliComponent } from './cli/cli.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
+import { GuiStorageService } from './gui-storage.service';
 
 
 @NgModule({
@@ -61,9 +62,8 @@ import { ObserversModule } from '@angular/cdk/observers';
   providers: [
     ClassStorageService,
     ClassAreaComponent,
+    GuiStorageService
     ],
   bootstrap: [AppComponent],
-  schemas: [],
-  exports: [  ]
 })
 export class AppModule { }

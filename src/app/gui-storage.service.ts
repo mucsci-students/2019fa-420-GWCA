@@ -31,7 +31,6 @@ export class GuiStorageService {
   };
 
   constructor(public storageService: ClassStorageService) { 
-
   }
 
   revertLeftShift(){
