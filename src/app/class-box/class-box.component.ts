@@ -12,10 +12,10 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   name: string;
   editorName: string;
   variables: string[];
-  editorVariables: string;
+  chipAttribute: string;
   methods: string[];
   //Note: this currently is used for all editing, I will make a better name for it soon.
-  editorMethods: string;
+  oldChipValue: string;
   exists: boolean;
   id: string;
   index: number = 0;
@@ -210,63 +210,63 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       });
 
 
-      //on connection click
-      jsPlumbInstance.bind("click",function(connection){
-        if(id == connection['source']['id']){
-          dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
-          dialogRef.componentInstance.buttonPressed = "connection";
-          dialogRef.afterClosed().subscribe(() => {
-            connectionType = dialogRef.componentInstance.connectionType;
-            switch(connectionType){
-              //open diamond, solid line
-              //aggregation
-              case 'purple':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'purple', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Aggregation",location:0.5}]);
-                connection.addOverlay(["Diamond",{
-                  cssClass: "unfilledDiamond",
-                  width: 15,
-                  length: 30,
-                  location: 1
-                }]);
+    //on connection click
+    jsPlumbInstance.bind("click",function(connection){
+      if(id == connection['source']['id']){
+        dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
+        dialogRef.componentInstance.buttonPressed = "connection";
+        dialogRef.afterClosed().subscribe(() => {
+          connectionType = dialogRef.componentInstance.connectionType;
+          switch(connectionType){
+            //open diamond, solid line
+            //aggregation
+            case 'purple':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({stroke: 'purple', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Aggregation",location:0.5}]);
+              connection.addOverlay(["Diamond",{
+                cssClass: "unfilledDiamond",
+                width: 15,
+                length: 30,
+                location: 1
+              }]);
 
-                break;
-              //association
-              //just a line
-              case 'green':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'green', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Association",location:0.5}]);
-                break;
-              //closed diamond, solid line
-              //composition
-              case 'red':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
-                connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
-                break;
-              //closed arrow, solid line
-              //generalization
-              case 'orange':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'orange', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Generalization",location:0.5}]);
-                connection.addOverlay(["Arrow",{width: 15,lenght: 30,location:1}]);
-                break;
-              //closed arrow, dashed line
-              //realization
-              case 'yellow':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
-                connection.addOverlay(["Label",{label:"Realization",location:0.5}]);
-                connection.addOverlay(["Arrow",{width: 15,lenght: 30,location:1}]);
-                break;
-            }
-          });
-        }
-      });
+              break;
+            //association
+            //just a line
+            case 'green':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({stroke: 'green', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Association",location:0.5}]);
+              break;
+            //closed diamond, solid line
+            //composition
+            case 'red':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
+              connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+              break;
+            //closed arrow, solid line
+            //generalization
+            case 'orange':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({stroke: 'orange', lineWidth: '10px'});
+              connection.addOverlay(["Label",{label:"Generalization",location:0.5}]);
+              connection.addOverlay(["Arrow",{width: 15,lenght: 30,location:1}]);
+              break;
+            //closed arrow, dashed line
+            //realization
+            case 'yellow':
+              connection.removeAllOverlays();
+              connection.setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
+              connection.addOverlay(["Label",{label:"Realization",location:0.5}]);
+              connection.addOverlay(["Arrow",{width: 15,lenght: 30,location:1}]);
+              break;
+          }
+        });
+      }
+    });
 
     
   }
@@ -316,7 +316,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   removeMethod(method){
     var index = this.methods.indexOf(method);
 
-    if(index >= 0){
+    if(index >= 0 && this.methods.includes(method)){
       this.methods.splice(index,1);
     }
 
@@ -327,13 +327,14 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   removeVariable(variable){
     var index = this.variables.indexOf(variable);
 
-    if(index >= 0){
+    if(index >= 0 && this.variables.includes(variable)){
       this.variables.splice(index,1);
     }
     this.service.findClass(this.name)['variables'] = this.variables;
   }
 
   //auto generate composition connection on class creation
+  //GUI no checking
   autoConnect(){
     var established_connections: string[][] = [];
     var noVariables = (this.variables.length >= 1 && this.variables[0] != 'none') ? true : false;
@@ -379,16 +380,16 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.edit = edit;
     switch(edit){
       case 'chip':
-        this.editorVariables = input;
+        this.chipAttribute = input;
         if(this.variables.includes(input)){
-          this.editorMethods = input;
+          this.oldChipValue = input;
           this.variables[this.variables.indexOf(input)] = input;
         }
         else{
-          this.editorMethods = input;
+          this.oldChipValue = input;
           this.methods[this.methods.indexOf(input)] = input;
         }
-        //se editor position
+        //set editor position
         setTimeout(function(){
           var editor = document.querySelector('.editor.chip');
           var chip = document.querySelector('.'+input).getBoundingClientRect();
@@ -413,6 +414,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   }
 
   //edit name
+  //GUI no tests
   editName(){
     this.service.connectionsUpdateWrapper();
     //update connections with new name
@@ -445,24 +447,32 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   }
 
   //this will change later
+  //GUI no change
   deleteClass(){
+    this.service.allClasses.splice(this.service.allClasses.indexOf(this.service.findClass(this.name)),1);
     this.service.jsPlumbInstance.remove(this.id);
   }
 
   updateChip(){
-    for(var i = 0;i<this.variables.length;i++){
-      if(this.variables[i].includes(this.editorMethods)){
-        this.variables[i] = this.editorVariables;
-      }
+    if(this.variables.includes(this.oldChipValue)){
+      this.variables[this.variables.indexOf(this.oldChipValue)] = this.chipAttribute;
     }
-    for(var i = 0;i<this.methods.length;i++){
-      if(this.methods[i].includes(this.editorMethods)){
-        this.methods[i] = this.editorVariables;
-      }
+    else{
+      this.methods[this.methods.indexOf(this.oldChipValue)] = this.chipAttribute;
     }
+    // for(var i = 0;i<this.variables.length;i++){
+    //   if(this.variables[i] == this.oldChipValue){
+    //     this.variables[i] = this.chipAttribute;
+    //   }
+    // }
+    // for(var i = 0;i<this.methods.length;i++){
+    //   if(this.methods[i] == this.oldChipValue){
+    //     this.methods[i] = this.chipAttribute;
+    //   }
+    // }
     this.updateValues();
     this.edit = '';
-    this.editorMethods = ''
+    this.oldChipValue = ''
   }
 
   //tracker methods for ngFor

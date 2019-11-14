@@ -13,7 +13,7 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
   templateUrl: './class-area.component.html',
   styleUrls: ['./class-area.component.css']
 })
-export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDestroy {
+export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
@@ -60,14 +60,9 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         changes.forEachAddedItem(r =>
            this.updateBackend()
         );
-        changes.forEachRemovedItem(r =>
-          console.log("removed")
-        );
     }
   }
 
-  ngOnDestroy(){
-  }
 
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
