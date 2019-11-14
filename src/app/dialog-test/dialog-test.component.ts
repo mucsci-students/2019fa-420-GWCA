@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef, NgZone } from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
 import { Router } from '@angular/router';
+import { GuiStorageService } from '../gui-storage.service';
 
 @Component({
   selector: 'app-dialog-test',
@@ -26,7 +27,7 @@ export class DialogTestComponent implements OnInit {
   //boolean to check to see if class already exists
   exists: boolean;
 
-  constructor(public service: ClassStorageService) { 
+  constructor(public service: ClassStorageService, public guiService: GuiStorageService) { 
     this.exists = true;
   }
 
@@ -72,7 +73,7 @@ export class DialogTestComponent implements OnInit {
     this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
     
     //wrapper for re-inializing connections & endpoints
-    this.service.reinitializeConnections();
+    this.guiService.reinitializeConnections();
     
     
   }
