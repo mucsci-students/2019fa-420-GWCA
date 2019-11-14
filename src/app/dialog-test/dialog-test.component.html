@@ -40,13 +40,13 @@
           <input matInput [(ngModel)]="className" minlength="1"  (ngModelChange)="existenceCheck()" [ngModelOptions]="{standalone:true}"/>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>Methods</mat-label>
-          <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
+          <mat-label>State variables</mat-label>
+          <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
           <mat-hint>Seperated by commas</mat-hint>
         </mat-form-field>
         <mat-form-field>
-          <mat-label>State variables</mat-label>
-          <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
+          <mat-label>Methods</mat-label>
+          <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
           <mat-hint>Seperated by commas</mat-hint>
         </mat-form-field>
         <span *ngIf="exists == false">
@@ -150,6 +150,12 @@
           auto-populate with data already existing.
         </li>
         <li>Make any changes you want to the data, and once complete, press the button for the class to be updated in the page</li>
+        <li><strong>Note: </strong>You can also edit the class in the GUI directly</li>
+        <ul>
+          <li>To edit the class name, you just press the edit button in the top right corner</li>
+          <li>To edit the attributes, just click on the actual attribute and you can directly edit it</li>
+          <li>You can also delete attributes by pressing the X at the end of the attribute</li>
+        </ul>
       </ol>
       <!-- allow for Zach to enter his data for the delete -->
       <!-- or input here once delete functionality is complete -->
@@ -173,7 +179,9 @@
         <li>Once there are classes on the page, the user can connect the classes by dragging from one of the "circles" (endpoints)
           from one to another
         </li>
-        <li>When a connection is made the user will be able to specify a "type" of relationship between classes (currently in development)</li>
+        <li>You can also just drag from an endpoint to a class box and it will make a connection</li>
+        <li>When a connection is made the user will be able to specify a "type" of relationship between classes</li>
+        <li>After a connection is made if you click on the connection, you can pick the type of connection again in the same format as before</li>
         <li><strong>Note: </strong>Connections to itself are forcibly removed</li>
       </ol>
       <h5>CLI</h5>
@@ -181,27 +189,18 @@
       <ol>
         <li>Press the "Switch to CLI" button</li>
         <li>The user will then be directed to the CLI part of the application</li>
-        <li>First, the user must press enter to be able to interact with the CLI</li>
-        <li>After that, the user will be able to input commands into the interface</li>
-        <li>The current commands include:</li>
-          <ul>
-            <li>h -> Help, display the commands list</li>
-            <li>q -> Quit, switch back to the GUI view</li>
-            <li>c -> Clear, clear the screen</li>
-            <li>v -> View, display the list of classes</li>
-            <li>e -> Export, export the data</li>
-          </ul>
+        <li>You will be greeted with a list of commands, and their functionality</li>
+        <li>You can always enter help to get the list of commands again</li>
+        <li>You can also press man command to get specific information about the command</li>
       </ol>
       <h5>Known bugs & upcoming functionality</h5>
       <ol>
         <mat-chip-list>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Specify actual types of connections, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>More commands for CLI, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>More overlays for the connections (to help distinguish connections), Completion: (TBD)</li>
           <li class="chip"><mat-chip color="warn" selected>Bug </mat-chip>Can drag classes over one another, Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Allow for downloading/saving the data to a file, Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>JSON to YAML change Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Try to force connections to not overlap classes, Completion: (TBD)</li>
+          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>UX changes, Completion: (TBD)</li>
         </mat-chip-list>
       </ol>
       <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>  

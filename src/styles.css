@@ -39,3 +39,41 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .editor button{
     width           : 100%;
 }
+
+.editor.chip{
+    display         : flex;
+    max-width       : 150px;
+}
+
+mat-chip{
+    min-width       : 75px;
+}
+
+.editor.chip button{
+    font-size       : 12px;
+    padding         : 0;
+}
+
+.class-box .mat-chip-list-wrapper{
+    flex-direction  : column;
+    float           : left;
+    margin-left     : 20px !important;
+    margin-bottom   : 10px;
+}
+
+mat-chip mat-icon{
+    padding-left    : 10px;
+}
+
+.class-box{
+    display         : flex !important;
+    flex-direction  : column !important;
+}
+
+mat-card-subtitle{
+    margin-bottom   : 0 !important;
+}
+
+mat-chip mat-icon{
+    margin-left     : auto !important;
+}
