@@ -63,7 +63,7 @@
               <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
             </mat-select> 
         </mat-form-field>
-        <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="search(choice)">Deleted Class</button>
+        <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="deleteClass()">Deleted Class</button>
     </form>
   </span> 
   <!-- export button contents -->
@@ -110,20 +110,14 @@
           <mat-form-field>
             <!-- THIS SECTION NEEDS TO BE EDITED-->
             <mat-label> Methods </mat-label>
-            <mat-select [(value)]="selected_1">
-                <mat-option>None</mat-option>
-                <mat-option value="option1">Option 1</mat-option>
-                <mat-option value="option2">Option 2</mat-option>
-                <mat-option value="option3">Option 3</mat-option>
-              </mat-select>
+            <mat-select [(value)]="select_1">
+              <mat-option *ngFor="let method of classMethods" value="{{method.innerHTML}}" >{{method.innerHTML}}</mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-form-field>
             <mat-label> Variables </mat-label>
-            <mat-select [(value)]="selected_2">
-                <mat-option>None</mat-option>
-                <mat-option value="option1">Option 1</mat-option>
-                <mat-option value="option2">Option 2</mat-option>
-                <mat-option value="option3">Option 3</mat-option>
+            <mat-select [(value)]="select_2">
+              <mat-option *ngFor="let variable of classVariables" value="{{variable.innerHTML}}" >{{variable.innerHTML}}</mat-option>
             </mat-select>
             <!-- THIS SECTION NEEDS TO BE EDITED-->
           </mat-form-field>

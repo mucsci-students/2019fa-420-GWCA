@@ -418,4 +418,11 @@ export class ClassStorageService {
       console.log(e);
     }
   }
+  //Delete Class function from the array in storage as well as from the DOM
+  deleteClass(id:string, name:string) {
+    var deleteCla = this.findClass(name);
+    var indexDelete = this.allClasses.indexOf(deleteCla);
+    this.allClasses.splice(indexDelete, 1);
+    this.jsPlumbInstance.remove(id);
+  }
 }
