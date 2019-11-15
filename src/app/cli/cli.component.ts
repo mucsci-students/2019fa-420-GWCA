@@ -18,6 +18,7 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
+  dialogRef:MatDialogRef<DialogTestComponent>;
   @ViewChild('terminal',{static:true}) terminalDiv: ElementRef;
 
   @HostListener('document:keyup', ['$event'])
@@ -260,10 +261,9 @@ export class CliComponent implements OnInit, AfterViewInit {
 
   //open modal for dialog
   openImport(){
-    var dialogRef: MatDialogRef<DialogTestComponent>;
-    dialogRef = this.dialog.open(DialogTestComponent, {width: '30%'});
-    dialogRef.componentInstance.buttonPressed = "import";
-    dialogRef.componentInstance.name = "Import Button";
+    this.dialogRef = this.dialog.open(DialogTestComponent, {width: '30%'});
+    this.dialogRef.componentInstance.buttonPressed = "import";
+    this.dialogRef.componentInstance.name = "Import Button";
     return 'Opening Dialog...\n';
 
   }
