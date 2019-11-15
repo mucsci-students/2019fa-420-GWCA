@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "coveralls": "ng test --watch=false --browsers=ChromeHeadless --code-coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "private": true,
   "dependencies": {
@@ -25,9 +26,9 @@
     "fs": "0.0.1-security",
     "jsplumb": "^2.12.0",
     "karma-coverage": "^2.0.1",
-    "ng-terminal": "^2.2.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
+    "xterm": "^4.2.0",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
@@ -39,11 +40,14 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "coveralls": "^3.0.7",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
     "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage": "^2.0.1",
     "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-coveralls": "^2.1.0",
     "karma-firefox-launcher": "^1.2.0",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",

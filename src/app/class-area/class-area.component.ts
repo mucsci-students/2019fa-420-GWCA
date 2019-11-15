@@ -4,7 +4,7 @@ import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 import { FileDownloadComponent } from '../file-download/file-download.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { jsPlumb, jsPlumbInstance} from 'jsplumb';
+import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 
@@ -14,7 +14,7 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
   templateUrl: './class-area.component.html',
   styleUrls: ['./class-area.component.css']
 })
-export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDestroy {
+export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
@@ -39,7 +39,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
         if(event instanceof NavigationStart){
           if(router.url !== '/cli'){
-            this.connectionsUpdateWrapper();
+            this.service.connectionsUpdateWrapper();
             this.updatePosition();
             //this.removeAll();
             // this.classBoxes = [];
@@ -61,25 +61,17 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         changes.forEachAddedItem(r =>
            this.updateBackend()
         );
-        changes.forEachRemovedItem(r =>
-          console.log("removed")
-        );
     }
   }
 
-  ngOnDestroy(){
-  }
 
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
 
     this.service.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
-        drag: function(){
-
-        }
+        zIndex: 1000
       },
-
     });
     this.service.jsPlumbInstance.setContainer("classes-container");
     this.service.jsPlumbInstance.reset();
@@ -112,23 +104,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
 
 
-
-
-
-  // removeAll(){
-  //   //remove the classes and endpoints
-  //   this.service.jsPlumbInstance.reset();
-
-  //     var class_boxes = document.querySelectorAll("app-class-box");
-  //     for(var i = 0;i<class_boxes.length;i++){
-  //       this.service.jsPlumbInstance.remove(class_boxes[i]);
-  //     }
-
-
-  // }
-
-
-
   //update backend
   updateBackend(){
     //console.log(this.service.generate());
@@ -140,84 +115,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
     }
   }
 
-   //find the class in the back-end array and add the connection
-   insertConnection(source:string, target: string,style: string){
-    var sourceClass = source.split("_")[0];
-
-    var sourcePosition = [source.split("_")[0],source.split("_")[2]].join("_");
-    var targetPosition = [target.split("_")[0],target.split("_")[2]].join("_");
-
-
-     var connections = this.service.findClass(sourceClass)['connections'];
-     if(connections.length == 1){
-       if(connections[0] !== [source,target]){
-         this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
-       }
-     }
-     else if(connections.length == 0){
-       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
-     }
-     else{
-       for(var i = 0; i< connections.length;i++){
-         if(connections[i] == [sourcePosition,target]){
-           return;
-         }
-       }
-       this.service.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
-     }
-  }
-
-
-  updateConnections() : string[][] {
-    //find all classes in the DOM and then iterate through all of them and add connections to the back-end
-    var elements = document.querySelectorAll('.class-box');
-    var jsPlumbInstance = this.service.jsPlumbInstance;
-    var all_connections: string[][] = [];
-    for(var i = 0;i< elements.length;i++){
-      //var connections = this.service.jsPlumbInstance.getConnections({source: elements[i].id});
-      jsPlumbInstance.selectEndpoints({source:elements[i].id}).each(function(endpoint){
-
-        if(endpoint['connections'].length != 0){
-          //find element in DOM
-          for(var j = 0;j<endpoint['connections'].length;j++){
-            if(endpoint['connections'][j]['endpoints'][0] == endpoint){
-              var target = endpoint['connections'][j]['endpoints'][1].getUuid();
-              var source = endpoint.getUuid();
-              var connectionStyle = endpoint['connections'][0].getPaintStyle()['stroke'];
-              switch(connectionStyle){
-                case 'purple':
-                  var connectionType = 'Aggregation';
-                  break;
-                case 'green':
-                    var connectionType = 'Association';
-                    break;
-                case 'red':
-                  var connectionType = 'Composition';
-                  break;
-                case 'orange':
-                  var connectionType = 'Generalization';
-                  break;
-                case 'yellow':
-                  var connectionType = 'Realization';
-                  break;
-              }
-
-              all_connections.push([source,target,connectionType]);
-            }
-          }
-        }
-      });
-    }
-    return all_connections;
-  }
-
-  //wrapper for updating the connections
-  connectionsUpdateWrapper(){
-    var connections = this.updateConnections();
-    for(var i = 0;i<connections.length;i++){
-      this.insertConnection(connections[i][0],connections[i][1],connections[i][2]);
-    }
-  }
 
   updatePosition(){
     var classes = document.querySelectorAll('.class-box');
@@ -297,4 +194,9 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   updateStoredDiagram(){
     this.service.diagramToJSON();
   }
+  
+  /*test(){
+    this.service.deleteClass('a_0', 'a');
+  }*/
+
 }

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick, ComponentFixtureNoNgZone } from '@angular/core/testing';
 import { ClassAreaComponent } from './class-area.component';
-import { MatDialogModule, MatSelectModule, MatDialogRef, MatChipsModule, MatToolbarModule, MatMenuModule, MatCardModule } from '@angular/material';
+import { MatDialogModule, MatSelectModule, MatDialogRef, MatChipsModule, MatToolbarModule, MatMenuModule, MatCardModule, MatIconModule } from '@angular/material';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 import { CliComponent } from '../cli/cli.component';
 import { routes } from '../app-routing.module';
 import { FileDownloadComponent } from '../file-download/file-download.component';
+import { FormsModule } from '@angular/forms';
 
 describe('ClassAreaComponent', () => {
   let component: ClassAreaComponent;
@@ -37,6 +38,9 @@ describe('ClassAreaComponent', () => {
         MatToolbarModule,
         MatMenuModule,
         MatCardModule,
+        MatIconModule,
+        FormsModule,
+        MatChipsModule,
         RouterTestingModule.withRoutes(routes),
       ],
       providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}}, FileDownloadComponent],
