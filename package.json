@@ -24,6 +24,7 @@
     "@azure/storage-blob": "^12.0.0",
     "fs": "0.0.1-security",
     "jsplumb": "^2.12.0",
+    "karma-coverage": "^2.0.1",
     "ng-terminal": "^2.2.1",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
