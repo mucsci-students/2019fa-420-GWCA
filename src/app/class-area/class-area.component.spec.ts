@@ -159,16 +159,6 @@ describe('ClassAreaComponent', () => {
     expect(new_button.querySelector('.export').textContent).toContain('Export');
   }));
 
-  it('click export button opens dialog',async(() => {
-    spyOn(component,'openDialog');
-    let new_button = fixture.debugElement.nativeElement.querySelector('.export');
-    new_button.click();
-
-    fixture.whenStable().then(() => {
-      expect(component.openDialog).toHaveBeenCalled();
-    });
-
-  }));
 
   it('should create the class',() => {
     service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
