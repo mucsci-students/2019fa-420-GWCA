@@ -2,7 +2,7 @@ import { Component, OnInit,ComponentFactoryResolver, IterableDiffer, IterableDif
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
-import { FileDownloadComponent } from '../file-download/file-download.component'
+import { FileDownloadComponent } from '../file-download/file-download.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb, jsPlumbInstance} from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -23,7 +23,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
-    ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
+    , public dialog: MatDialog, private iterableDiffs: IterableDiffers,
     private router: Router, public fileDownload: FileDownloadComponent) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
@@ -263,12 +263,12 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         this.dialogRef.componentInstance.buttonPressed = "export";
         this.dialogRef.componentInstance.name = "Export Button";
         break;
-        case 'help':
-          //update width for help
-          this.dialogRef.updateSize('50%','80%');
-          this.dialogRef.componentInstance.buttonPressed = "help";
-          this.dialogRef.componentInstance.name = "Help";
-          break;
+      case 'help':
+        //update width for help
+        this.dialogRef.updateSize('50%','80%');
+        this.dialogRef.componentInstance.buttonPressed = "help";
+        this.dialogRef.componentInstance.name = "Help";
+        break;
     }
     //listen for close without submit
     this.dialogRef.backdropClick().subscribe(() => {

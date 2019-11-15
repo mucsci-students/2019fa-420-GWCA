@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ClassStorageService } from '../class-storage.service';
 
 @Component({
   selector: 'app-file-download',
@@ -8,16 +9,26 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class FileDownloadComponent implements OnInit {
 
-  fileURL;
+  fileURL: any;
+  exportedJSON : string;
+  blob : Blob;
 
-  constructor(private sanatizer: DomSanitizer) { }
+  constructor(private sanatizer: DomSanitizer, public service: ClassStorageService) { }
 
   ngOnInit() {
-    const exportedJSON = "Test data"// TODO: retrieve jsonString
-    const blob = new Blob([exportedJSON], { type: 'application/json' });
+    this.service.diagramToJSON();
+    this.exportedJSON = this.service.jsonString;
+    this.blob = new Blob([this.exportedJSON], { type: 'application/json' });
+    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
+  }
 
-    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
 
+
+  downloadDiagram(){
+    this.service.diagramToJSON();
+    this.exportedJSON = this.service.jsonString;
+    this.blob = new Blob([this.exportedJSON], { type: 'application/json' });
+    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
   }
 
 }

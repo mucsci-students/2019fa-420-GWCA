@@ -10,6 +10,7 @@ import { Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { CliComponent } from '../cli/cli.component';
 import { routes } from '../app-routing.module';
+import { FileDownloadComponent } from '../file-download/file-download.component';
 
 describe('ClassAreaComponent', () => {
   let component: ClassAreaComponent;
@@ -22,10 +23,11 @@ describe('ClassAreaComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         ClassAreaComponent,
         ClassBoxComponent,
-        CliComponent
+        CliComponent,
+        FileDownloadComponent
     ],
       imports: [
         MatDialogModule,
@@ -37,7 +39,7 @@ describe('ClassAreaComponent', () => {
         MatCardModule,
         RouterTestingModule.withRoutes(routes),
       ],
-      providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}},],
+      providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}}, FileDownloadComponent],
     }).compileComponents();
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
@@ -168,7 +170,7 @@ describe('ClassAreaComponent', () => {
 
   }));
 
-  it('should create the class',() => {    
+  it('should create the class',() => {
     service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
     component.createClass();
     expect(ClassBoxComponent).toBeTruthy();
@@ -196,7 +198,7 @@ describe('ClassAreaComponent', () => {
     //     const endpoints = fixture.debugElement.nativeElement.querySelectorAll('svg');
     //     expect(endpoints.length).toEqual(4);
     //   });
-          
+
     // }));
 
   //CLI button tests
@@ -221,7 +223,7 @@ describe('ClassAreaComponent', () => {
     expect(location.path()).toBe('/cli');
   }));
 
-  
 
-  
+
+
 });

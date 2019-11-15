@@ -8,10 +8,10 @@
               <mat-select placeholder="Choose a class..." [(value)]="choice">
                 <!-- <mat-option selected>None</mat-option> -->
                 <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-              </mat-select> 
+              </mat-select>
           </mat-form-field>
           <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
-        </span>  
+        </span>
 
           <span *ngIf="choice === 'found'">
             <mat-form-field class="input-data">
@@ -28,7 +28,7 @@
               <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
               <mat-hint>Seperated by commas</mat-hint>
             </mat-form-field>
-            <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="editButton()">Update</button>  
+            <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="editButton()">Update</button>
           </span>
       </form>
   </span>
@@ -61,11 +61,11 @@
             <mat-select placeholder="Choose a class..." [(value)]="choice">
               <!-- <mat-option selected>None</mat-option> -->
               <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select> 
+            </mat-select>
         </mat-form-field>
         <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="search(choice)">Deleted Class</button>
     </form>
-  </span> 
+  </span>
   <!-- export button contents -->
   <!-- line 59 actually serves our diagram.-->
   <span *ngIf="buttonPressed === 'export'">
@@ -102,10 +102,10 @@
             <mat-select placeholder="Choose a class..." [(value)]="choice">
               <!-- <mat-option selected>None</mat-option> -->
               <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select> 
+            </mat-select>
         </mat-form-field>
         <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
-      </span>  
+      </span>
         <span *ngIf="choice === 'found'"> <!--This also needs to me changed...Add function in copmonents part-->
           <mat-form-field>
             <!-- THIS SECTION NEEDS TO BE EDITED-->
@@ -127,7 +127,7 @@
             </mat-select>
             <!-- THIS SECTION NEEDS TO BE EDITED-->
           </mat-form-field>
-          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
+          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>
         </span>
     </form>
   </span>
@@ -169,7 +169,7 @@
       <h5>Importing data</h5>
       <ol>
         <li>Press the import button</li>
-        <li>paste the data previously exported, from the export button into this popup and press the submit 
+        <li>paste the data previously exported, from the export button into this popup and press the submit
           button to regenerate the data</li>
         <li><strong>Note:</strong> upcoming functionality will include allowing the user to input the downloaded file
          taken from the export button, to generate the data</li>
@@ -205,12 +205,11 @@
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>More commands for CLI, Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>More overlays for the connections (to help distinguish connections), Completion: (TBD)</li>
           <li class="chip"><mat-chip color="warn" selected>Bug </mat-chip>Can drag classes over one another, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Allow for downloading/saving the data to a file, Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>JSON to YAML change Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Try to force connections to not overlap classes, Completion: (TBD)</li>
         </mat-chip-list>
       </ol>
-      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>  
+      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>
     </div>
   </span>
 </div>
