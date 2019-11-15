@@ -370,6 +370,14 @@ export class GuiStorageService {
     }
   }
 
+  //Delete Class function from the array in storage as well as from the DOM
+  deleteClass(id:string, name:string) {
+    var deleteCla = this.storageService.findClass(name);
+    var indexDelete = this.storageService.allClasses.indexOf(deleteCla);
+    this.storageService.allClasses.splice(indexDelete, 1);
+    this.jsPlumbInstance.remove(id);
+  }
+
 
 
 }
