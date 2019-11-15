@@ -14,6 +14,8 @@ export class DialogTestComponent implements OnInit {
   @Input() name: string;
   classNames: NodeListOf<Element>;
   classes: NodeListOf<Element>;
+  classMethods: NodeListOf<Element>;
+  classVariables: NodeListOf<Element>;
   choice: string;
   //input values for create new
   className: string;
@@ -37,6 +39,8 @@ export class DialogTestComponent implements OnInit {
     //gets class names to choose
     //aggregation for realizing 
     this.classNames = document.querySelectorAll("mat-card-title");
+    this.classMethods = document.querySelectorAll(".method");
+    this.classVariables = document.querySelectorAll(".variable")
   }
 
 
@@ -112,8 +116,6 @@ export class DialogTestComponent implements OnInit {
   exportButton(){
 
   }
-
-
   /*
   * importDiagram is basically just a wrapper for the service's import method.
   * This needs to be done because we can't directly call the service in the (click)

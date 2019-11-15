@@ -201,5 +201,9 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
   updateStoredDiagram(){
     this.service.diagramToJSON();
-  }  
+  }
+  
+  /*test(){
+    this.service.deleteClass('a_0', 'a');
+  }*/
 }
