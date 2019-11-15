@@ -2,12 +2,7 @@
     <mat-toolbar class="menu">
         <h3>GWCA</h3>
         <button mat-raised-button color="primary" class="buttons new" (click)="openDialog('new')" >New</button>
-        <button mat-raised-button color="primary" class="buttons edit" (click)="openDialog('edit');connectionsUpdateWrapper()">Edit</button>
-        <button mat-raised-button color="primary" [matMenuTriggerFor]="delete">Delete</button>
-        <mat-menu #delete>
-            <button mat-menu-item color="primary" (click)="openDialog('delete')">Delete Class</button>
-            <button mat-menu-item color="primary" (click)="openDialog('delete_attribute')">Delete Attribute</button>
-        </mat-menu>
+        <button mat-raised-button color="primary" class="buttons edit" (click)="openDialog('edit');service.connectionsUpdateWrapper()">Edit</button>
         <button mat-raised-button color="primary" class="buttons import" (click)="openDialog('import')">Import</button>
         <app-file-download></app-file-download>
         <button mat-raised-button color="primary" class="buttons help" (click)="openDialog('help')">Help</button>
@@ -17,7 +12,8 @@
             </a>
         </div>
     </mat-toolbar>
-    <!-- <button (click)="test()">Test</button> -->
+
+    <!-- <button (click)="test()">Test</button>  -->
     <!-- <button (click)="deleteClass('c')">Test Delete composite</button> -->
 </div>
 

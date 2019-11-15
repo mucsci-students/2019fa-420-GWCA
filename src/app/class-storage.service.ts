@@ -39,13 +39,16 @@ export class ClassStorageService {
     isSource: true,
     paintStyle: {fill: "green"},
     maxConnections: -1,
-    connector: ["Flowchart", {stub: [40, 60], gap: 10,alwaysRespectStubs: true}],
+    connector: ["Flowchart", {stub: [40, 60], gap: 10,alwaysRespectStubs: true},{anchors: ["Bottom","Top","Left","Right"]}],
     connectorOverlays: [
       ["Arrow", {width: 15,length: 30,location: 1,id: "arrow"}]
     ],
+    endpoint: "Dot",
     DoNotThrowErrors: true,
   
   };
+
+
 
 
   //initialize the list that holds the classes
@@ -59,7 +62,7 @@ export class ClassStorageService {
     return this.allClasses[0];
   }
 
-  //searh array for class
+  //searh array for class by name, return it
   findClass(name){
     for(var i = 0;i<this.allClasses.length;i++){
       if(this.allClasses[i]['name'] == name){
@@ -67,6 +70,25 @@ export class ClassStorageService {
       }
     }
     return null;
+  }
+
+  //searh array for class by name, return its index
+  findClassIndex(name){
+    for(var i = 0;i<this.allClasses.length;i++){
+      if(this.allClasses[i]['name'] == name){
+        return i;
+      }
+    }
+    return null;
+  }
+
+  //this function takes in an index, and removes the class at that index
+  removeClassByIndex(index: number){
+    if (index !== -1){
+      this.allClasses.splice(index, 1);
+      return true;
+    }
+    return "index not valid";
   }
 
   //getters
@@ -100,6 +122,22 @@ export class ClassStorageService {
     //console.log(this.leftShift);
   }
 
+  addEndpoints(id:string){
+
+    //have only 2 continuous endpoints so that they can not overlap, but still move
+    this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["top","right","bottom","left"]}],uuid:(id+"_top"),hoverPaintStyle: {fill: "red"}},this.common);
+    this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["bottom","left","top","right"]}],uuid:(id+"_bottom"),hoverPaintStyle: {fill: "red"}},this.common);
+    this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["left","right","bottom","top"]}],uuid:(id+"_left"),hoverPaintStyle: {fill: "red"}},this.common);
+    this.jsPlumbInstance.addEndpoint(id,{anchor: ["Continuous",{faces: ["right","left","top","botttom"]}],uuid:(id+"_right"),hoverPaintStyle: {fill: "red"}},this.common);
+
+    //allow to just drag connection to div to be able to make connections
+    this.jsPlumbInstance.makeTarget(id,{anchor: ["Continuous",{faces: ["top","bottom","left","right"]}]},this.common);
+
+    //fixes error where endpoints don't properly align with box
+    this.jsPlumbInstance.repaintEverything();
+    
+  }
+
   //redraw all jsPlumb setttings & connections
   reinitializeConnections(){
     this.jsPlumbInstance.reset();
@@ -111,10 +149,8 @@ export class ClassStorageService {
     }
         //re-initialize data
         for(var i = 0;i<class_boxes.length;i++){
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Top",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_top")},this.common);
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Bottom",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_bottom")},this.common);
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Right",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_right")},this.common);
-           this.jsPlumbInstance.addEndpoint(class_boxes[i]['childNodes'][0]['id'],{anchor:"Left",uuid:(class_boxes[i]['firstChild']['attributes']['id'].value+"_left")},this.common);
+          this.addEndpoints(class_boxes[i]['childNodes'][0]['id']);
+          
           
           // //re-bind the "no link to self rule"
           var jsPlumbInstance = this.jsPlumbInstance;
@@ -144,6 +180,8 @@ export class ClassStorageService {
          var targetPosition = classes[i]['connections'][j][1].split("_")[1];
          var targetElement = document.querySelector("app-class-box ."+target).id;
 
+        //  console.log(srcElement+"_"+sourcePosition);
+        //  console.log(targetElement+"_"+targetPosition);
          var connectionType = classes[i]['connections'][j][2];
          //skip
          
@@ -219,6 +257,94 @@ export class ClassStorageService {
     }
   }
 
+  //update connections
+  //find the class in the back-end array and add the connection
+  insertConnection(source:string, target: string,style: string){
+    var sourceClass = source.split("_")[0];
+
+
+    var sourcePosition = [source.split("_")[0],source.split("_")[2]].join("_");
+    var targetPosition = [target.split("_")[0],target.split("_")[2]].join("_");
+
+
+     var connections = this.findClass(sourceClass)['connections'];
+     if(connections.length == 1){
+       if(connections[0] !== [source,target]){
+         this.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
+       }
+     }
+     else if(connections.length == 0){
+       this.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
+     }
+     else{
+       for(var i = 0; i< connections.length;i++){
+         if(connections[i] == [sourcePosition,target]){
+           return;
+         }
+       }
+       this.findClass(sourceClass)['connections'].push([sourcePosition,targetPosition,style]);
+     }
+  }
+ 
+
+  updateConnections() : string[][] {
+    //find all classes in the DOM and then iterate through all of them and add connections to the back-end
+    var elements = document.querySelectorAll('.class-box');
+    var jsPlumbInstance = this.jsPlumbInstance;
+    var all_connections: string[][] = [];
+    for(var i = 0;i< elements.length;i++){
+      //var connections = this.service.jsPlumbInstance.getConnections({source: elements[i].id});
+      jsPlumbInstance.selectEndpoints({source:elements[i].id}).each(function(endpoint){
+
+        if(endpoint['connections'].length != 0){
+          //find element in DOM
+          for(var j = 0;j<endpoint['connections'].length;j++){
+            if(endpoint['connections'][j]['endpoints'][0] == endpoint){
+              var target = endpoint['connections'][j]['endpoints'][1].getUuid();
+              var source = endpoint.getUuid();
+              //if source or target undefined
+              if(!source){
+                source = endpoint['connections'][j]['endpoints'][0]['elementId'] + "_" + endpoint['connections'][j]['endpoints'][0]['_continuousAnchorEdge'];
+              }
+              if(!target){
+                target = endpoint['connections'][j]['endpoints'][1]['elementId'] + "_" + endpoint['connections'][j]['endpoints'][1]['_continuousAnchorEdge'];
+              }
+              var connectionStyle = endpoint['connections'][0].getPaintStyle()['stroke'];
+              switch(connectionStyle){
+                case 'purple':
+                  var connectionType = 'Aggregation';
+                  break;
+                case 'green':
+                    var connectionType = 'Association';
+                    break;
+                case 'red':
+                  var connectionType = 'Composition';
+                  break;
+                case 'orange':
+                  var connectionType = 'Generalization';
+                  break;
+                case 'yellow':
+                  var connectionType = 'Realization';
+                  break;
+              }
+
+              all_connections.push([source,target,connectionType]);
+            }
+          }
+        }
+      });
+    }
+    return all_connections;
+  }
+
+  //wrapper for updating the connections
+  connectionsUpdateWrapper(){
+    var connections = this.updateConnections();
+    for(var i = 0;i<connections.length;i++){
+      this.insertConnection(connections[i][0],connections[i][1],connections[i][2]);
+    }
+  }
+
 
 
  // this function outputs the current diagram as a JSON string
@@ -242,5 +368,12 @@ export class ClassStorageService {
     catch(e) {
       console.log(e);
     }
+  }
+  //Delete Class function from the array in storage as well as from the DOM
+  deleteClass(id:string, name:string) {
+    var deleteCla = this.findClass(name);
+    var indexDelete = this.allClasses.indexOf(deleteCla);
+    this.allClasses.splice(indexDelete, 1);
+    this.jsPlumbInstance.remove(id);
   }
 }

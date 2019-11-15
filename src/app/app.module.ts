@@ -24,6 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule, MatSelectModule, MatMenuModule, MatToolbarModule, MatChipsModule, MatCardModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
 
@@ -55,6 +56,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     MatToolbarModule,
     MatChipsModule,
     MatCardModule,
+    MatIconModule
   ],
   entryComponents: [
     DialogTestComponent,
