@@ -102,7 +102,7 @@ export class CliComponent implements OnInit, AfterViewInit {
         manmsg = '\x1b[1;33m' + "Format:\tquit"; 
         break;
       case "add":   
-        manmsg = '\x1b[1;33m' + `Formats:\n\r  Classes:   add <class_name>\n\r  Variables: add -v <class_name> <var_name>\n\r  Methods:   add -m <class_name> <method_name>`; break;
+        manmsg = '\x1b[1;33m' + `Formats:\n\r  Classes:   add <class_name>\n\r  Variables: add -v <class_name> <var_type> <var_name>\n\r  Methods:   add -m <class_name> <method_name>`; break;
       case "edit":  manmsg = '\x1b[1;33m' + "Format:\tedit <class_name> [var1,var2,...] [method1(),method2(),...]"; break;
       case "remove": manmsg = '\x1b[1;33m' + "Format:\tremove <class_name>"; break;
       case "clear": manmsg = '\x1b[1;33m' + "Format:\tclear"; break;
@@ -152,7 +152,7 @@ export class CliComponent implements OnInit, AfterViewInit {
               return '\x1b[1;32m' + "Variable \"" + varName + "\" added to class \"" + name + "\" successfully."
             }
             else if(flag == "-v" && command.length != 5){
-              return '\x1b[1;33m' + "Format:\tadd -v <class_name> <var_name>";
+              return '\x1b[1;33m' + "Format:\tadd -v <class_name> <var_type> <var_name>";
             }
             else if(flag == "-m" && command.length == 4){
              var methodName = command[3];
@@ -185,7 +185,8 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
     }
     else{
-      return '\x1b[1;33m' + "Format:\tadd <class_name>";
+      //return '\x1b[1;33m' + "Format:\tadd <class_name>";
+      return '\x1b[1;33m' + "Format: add <class_name>";
     }
   }
 
