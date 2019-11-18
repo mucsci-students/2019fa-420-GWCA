@@ -6,6 +6,7 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { GuiStorageService } from '../gui-storage.service';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   private iterableDiffer: IterableDiffer<object>;
   constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
     ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
-    private router: Router) {
+    private router: Router, public guiService: GuiStorageService) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
 
@@ -38,7 +39,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
         if(event instanceof NavigationStart){
           if(router.url !== '/cli'){
-            this.service.connectionsUpdateWrapper();
+            this.guiService.connectionsUpdateWrapper();
             this.updatePosition();
             //this.removeAll();
             // this.classBoxes = [];
@@ -67,14 +68,14 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
 
-    this.service.jsPlumbInstance = jsPlumb.getInstance({
+    this.guiService.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
         zIndex: 1000
       },
     });
-    this.service.jsPlumbInstance.setContainer("classes-container");
-    this.service.jsPlumbInstance.reset();
-    this.service.revertLeftShift();
+    this.guiService.jsPlumbInstance.setContainer("classes-container");
+    this.guiService.jsPlumbInstance.reset();
+    this.guiService.revertLeftShift();
 
 
     
@@ -95,7 +96,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
           (<HTMLElement>class_box).style.left = classes[i]['position'][0];
           (<HTMLElement>class_box).style.top = classes[i]['position'][1];
         }
-        this.service.reinitializeConnections();
+        this.guiService.reinitializeConnections();
       }
     }
 

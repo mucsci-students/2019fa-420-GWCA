@@ -3,7 +3,8 @@ import { Terminal} from 'xterm';
 import { Router } from '@angular/router';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ArrayType, collectExternalReferences } from '@angular/compiler';
-import { getMatTooltipInvalidPositionError } from '@angular/material';
+import { getMatTooltipInvalidPositionError, MatDialogRef, MatDialog } from '@angular/material';
+import { DialogTestComponent } from '../dialog-test/dialog-test.component';
 
 @Component({
   selector: 'app-cli',
@@ -16,12 +17,13 @@ import { getMatTooltipInvalidPositionError } from '@angular/material';
 export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
+  dialogRef:MatDialogRef<DialogTestComponent>;
   @ViewChild('terminal',{static:true}) terminalDiv: ElementRef;
 
   @HostListener('document:keyup', ['$event'])
   handleDeleteKeyboardEvent(event: KeyboardEvent) {
     if(event.keyCode === 13){
-      var output = this.interpret(this.input, this.term);
+      var output = this.interpret(this.input);
       if(output == ""){
         this.term.reset();
       }
@@ -44,7 +46,8 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
-  constructor(private router : Router, public service : ClassStorageService ) {
+  constructor(private router : Router, public service : ClassStorageService,
+    public dialog: MatDialog ) {
    }
 
   ngOnInit() {
@@ -65,8 +68,8 @@ export class CliComponent implements OnInit, AfterViewInit {
 
 
   //this function taken in our input line, grabs the char that is a command, and runs it's corresponding code
-  interpret(line: string, currTerm: Terminal){
-    var output: string = "";
+  interpret(line : string){
+    var output : string = "";
     var input = line.replace(">","").split(" ");
     switch(input[0]){
       case "help": output = this.fullHelp(); break;
@@ -78,6 +81,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       case "remove": output = this.removeClass(line); break;
       case "clear": output = ""; break;
       case "view": output = this.viewDiagram(); break;
+      case "import": output = this.openImport(); break;
       case "export": output = "copy this: " + this.exportDiagram(); break;
       case "clone": output = this.cloneClass(line); break;
       case "neofetch": output = this.neofetch(); break;
@@ -119,13 +123,14 @@ export class CliComponent implements OnInit, AfterViewInit {
  edit     -> edit a class\r
  export   -> export diagram\r
  help     -> print help message\r
+ import -> import a diagram\r
  man      -> view a command's manual page\r
  neofetch -> view system information\r
  quit     -> quit and return to GUI\r
  remove   -> remove a class\r
  view     -> view diagram\r
 \x1b[1;33m type "help <command>" for further info\r`;
-  }
+ }
 
   //  this function adds a blank class with the given name.
   add(line: string){
@@ -366,4 +371,15 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
     }
   }
+
+
+  //open modal for dialog
+  openImport(){
+    this.dialogRef = this.dialog.open(DialogTestComponent, {width: '30%'});
+    this.dialogRef.componentInstance.buttonPressed = "import";
+    this.dialogRef.componentInstance.name = "Import Button";
+    return 'Opening Dialog...\n';
+
+  }
+
 }

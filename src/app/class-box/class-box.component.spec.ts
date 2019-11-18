@@ -4,6 +4,7 @@ import { ClassBoxComponent } from './class-box.component';
 import { ClassStorageService, fullClass} from '../class-storage.service';
 import { MatDialogModule, MatCardModule, MatIconModule, MatChipsModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
+import { GuiStorageService } from '../gui-storage.service';
 
 describe('ClassBoxComponent', () => {
   let component: ClassBoxComponent;
@@ -22,7 +23,7 @@ describe('ClassBoxComponent', () => {
         FormsModule,
         MatChipsModule,
       ],
-      providers: [ClassStorageService]
+      providers: [ClassStorageService,GuiStorageService]
     })
     .compileComponents()
     .then(() => {

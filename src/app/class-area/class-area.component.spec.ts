@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 import { CliComponent } from '../cli/cli.component';
 import { routes } from '../app-routing.module';
 import { FormsModule } from '@angular/forms';
+import { GuiStorageService } from '../gui-storage.service';
 
 describe('ClassAreaComponent', () => {
   let component: ClassAreaComponent;
@@ -19,6 +20,7 @@ describe('ClassAreaComponent', () => {
   let router: Router;
   let location: Location;
   let service: ClassStorageService;
+  let guiService: GuiStorageService;
   let test: fullClass = {'name': 'apple','variables':['v1','v2','v3'],'methods':['m1()','m2()','m3()'],'connections':[],'position':[]};
 
   beforeEach(async(() => {
@@ -41,7 +43,7 @@ describe('ClassAreaComponent', () => {
         MatChipsModule,
         RouterTestingModule.withRoutes(routes),
       ],
-      providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}},],
+      providers: [{provide: MatDialogRef,ClassStorageService,GuiStorageService, useValue: {}},],
     }).compileComponents();
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
@@ -52,6 +54,7 @@ describe('ClassAreaComponent', () => {
     location = TestBed.get(Location);
     router = TestBed.get(Router);
     service = TestBed.get(ClassStorageService);
+    guiService = TestBed.get(GuiStorageService);
   }));
 
   beforeEach(() => {
@@ -65,22 +68,22 @@ describe('ClassAreaComponent', () => {
 
   //lifecycle hooks
   it('should call revert left shift in ngAfterViewInit',() => {
-    spyOn(service,'revertLeftShift');
+    spyOn(guiService,'revertLeftShift');
     component.ngAfterViewInit();
-    expect(service.revertLeftShift).toHaveBeenCalled();
+    expect(guiService.revertLeftShift).toHaveBeenCalled();
   });
 
   it('should not call reinitializeConnections in ngAfterViewInit',() => {
-    spyOn(service,'reinitializeConnections');
+    spyOn(guiService,'reinitializeConnections');
     component.ngAfterViewInit();
-    expect(service.reinitializeConnections).not.toHaveBeenCalled();
+    expect(guiService.reinitializeConnections).not.toHaveBeenCalled();
   });
 
   it('should call reintializeConnections in ngAfterViewInit',() => {
-    spyOn(service,'reinitializeConnections');
+    spyOn(guiService,'reinitializeConnections');
     service.createNew(test['name'],test['methods'],test['variables']);
     component.ngAfterViewInit();
-    expect(service.reinitializeConnections).toHaveBeenCalled();
+    expect(guiService.reinitializeConnections).toHaveBeenCalled();
   });
 
   it('should initialize classBoxes (as empty)',() => {
@@ -191,17 +194,7 @@ describe('ClassAreaComponent', () => {
     expect(location.path()).toBe('/');
   }));
 
-    //jsplumb tests
-    // it('should create the 4 endpoints',async(() => {
-    //   service.createNew(test.name,test.methods,test.variables);
-    //   component.createClass();
 
-    //   fixture.whenStable().then(() => {
-    //     const endpoints = fixture.debugElement.nativeElement.querySelectorAll('svg');
-    //     expect(endpoints.length).toEqual(4);
-    //   });
-          
-    // }));
 
   //CLI button tests
   it('should created the CLI link button',async(() => {
