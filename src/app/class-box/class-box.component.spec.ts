@@ -121,6 +121,8 @@ describe('ClassBoxComponent', () => {
     expect(component.pullName).toHaveBeenCalled();
   });
 
+  
+
   //name editor
   it('should set the edit to name',async() => {
     component.pullName();
@@ -170,6 +172,34 @@ describe('ClassBoxComponent', () => {
     component.updateChip();
     expect(component.oldChipValue).toBe('');
     expect(component.oldChipValue).not.toBe('apple');
+  });
+
+
+  it('should not add a new variable, instead update the none value',() => {
+    service.createNew('apple',['none'],['none']);
+    component.variables = ['none'];
+    component.chipAttribute = 'test';
+    component.addChip('variable');
+    expect(component.variables[0]).toBe('test');
+  });
+
+  it('should not add a new method, instead update the none value',() => {
+    service.createNew('apple',['none'],['none']);
+    component.methods = ['none'];
+    component.chipAttribute = 'test';
+    component.addChip('method');
+    expect(component.methods[0]).toBe('test');
+  });
+
+  it('should not do anything if the user tries to enter none into adding a new variable',() => {
+    component.methods = ['none'];
+    component.chipAttribute = 'none';
+    component.addChip('method');
+    expect(component.methods[0]).toBe('none');
+    component.variables = ['none'];
+    component.chipAttribute = 'none';
+    component.addChip('variable');
+    expect(component.variables[0]).toBe('none');
   });
 
 

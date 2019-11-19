@@ -183,6 +183,34 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
         }
       }
+      else if(this.edit == 'new_method'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 110) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 170) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'new_variable'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 10) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 70) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
       (<HTMLElement>editBox).style.width = '230px';
     }
   }
@@ -379,6 +407,36 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     else{
       this.exists = true;
     }
+  }
+  //add chip to variables or methods
+  addChip(type){
+    //no adding none to variables or methods regardless
+    if(this.chipAttribute != 'none' && this.chipAttribute != ''){
+      if(type == 'variable'){
+        //if no variables
+        if(this.variables.length == 1 && this.variables[0] == 'none'){
+          this.variables[0] = this.chipAttribute;
+        }
+        //otherwise add to current variables
+        else{
+          this.variables.push(this.chipAttribute);
+        }
+      }
+      else{
+        //if no methods
+        if(this.methods.length == 1 && this.methods[0] == 'none'){
+          this.methods[0] = this.chipAttribute;
+        }
+        //otherwise add to current methods
+        else{
+          this.methods.push(this.chipAttribute);
+        }
+
+      }
+    }
+    //close editor, reset input field
+    this.chipAttribute = '';
+    this.edit = '';
   }
 
 }

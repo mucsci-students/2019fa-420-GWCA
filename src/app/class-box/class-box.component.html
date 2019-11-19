@@ -14,6 +14,9 @@
     <mat-card-subtitle class="variables">
         <div class="variable-header">
             <h4>Variables: </h4>
+            <button mat-icon-button class="add-button variable" (click)="edit='new_variable'">
+                <mat-icon>add</mat-icon>
+            </button>
         </div>     
         <mat-chip-list>
             <mat-chip (click)="openEditor('chip',variable)" (removed)="removeVariable(variable)" 
@@ -25,6 +28,9 @@
     <mat-card-subtitle class="methods">
         <div class="method-header">
             <h4>Methods: </h4>
+            <button mat-icon-button class="add-button method" (click)="edit = 'new_method'">
+                <mat-icon>add</mat-icon>
+            </button>
         </div>
         <mat-chip-list>
             <mat-chip (click)="openEditor('chip',method)" (removed)="removeMethod(method)" class="{{method}} mat-chip mat-standard-chip" *ngFor="let method of methods;trackBy:trackMethods">
@@ -33,12 +39,24 @@
         </mat-chip-list>
     </mat-card-subtitle>
 </mat-card>
+<!-- editors -->
+<!-- change name -->
 <span *ngIf="edit == 'name'" class="editor">
     <textarea [(ngModel)]="editorName" (ngModelChange)="existenceCheck()" matInput>{{editorName}}</textarea>
     <span *ngIf="exists == false">
         <button mat-raised-button color="primary" (click)="editName()">update</button>
     </span>
 </span>
+<!-- add new methods / variables -->
+<span *ngIf="edit == 'new_method'" class="editor chip">
+    <input [(ngModel)]="chipAttribute" value='{{chipAttribute}}' matInput>
+    <button mat-raised-button color="primary" (click)="addChip('method')">add</button>
+</span>
+<span *ngIf="edit == 'new_variable'" class="editor chip">
+    <input [(ngModel)]="chipAttribute" value='{{chipAttribute}}' matInput>
+    <button mat-raised-button color="primary" (click)="addChip('variable')">add</button>
+</span>
+<!-- change chip value -->
 <span *ngIf="edit == 'chip'" class="editor chip">
     <input [(ngModel)]="chipAttribute" value='{{chipAttribute}}' matInput>
     <button mat-raised-button color="primary" (click)="updateChip()">update</button>

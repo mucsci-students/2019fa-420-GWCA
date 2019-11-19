@@ -365,8 +365,10 @@ export class GuiStorageService {
   //wrapper for updating the connections
   connectionsUpdateWrapper(){
     var connections = this.updateConnections();
-    for(var i = 0;i<connections.length;i++){
-      this.insertConnection(connections[i][0],connections[i][1],connections[i][2]);
+    if(connections){
+      for(var i = 0;i<connections.length;i++){
+        this.insertConnection(connections[i][0],connections[i][1],connections[i][2]);
+      }
     }
   }
 

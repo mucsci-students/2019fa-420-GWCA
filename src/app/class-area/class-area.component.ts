@@ -114,11 +114,13 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   //update backend
   updateBackend(){
     //console.log(this.service.generate());
-    var generated = document.getElementsByClassName(this.service.generate().name);
-    if(generated.length == 0){
-      this.createClass();
-      this.service.pruneArray();
+    if(this.service.allClasses.length != 0){
+      var generated = document.getElementsByClassName(this.service.generate().name);
+      if(generated.length == 0){
+        this.createClass();
+        this.service.pruneArray();
 
+      }
     }
   }
 
