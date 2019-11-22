@@ -97,41 +97,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       drag:function(event){
         jsPlumbInstance.revalidate(id);
         jsPlumbInstance.repaintEverything();
-        //line overlap algorithm
-        var sourceConnections = jsPlumbInstance.getConnections({source: id});
-        var targetConnections = jsPlumbInstance.getConnections({target: id});
-        if(sourceConnections.length > 0){
-          for(var i =0;i<sourceConnections.length;i++){
-            var source = sourceConnections[i]['source'];
-            var target = sourceConnections[i]['target'];
-            var connection = sourceConnections[i]['canvas'].getBoundingClientRect();
-            var classBoxes = document.querySelectorAll('.class-box');
-            for(var j = 0;j<classBoxes.length;j++){
-              var classBox = classBoxes[j].getBoundingClientRect();
-              var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
-              if(!overlap && classBoxes[j] != source && classBoxes[j] != target){
-                (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
-                jsPlumbInstance.repaintEverything();
-              }
-            }
-          }
-        }
-        if(targetConnections.length > 0){
-          for(var i =0;i<targetConnections.length;i++){
-          var source = targetConnections[i]['source'];
-          var target = targetConnections[i]['target'];
-          var connection = targetConnections[i]['canvas'].getBoundingClientRect();
-          var classBoxes = document.querySelectorAll('.class-box');
-          for(var j = 0;j<classBoxes.length;j++){
-            var classBox = classBoxes[j].getBoundingClientRect();
-            var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
-            if(!overlap && classBoxes[j] != source && classBoxes[j] != target){
-              (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
-              jsPlumbInstance.repaintEverything();
-            }
-          }
-        }
-        }
 
       },zIndex: 1000
     }), 
@@ -180,6 +145,34 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
         else if(y && x){
           //if dragged
           (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 10) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'new_method'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 110) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 170) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'new_variable'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 10) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 70) + 'px';
           (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
         }
       }
@@ -335,8 +328,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   //this will change later
   //GUI no change
   deleteClass(){
-    this.service.allClasses.splice(this.service.allClasses.indexOf(this.service.findClass(this.name)),1);
     this.guiService.jsPlumbInstance.remove(this.id);
+    this.service.allClasses.splice(this.service.allClasses.indexOf(this.service.findClass(this.name)),1);
   }
 
   updateChip(){
@@ -379,6 +372,36 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     else{
       this.exists = true;
     }
+  }
+  //add chip to variables or methods
+  addChip(type){
+    //no adding none to variables or methods regardless
+    if(this.chipAttribute != 'none' && this.chipAttribute != ''){
+      if(type == 'variable'){
+        //if no variables
+        if(this.variables.length == 1 && this.variables[0] == 'none'){
+          this.variables[0] = this.chipAttribute;
+        }
+        //otherwise add to current variables
+        else{
+          this.variables.push(this.chipAttribute);
+        }
+      }
+      else{
+        //if no methods
+        if(this.methods.length == 1 && this.methods[0] == 'none'){
+          this.methods[0] = this.chipAttribute;
+        }
+        //otherwise add to current methods
+        else{
+          this.methods.push(this.chipAttribute);
+        }
+
+      }
+    }
+    //close editor, reset input field
+    this.chipAttribute = '';
+    this.edit = '';
   }
 
 }

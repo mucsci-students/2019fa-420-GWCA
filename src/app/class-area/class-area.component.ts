@@ -110,15 +110,18 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
 
 
+  
 
   //update backend
   updateBackend(){
     //console.log(this.service.generate());
-    var generated = document.getElementsByClassName(this.service.generate().name);
-    if(generated.length == 0){
-      this.createClass();
-      this.service.pruneArray();
+    if(this.service.allClasses.length != 0){
+      var generated = document.getElementsByClassName(this.service.generate().name);
+      if(generated.length == 0){
+        this.createClass();
+        this.service.pruneArray();
 
+      }
     }
   }
 
@@ -148,18 +151,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
         this.dialogRef.componentInstance.buttonPressed = "new";
         this.dialogRef.componentInstance.name = "New Button";
         break;
-      case 'edit':
-        this.dialogRef.componentInstance.buttonPressed = "edit";
-        this.dialogRef.componentInstance.name = "Edit Button";
-        break;
-      case 'delete':
-        this.dialogRef.componentInstance.buttonPressed = "delete";
-        this.dialogRef.componentInstance.name = "Delete Class";
-        break;
-      case 'delete_attribute':
-        this.dialogRef.componentInstance.buttonPressed = "delete_attribute";
-        this.dialogRef.componentInstance.name = "Delete Attribute";
-        break;
       case 'import':
         this.dialogRef.componentInstance.buttonPressed = "import";
         this.dialogRef.componentInstance.name = "Import Button";
@@ -188,10 +179,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
   createClass(){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
-      //  const temp = this.ref.createComponent(factory);
-      //  temp.instance.name = this.service.generate().name;
-      //  temp.instance.methods = this.service.generate().methods;
-      //  temp.instance.variables = this.service.generate().variables;
       this.classBoxes.push(factory);
   }
 
