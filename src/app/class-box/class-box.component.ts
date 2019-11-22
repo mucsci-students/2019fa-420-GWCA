@@ -97,41 +97,6 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       drag:function(event){
         jsPlumbInstance.revalidate(id);
         jsPlumbInstance.repaintEverything();
-        //line overlap algorithm
-        var sourceConnections = jsPlumbInstance.getConnections({source: id});
-        var targetConnections = jsPlumbInstance.getConnections({target: id});
-        if(sourceConnections.length > 0){
-          for(var i =0;i<sourceConnections.length;i++){
-            var source = sourceConnections[i]['source'];
-            var target = sourceConnections[i]['target'];
-            var connection = sourceConnections[i]['canvas'].getBoundingClientRect();
-            var classBoxes = document.querySelectorAll('.class-box');
-            for(var j = 0;j<classBoxes.length;j++){
-              var classBox = classBoxes[j].getBoundingClientRect();
-              var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
-              if(!overlap && classBoxes[j] != source && classBoxes[j] != target){
-                (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
-                jsPlumbInstance.repaintEverything();
-              }
-            }
-          }
-        }
-        if(targetConnections.length > 0){
-          for(var i =0;i<targetConnections.length;i++){
-          var source = targetConnections[i]['source'];
-          var target = targetConnections[i]['target'];
-          var connection = targetConnections[i]['canvas'].getBoundingClientRect();
-          var classBoxes = document.querySelectorAll('.class-box');
-          for(var j = 0;j<classBoxes.length;j++){
-            var classBox = classBoxes[j].getBoundingClientRect();
-            var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
-            if(!overlap && classBoxes[j] != source && classBoxes[j] != target){
-              (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
-              jsPlumbInstance.repaintEverything();
-            }
-          }
-        }
-        }
 
       },zIndex: 1000
     }), 
@@ -363,8 +328,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   //this will change later
   //GUI no change
   deleteClass(){
-    this.service.allClasses.splice(this.service.allClasses.indexOf(this.service.findClass(this.name)),1);
     this.guiService.jsPlumbInstance.remove(this.id);
+    this.service.allClasses.splice(this.service.allClasses.indexOf(this.service.findClass(this.name)),1);
   }
 
   updateChip(){

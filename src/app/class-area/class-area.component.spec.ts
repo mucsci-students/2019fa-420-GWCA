@@ -138,25 +138,21 @@ describe('ClassAreaComponent', () => {
   });
 
   it('should create an edit button', async(() => {
-    const new_button = fixture.debugElement.nativeElement;
-    expect(new_button.querySelector('.edit').textContent).toContain('Edit');
+    service.createNew("cherry",['none'],['none']);
+    fixture.detectChanges();
+    let edit_button = fixture.debugElement.nativeElement.querySelector('.edit-button');
+    expect(edit_button).not.toBeNull();
   }));
 
-  it('click edit button opens dialog',async(() => {
-    spyOn(component,'openDialog');
-    let new_button = fixture.debugElement.nativeElement.querySelector('.edit');
-    new_button.click();
-
-    fixture.whenStable().then(() => {
-      expect(component.openDialog).toHaveBeenCalled();
-
-    });
+  it('click edit button opens editor',async(() => {
+    service.createNew("cherry",['none'],['none']);
+    fixture.detectChanges();
+    let edit_button = fixture.debugElement.nativeElement.querySelector('.edit-button');
+    edit_button.click();
+    fixture.detectChanges();
+    let editor = fixture.debugElement.nativeElement.querySelector('.editor');
+    expect(editor).not.toBeNull();
   }));
-
-  it('should open the correct (edit) dialog in openDialog',() => {
-    component.openDialog('edit');
-    expect(component.dialogRef.componentInstance.name).toBe('Edit Button');
-  });
 
    it('after editing old version should not exist in the array', async(() => {
      service.createNew('apple',['m1()','m2()','m3()'],['v1','v2','v3']);
@@ -339,31 +335,13 @@ describe('ClassAreaComponent', () => {
     expect(connections).toEqual([]);
   });
 
-  // it('should make a class box draggable on creation',() => {
-  //   //draw class box
-  //   service.createNew("cherry",['none'],['none']);
-  //   fixture.detectChanges();
-
-  //   var box = fixture.debugElement.query(By.css('.cherry'));
-  //   //console.log(box);
-  //   var x = (<HTMLElement>box.nativeElement).offsetLeft;
-  //   var y = (<HTMLElement>box.nativeElement).offsetTop;
-
-    
-  //   //click and drag
-  //   //box.nativeElement.click();
-  //    box.triggerEventHandler('mousedown',{pageX:100,pageY:30});
-  //    box.triggerEventHandler('mousemove',{pageX:300,pageY:300});
-  //   //update
-  //   fixture.detectChanges();
-
-
-  //   //console.log(box);
-
-    
-
-    
-  // });
+  it('should make a class box draggable on creation',() => {
+    service.createNew("cherry",['none'],['none']);
+    fixture.detectChanges();
+    //jsplumb just adds jtk-draggable to make something draggable
+    var draggable_class_box = fixture.debugElement.nativeElement.querySelector('.jtk-draggable');
+    expect(draggable_class_box).not.toBeNull();
+  });
 
   //editor testing
   it('should open an editor on edit button click in a class box',() => {

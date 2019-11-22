@@ -58,69 +58,62 @@ export class GuiStorageService {
   bindConnections(dialogRef,dialog,jsPlumbInstance,connectionType,DialogTestComponent,id){
     jsPlumbInstance.bind("connection",function(){
       var connections = jsPlumbInstance.getConnections(this.id);
-      //no multiple connections between the same class boxes
-      var previous_connections = jsPlumbInstance.getConnections({source:this.id,target:connections[(connections.length - 1)]['target']['id']});
-      if(previous_connections.length > 1){
+      //remove self connections
+      if(connections[(connections.length - 1)]['source']['id'] == connections[(connections.length - 1)]['target']['id']){
         jsPlumbInstance.deleteConnection(connections[(connections.length - 1)]);
       }
+      //otherwise open dialog so we can specify connection type
       else{
-        //remove self connections
-          if(connections[(connections.length - 1)]['source']['id'] == connections[(connections.length - 1)]['target']['id']){
-            jsPlumbInstance.deleteConnection(connections[(connections.length - 1)]);
-          }
-          //otherwise open dialog so we can specify connection type
-          else{
-            if(id == connections[(connections.length - 1)]['source']['id']){
-              dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
-              dialogRef.componentInstance.buttonPressed = "connection";
-              dialogRef.afterClosed().subscribe(() => {
-                connectionType = dialogRef.componentInstance.connectionType;
-                switch(connectionType){
-                  //open diamond, solid line
-                  //aggregation
-                  case 'purple':
-                    connections[(connections.length - 1)].removeAllOverlays();
-                    connections[(connections.length - 1)].setPaintStyle({stroke: 'purple', lineWidth: '10px'});
-                    connections[(connections.length - 1)].addOverlay(["Label",{label:"Aggregation",location:0.5}]);
-                    connections[(connections.length - 1)].addOverlay(["Diamond",{
-                      cssClass: "unfilledDiamond",
-                      width: 15,
-                      length: 30,
-                      location: 1
-                    }]);
-                    break;
-                  //association
-                  //just a line
-                  case 'green':
-                    connections[(connections.length - 1)].removeAllOverlays();
-                    connections[(connections.length - 1)].setPaintStyle({stroke: 'green', lineWidth: '10px'});
-                    connections[(connections.length - 1)].addOverlay(["Label",{label:"Association",location:0.5}]);
-                    break;
-                  //closed diamond, solid line
-                  //composition
-                  case 'red':
-                    connections[(connections.length - 1)].removeAllOverlays();
-                    connections[(connections.length - 1)].setPaintStyle({stroke: 'red', lineWidth: '10px'});
-                    connections[(connections.length - 1)].addOverlay(["Label",{label:"Composition",location:0.5}]);
-                    connections[(connections.length - 1)].addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
-                    break;
-                  //closed arrow, solid line
-                  //generalization
-                  case 'orange':
-                    connections[(connections.length - 1)].setPaintStyle({stroke: 'orange', lineWidth: '10px'});
-                    connections[(connections.length - 1)].addOverlay(["Label",{label:"Generalization",location:0.5}]);
-                    break;
-                  //closed arrow, dashed line
-                  //realization
-                  case 'yellow':
-                    connections[(connections.length - 1)].setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
-                    connections[(connections.length - 1)].addOverlay(["Label",{label:"Realization",location:0.5}]);
-                    break;
-                }
-            });
+        if(id == connections[(connections.length - 1)]['source']['id']){
+          dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
+          dialogRef.componentInstance.buttonPressed = "connection";
+          dialogRef.afterClosed().subscribe(() => {
+            connectionType = dialogRef.componentInstance.connectionType;
+            switch(connectionType){
+              //open diamond, solid line
+              //aggregation
+              case 'purple':
+                connections[(connections.length - 1)].removeAllOverlays();
+                connections[(connections.length - 1)].setPaintStyle({stroke: 'purple', lineWidth: '10px'});
+                connections[(connections.length - 1)].addOverlay(["Label",{label:"Aggregation",location:0.5}]);
+                connections[(connections.length - 1)].addOverlay(["Diamond",{
+                  cssClass: "unfilledDiamond",
+                  width: 15,
+                  length: 30,
+                  location: 1
+                }]);
+                break;
+              //association
+              //just a line
+              case 'green':
+                connections[(connections.length - 1)].removeAllOverlays();
+                connections[(connections.length - 1)].setPaintStyle({stroke: 'green', lineWidth: '10px'});
+                connections[(connections.length - 1)].addOverlay(["Label",{label:"Association",location:0.5}]);
+                break;
+              //closed diamond, solid line
+              //composition
+              case 'red':
+                connections[(connections.length - 1)].removeAllOverlays();
+                connections[(connections.length - 1)].setPaintStyle({stroke: 'red', lineWidth: '10px'});
+                connections[(connections.length - 1)].addOverlay(["Label",{label:"Composition",location:0.5}]);
+                connections[(connections.length - 1)].addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
+                break;
+              //closed arrow, solid line
+              //generalization
+              case 'orange':
+                connections[(connections.length - 1)].setPaintStyle({stroke: 'orange', lineWidth: '10px'});
+                connections[(connections.length - 1)].addOverlay(["Label",{label:"Generalization",location:0.5}]);
+                break;
+              //closed arrow, dashed line
+              //realization
+              case 'yellow':
+                connections[(connections.length - 1)].setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
+                connections[(connections.length - 1)].addOverlay(["Label",{label:"Realization",location:0.5}]);
+                break;
             }
-          }
+        });
         }
+      }
 
     });
 
@@ -373,11 +366,61 @@ export class GuiStorageService {
   }
 
   //Delete Class function from the array in storage as well as from the DOM
-  deleteClass(id:string, name:string) {
-    var deleteCla = this.storageService.findClass(name);
-    var indexDelete = this.storageService.allClasses.indexOf(deleteCla);
-    this.storageService.allClasses.splice(indexDelete, 1);
-    this.jsPlumbInstance.remove(id);
+  //pass in gui or cli
+  deleteClass(className,mode) {
+    //checks to see if in gui or cli
+    if(mode != 'cli'){
+      this.connectionsUpdateWrapper();
+    }
+    //create list of classes that need to be deleted along with the deleted class of choice
+    var deletions = [];
+    //get classes
+    deletions.push(className);
+    for(var i = 0;i<this.storageService.allClasses.length;i++){
+      //skip over selected class
+      if(this.storageService.allClasses[i].name == className){
+        continue;
+      }
+      var backEndClass = this.storageService.allClasses[i];
+      if(backEndClass.connections.length != 0){
+        for(var j = 0;j<backEndClass.connections.length;j++){
+          if(backEndClass.connections[j][2] == 'Composition' && backEndClass.connections[j][1].split('_')[0] == className){
+            deletions.push(backEndClass.connections[j][0].split('_')[0]);
+            break;
+          }
+        }
+      }
+    }
+    //chain if necessary
+    for(var i = 0;i<this.storageService.allClasses.length;i++){
+      if(deletions.includes(this.storageService.allClasses[i].name)){
+        continue;
+      }
+      var backEndClass = this.storageService.allClasses[i];
+      if(backEndClass.connections.length != 0){
+        for(var j =0;j<backEndClass.connections.length;j++){
+          if(backEndClass.connections[j][2] == 'Composition' && deletions.includes(backEndClass.connections[j][1].split('_')[0])){
+            deletions.push(backEndClass.connections[j][0].split('_')[0]);
+            break;
+          }
+        }
+      }
+    }
+    //iterate through list of deletions and delete them all
+    if(mode != 'cli'){
+      //gui
+      for(var i = 0;i<deletions.length;i++){
+        var classBox = document.querySelector('.'+deletions[i]);
+        this.jsPlumbInstance.remove(classBox);
+        this.storageService.allClasses.splice(this.storageService.allClasses.indexOf(this.storageService.findClass(deletions[i]),1));
+      }
+    }
+    else{
+      //cli
+      for(var i = 0;i<deletions.length;i++){
+        this.storageService.allClasses.splice(this.storageService.allClasses.indexOf(this.storageService.findClass(deletions[i]),1));
+      }
+    }
   }
 
 

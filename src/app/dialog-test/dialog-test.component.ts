@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ComponentRef, ViewChild, ViewContainerRef, NgZone } from '@angular/core';
+import { Component, Input} from '@angular/core';
 import { ClassStorageService } from '../class-storage.service';
-import { Router } from '@angular/router';
 import { GuiStorageService } from '../gui-storage.service';
 
 @Component({
@@ -9,14 +8,9 @@ import { GuiStorageService } from '../gui-storage.service';
   styleUrls: ['./dialog-test.component.css']
 })
 
-export class DialogTestComponent implements OnInit {
+export class DialogTestComponent {
   @Input() buttonPressed: string;
   @Input() name: string;
-  classNames: NodeListOf<Element>;
-  classes: NodeListOf<Element>;
-  classMethods: NodeListOf<Element>;
-  classVariables: NodeListOf<Element>;
-  choice: string;
   //input values for create new
   className: string;
   variables: string;
@@ -33,25 +27,8 @@ export class DialogTestComponent implements OnInit {
     this.exists = true;
   }
 
-  ngOnInit() {
-    this.choice = "";
-  
-    //gets class names to choose
-    //aggregation for realizing 
-    this.classNames = document.querySelectorAll("mat-card-title");
-    this.classMethods = document.querySelectorAll(".method");
-    this.classVariables = document.querySelectorAll(".variable")
-  }
 
 
-
-  search(Name: string){
-    this.className = this.service.findClass(Name)['name'];
-    this.variables = this.service.findClass(Name)['variables'].join(',');
-    this.methods = this.service.findClass(Name)['methods'].join(',');
-    this.choice = 'found';
-
-  }
 
   //make sure class doesn't already exist
   existenceCheck(){
@@ -62,24 +39,6 @@ export class DialogTestComponent implements OnInit {
     else{
       this.exists = true;
     }
-  }
-
-  
-
-
-
-  updateClass(){
-
-    //remove original
-    
-    
-    //update the back-end
-    this.service.createNew(this.className,this.methods.split(','),this.variables.split(','));
-    
-    //wrapper for re-inializing connections & endpoints
-    this.guiService.reinitializeConnections();
-    
-    
   }
 
   replaceUndefined(){
@@ -104,18 +63,12 @@ export class DialogTestComponent implements OnInit {
   addButton(){
     this.insertData();
   }
-  //wrapper for the edit button functionality
-  editButton(){
-    this.updateClass();
-  }
   //wrapper for import button functionality
   importButton(){
     this.importDiagram(this.diagram);
   }
   //wrapper for export button functionality
-  exportButton(){
 
-  }
   /*
   * importDiagram is basically just a wrapper for the service's import method.
   * This needs to be done because we can't directly call the service in the (click)

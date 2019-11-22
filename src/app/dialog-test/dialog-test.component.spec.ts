@@ -68,12 +68,6 @@ describe('DialogTestComponent', () => {
 
 
 
-  it('should call reinitializeConnections',() => {
-    spyOn(guiService,'reinitializeConnections');
-    component.updateClass();
-    expect(guiService.reinitializeConnections).toHaveBeenCalled();
-  });
-
   //wrapper button tests
   it('should call insertData',() => {
     spyOn(component,'insertData');
@@ -81,11 +75,6 @@ describe('DialogTestComponent', () => {
     expect(component.insertData).toHaveBeenCalled();
   });
 
-  it('should call updateClass',() => {
-    spyOn(component,'updateClass');
-    component.editButton();
-    expect(component.updateClass).toHaveBeenCalled();
-  });
 
   it('should call importDiagram',() => {
     spyOn(component,'importDiagram');
