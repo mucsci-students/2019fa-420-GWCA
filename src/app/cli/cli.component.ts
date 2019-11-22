@@ -152,7 +152,7 @@ export class CliComponent implements OnInit, AfterViewInit {
               return '\x1b[1;32m' + "Variable \"" + varName + "\" added to class \"" + name + "\" successfully."
             }
             else if(flag == "-v" && command.length != 5){
-              return '\x1b[1;33m' + "Format:\tadd -v <class_name> <var_type> <var_name>";
+              return '\x1b[1;33m' + "Format: add -v <class_name> <var_type> <var_name>";
             }
             else if(flag == "-m" && command.length == 4){
              var methodName = command[3];
