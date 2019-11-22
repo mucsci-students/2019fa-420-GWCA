@@ -27,6 +27,7 @@ module.exports = function (config) {
         flags: ['--no-sandbox']
       }
     },
+    files: ['./node_modules/jsplumb/dist/js/jsplumb.js'],
     reporters: ['progress', 'kjhtml'],
     port: 9876,
     preprocessors: { 'dist/app/**/!(*spec).js': ['coverage'] },

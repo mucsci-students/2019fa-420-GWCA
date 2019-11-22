@@ -50,6 +50,11 @@ mat-card-subtitle{
     margin-right    : 0;
 }
 
+.add-button{
+    margin-left     : auto;
+    padding-top     : 15px;
+}
+
  .editor{
     background-color: white;
     box-shadow      : 0px 5px 10px lightgray;
