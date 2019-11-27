@@ -11,7 +11,6 @@ import { ClassBoxComponent } from './class-box/class-box.component';
 import { ClassAreaComponent } from './class-area/class-area.component';
 import { CliComponent } from './cli/cli.component';
 import { DialogTestComponent } from './dialog-test/dialog-test.component';
-import { FileDownloadComponent } from './file-download/file-download.component';
 
 //services
 //import { StorageService } from './storage.service';
@@ -36,8 +35,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     DialogTestComponent,
     ClassBoxComponent,
     ClassAreaComponent,
-    CliComponent,
-    FileDownloadComponent,
+    CliComponent
   ],
   imports: [
     BrowserModule,
@@ -61,15 +59,13 @@ import { ObserversModule } from '@angular/cdk/observers';
   entryComponents: [
     DialogTestComponent,
     ClassBoxComponent,
-    FileDownloadComponent
   ],
   providers: [
     ClassStorageService,
-    ClassAreaComponent,
-    FileDownloadComponent
-    ],
+    ClassAreaComponent
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  exports: [FileDownloadComponent]
+  exports: []
 })
 export class AppModule { }
