@@ -99,6 +99,10 @@
             "scripts": [
               "node_modules/jsplumb/dist/js/jsplumb.min.js",
               "node_modules/js-yaml/dist/js-yaml.js"
+            ],
+            "codeCoverageExclude": [
+              "src/app/gui-storage.service.ts"
+
             ]
           }
         },

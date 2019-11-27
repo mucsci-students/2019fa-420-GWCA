@@ -1,6 +1,6 @@
 //angular imports
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 //components
@@ -13,7 +13,6 @@ import { CliComponent } from './cli/cli.component';
 import { DialogTestComponent } from './dialog-test/dialog-test.component';
 
 //services
-//import { StorageService } from './storage.service';
 import { ClassStorageService } from './class-storage.service'
 
 //material imports
@@ -26,6 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
+import { GuiStorageService } from './gui-storage.service';
 
 
 
@@ -62,10 +62,9 @@ import { ObserversModule } from '@angular/cdk/observers';
   ],
   providers: [
     ClassStorageService,
-    ClassAreaComponent
-  ],
+    ClassAreaComponent,
+    GuiStorageService
+    ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  exports: []
 })
 export class AppModule { }

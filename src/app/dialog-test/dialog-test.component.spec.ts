@@ -4,11 +4,13 @@ import { MatSelectModule, MatDialogModule, MatChipsModule, MatCardModule, MatIco
 import { FormsModule } from '@angular/forms';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { jsPlumb } from 'jsplumb';
+import { GuiStorageService } from '../gui-storage.service';
 
 describe('DialogTestComponent', () => {
   let component: DialogTestComponent;
   let fixture: ComponentFixture<DialogTestComponent>;
   let service: ClassStorageService;
+  let guiService: GuiStorageService;
   let empty_variables:fullClass = {'name': 'apple','variables':undefined,'methods':['m1()','m2()','m3()'],'connections':[],'position':[]};
   let empty_methods:fullClass = {'name': 'apple','variables':['v1','v2','v3'],'methods':undefined,'connections':[],'position':[]};
   let test = {'name': 'apple','variables':'v1,v2,v3','methods':'m1(),m2(),m3()','connections':[],'position':[]};
@@ -24,7 +26,8 @@ describe('DialogTestComponent', () => {
         MatDialogModule,
         MatChipsModule,
         MatIconModule
-      ]
+      ],
+      providers: [GuiStorageService,ClassStorageService]
     })
     .compileComponents();
   }));
@@ -34,6 +37,7 @@ describe('DialogTestComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     service = TestBed.get(ClassStorageService);
+    guiService = TestBed.get(GuiStorageService);
     component.name = test['name'];
     component.variables = test['variables'];
     component.methods = test['methods'];
@@ -64,12 +68,6 @@ describe('DialogTestComponent', () => {
 
 
 
-  it('should call reinitializeConnections',() => {
-    spyOn(service,'reinitializeConnections');
-    component.updateClass();
-    expect(service.reinitializeConnections).toHaveBeenCalled();
-  });
-
   //wrapper button tests
   it('should call insertData',() => {
     spyOn(component,'insertData');
@@ -77,11 +75,6 @@ describe('DialogTestComponent', () => {
     expect(component.insertData).toHaveBeenCalled();
   });
 
-  it('should call updateClass',() => {
-    spyOn(component,'updateClass');
-    component.editButton();
-    expect(component.updateClass).toHaveBeenCalled();
-  });
 
   it('should call importDiagram',() => {
     spyOn(component,'importDiagram');

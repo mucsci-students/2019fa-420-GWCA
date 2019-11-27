@@ -8,6 +8,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as yaml from "js-yaml";
+import { GuiStorageService } from '../gui-storage.service';
 
 
 @Component({
@@ -27,8 +28,8 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
   constructor(private sanatizer: DomSanitizer, private resolver: ComponentFactoryResolver,public service: ClassStorageService
-    , public dialog: MatDialog, private iterableDiffs: IterableDiffers,
-    private router: Router) {
+    ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
+    private router: Router, public guiService: GuiStorageService) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
 
@@ -43,7 +44,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
         if(event instanceof NavigationStart){
           if(router.url !== '/cli'){
-            this.service.connectionsUpdateWrapper();
+            this.guiService.connectionsUpdateWrapper();
             this.updatePosition();
             //this.removeAll();
             // this.classBoxes = [];
@@ -77,14 +78,14 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
-    this.service.jsPlumbInstance = jsPlumb.getInstance({
+    this.guiService.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
         zIndex: 1000
       },
     });
-    this.service.jsPlumbInstance.setContainer("classes-container");
-    this.service.jsPlumbInstance.reset();
-    this.service.revertLeftShift();
+    this.guiService.jsPlumbInstance.setContainer("classes-container");
+    this.guiService.jsPlumbInstance.reset();
+    this.guiService.revertLeftShift();
 
 
 
@@ -105,7 +106,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
           (<HTMLElement>class_box).style.left = classes[i]['position'][0];
           (<HTMLElement>class_box).style.top = classes[i]['position'][1];
         }
-        this.service.reinitializeConnections();
+        this.guiService.reinitializeConnections();
       }
     }
 
@@ -116,11 +117,13 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   //update backend
   updateBackend(){
     //console.log(this.service.generate());
-    var generated = document.getElementsByClassName(this.service.generate().name);
-    if(generated.length == 0){
-      this.createClass();
-      this.service.pruneArray();
+    if(this.service.allClasses.length != 0){
+      var generated = document.getElementsByClassName(this.service.generate().name);
+      if(generated.length == 0){
+        this.createClass();
+        this.service.pruneArray();
 
+      }
     }
   }
 
@@ -148,18 +151,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
       case 'new':
         this.dialogRef.componentInstance.buttonPressed = "new";
         this.dialogRef.componentInstance.name = "New Button";
-        break;
-      case 'edit':
-        this.dialogRef.componentInstance.buttonPressed = "edit";
-        this.dialogRef.componentInstance.name = "Edit Button";
-        break;
-      case 'delete':
-        this.dialogRef.componentInstance.buttonPressed = "delete";
-        this.dialogRef.componentInstance.name = "Delete Class";
-        break;
-      case 'delete_attribute':
-        this.dialogRef.componentInstance.buttonPressed = "delete_attribute";
-        this.dialogRef.componentInstance.name = "Delete Attribute";
         break;
       case 'import':
         this.dialogRef.componentInstance.buttonPressed = "import";
@@ -189,10 +180,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
   createClass(){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
-      //  const temp = this.ref.createComponent(factory);
-      //  temp.instance.name = this.service.generate().name;
-      //  temp.instance.methods = this.service.generate().methods;
-      //  temp.instance.variables = this.service.generate().variables;
       this.classBoxes.push(factory);
   }
 
