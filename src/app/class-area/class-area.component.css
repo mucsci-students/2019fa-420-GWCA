@@ -19,11 +19,11 @@
 mat-toolbar{
     color           : white;
     background-color: #673ab7;
-    
+
 }
 
 
-mat-toolbar button{
+mat-toolbar button, a{
     box-shadow     : none !important;
 }
 
@@ -43,7 +43,7 @@ app-class-box{
     margin-top    : 20px;
     height        : 260px;
     width         : 260px;
-    
+
 }
 
 h3{
@@ -56,7 +56,7 @@ h3{
 
 .cli-button{
     float         : right;
-    
+
 }
 pre {
     white-space   : inherit;
