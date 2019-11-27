@@ -2,13 +2,13 @@ import { Component, OnInit,ComponentFactoryResolver, IterableDiffer, IterableDif
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { ClassStorageService } from '../class-storage.service';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
-import { FileDownloadComponent } from '../file-download/file-download.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as yaml from "js-yaml";
+
 
 @Component({
   selector: 'app-class-area',
@@ -28,7 +28,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   private iterableDiffer: IterableDiffer<object>;
   constructor(private sanatizer: DomSanitizer, private resolver: ComponentFactoryResolver,public service: ClassStorageService
     , public dialog: MatDialog, private iterableDiffs: IterableDiffers,
-    private router: Router, public fileDownload: FileDownloadComponent) {
+    private router: Router) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
 
