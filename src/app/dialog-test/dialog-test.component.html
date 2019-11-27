@@ -57,10 +57,7 @@
   <!-- export button contents -->
   <!-- line 59 actually serves our diagram.-->
   <span *ngIf="buttonPressed === 'export'">
-      <h1>Copy this:</h1>
-      <code>
-        <pre>{{service.jsonString}}</pre>
-      </code>
+      If download did not begin, <a download="data.yml" [href]="fileURL">click here</a> 
   </span>
   <!-- import button contents -->
   <span *ngIf="buttonPressed === 'import'">

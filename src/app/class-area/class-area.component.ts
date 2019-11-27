@@ -7,7 +7,8 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-
+import { DomSanitizer } from '@angular/platform-browser';
+import * as yaml from "js-yaml";
 
 @Component({
   selector: 'app-class-area',
@@ -18,11 +19,14 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
+  fileURL: any;
+  exportedYAML : string;
+  blob : Blob;
 
   //NOTE: this is testing, ignore for now
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
-  constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
+  constructor(private sanatizer: DomSanitizer, private resolver: ComponentFactoryResolver,public service: ClassStorageService
     , public dialog: MatDialog, private iterableDiffs: IterableDiffers,
     private router: Router, public fileDownload: FileDownloadComponent) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
@@ -65,9 +69,14 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   }
 
 
+  downloadDiagram(){
+    this.exportedYAML = yaml.safeDump(this.service.allClasses);
+    this.blob = new Blob([this.exportedYAML], { type: 'application/yaml' });
+    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
+  }
+
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
-
     this.service.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
         zIndex: 1000
@@ -194,9 +203,4 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   updateStoredDiagram(){
     this.service.diagramToJSON();
   }
-  
-  /*test(){
-    this.service.deleteClass('a_0', 'a');
-  }*/
-
 }

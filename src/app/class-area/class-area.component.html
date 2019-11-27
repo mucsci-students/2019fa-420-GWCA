@@ -4,7 +4,7 @@
         <button mat-raised-button color="primary" class="buttons new" (click)="openDialog('new')" >New</button>
         <button mat-raised-button color="primary" class="buttons edit" (click)="openDialog('edit');service.connectionsUpdateWrapper()">Edit</button>
         <button mat-raised-button color="primary" class="buttons import" (click)="openDialog('import')">Import</button>
-        <app-file-download></app-file-download>
+        <a mat-raised-button color="primary" class="buttons export" [href]="fileURL" download="data.yml" (click)="openDialog('export');downloadDiagram()">Export</a>
         <button mat-raised-button color="primary" class="buttons help" (click)="openDialog('help')">Help</button>
         <div class="cli-container">
             <a routerLink="cli">

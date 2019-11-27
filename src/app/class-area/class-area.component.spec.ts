@@ -10,7 +10,6 @@ import { Router} from '@angular/router';
 import { Location } from '@angular/common';
 import { CliComponent } from '../cli/cli.component';
 import { routes } from '../app-routing.module';
-import { FileDownloadComponent } from '../file-download/file-download.component';
 import { FormsModule } from '@angular/forms';
 
 describe('ClassAreaComponent', () => {
@@ -28,7 +27,6 @@ describe('ClassAreaComponent', () => {
         ClassAreaComponent,
         ClassBoxComponent,
         CliComponent,
-        FileDownloadComponent
     ],
       imports: [
         MatDialogModule,
@@ -43,7 +41,7 @@ describe('ClassAreaComponent', () => {
         MatChipsModule,
         RouterTestingModule.withRoutes(routes),
       ],
-      providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}}, FileDownloadComponent],
+      providers: [{provide: MatDialogRef,ClassStorageService, useValue: {}}],
     }).compileComponents();
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
@@ -161,6 +159,16 @@ describe('ClassAreaComponent', () => {
   it('should create an export button', async(() => {
     const new_button = fixture.debugElement.nativeElement;
     expect(new_button.querySelector('.export').textContent).toContain('Export');
+  }));
+
+  it('click export button opens dialog', async(() => {
+    spyOn(component, 'openDialog');
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    export_button.click();
+
+    fixture.whenStable().then(() => {
+      expect(component.openDialog).toHaveBeenCalled();
+    });
   }));
 
 
