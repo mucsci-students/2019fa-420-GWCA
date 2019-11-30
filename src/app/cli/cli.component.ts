@@ -14,6 +14,7 @@ import { DialogTestComponent } from '../dialog-test/dialog-test.component';
     ],
   encapsulation: ViewEncapsulation.None,
 })
+
 export class CliComponent implements OnInit, AfterViewInit {
   term: Terminal;
   input: string; //actual string to read
@@ -58,7 +59,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       cursorBlink: true,
       cursorStyle: "block",
       rightClickSelectsWord: true});
-    this.term.open(this.terminalDiv.nativeElement);
+    this.term.open(this.terminalDiv.nativeElement); 
     this.term.write('\x1b[1;35m' + "\t\t\t\tWelcome To GNUML! \r\n" + '\x1b[1;37m');
     this.term.write(this.fullHelp());
     this.term.write('\x1b[1;37m' + '\r\n>');
@@ -243,6 +244,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
   }
 
+
   //  This prints the current diagram to the screen in an (arguably) human-readable format.
   viewDiagram(){
     var diagram:string = '\x1b[1;36m';
@@ -258,6 +260,7 @@ export class CliComponent implements OnInit, AfterViewInit {
     }
     return diagram;
   }
+
 
   //this outputs the current JSON to the terminal screen
   exportDiagram(){

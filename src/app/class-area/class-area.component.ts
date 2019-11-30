@@ -6,6 +6,8 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import * as yaml from "js-yaml";
 import { GuiStorageService } from '../gui-storage.service';
 
 
@@ -18,11 +20,14 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
- 
+  fileURL: any;
+  exportedYAML : string;
+  blob : Blob;
+
   //NOTE: this is testing, ignore for now
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
-  constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
+  constructor(private sanatizer: DomSanitizer, private resolver: ComponentFactoryResolver,public service: ClassStorageService
     ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
     private router: Router, public guiService: GuiStorageService) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
@@ -65,9 +70,16 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   }
 
 
+  downloadDiagram(){
+    this.updatePosition();
+    this.guiService.connectionsUpdateWrapper();
+    this.exportedYAML = yaml.safeDump(this.service.allClasses);
+    this.blob = new Blob([this.exportedYAML], { type: 'application/yaml' });
+    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
+  }
+
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
-
     this.guiService.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
         zIndex: 1000
@@ -78,8 +90,8 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     this.guiService.revertLeftShift();
 
 
-    
-    
+
+
     var classes = this.service.allClasses;
 
     //empty back-end for re-insertion
@@ -87,7 +99,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
 
     if(classes.length != 0){
-      
+
       for(var i=0;i<classes.length;i++){
         //redraw position if previously placed
         if(classes[i]['position'].length != 0){
@@ -103,14 +115,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   }
 
 
-  
-
-
-
-
-
-
-  
 
   //update backend
   updateBackend(){
@@ -125,7 +129,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     }
   }
 
-  
 
   updatePosition(){
     var classes = document.querySelectorAll('.class-box');
@@ -135,7 +138,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
      }
 
   }
-  
+
 
 
 
@@ -159,12 +162,12 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
         this.dialogRef.componentInstance.buttonPressed = "export";
         this.dialogRef.componentInstance.name = "Export Button";
         break;
-        case 'help':
-          //update width for help
-          this.dialogRef.updateSize('50%','80%');
-          this.dialogRef.componentInstance.buttonPressed = "help";
-          this.dialogRef.componentInstance.name = "Help";
-          break;
+      case 'help':
+        //update width for help
+        this.dialogRef.updateSize('50%','80%');
+        this.dialogRef.componentInstance.buttonPressed = "help";
+        this.dialogRef.componentInstance.name = "Help";
+        break;
     }
     //listen for close without submit
     this.dialogRef.backdropClick().subscribe(() => {
@@ -175,7 +178,26 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
       this.switchToCLI = true;
     });
   }
-  
+
+  import(event: any){
+    let reader = new FileReader();
+    let file: File = event.target.files[0];
+    let storage = this.service;
+    //let dialog = this.dialogRef;
+    //dialog.componentInstance.validImport = true;
+    reader.onload = function(e){
+      let data = yaml.safeLoad(reader.result);
+      //var aKeys = Object.keys(data).sort();
+      //var bKeys = Object.keys(storage.allClasses).sort();
+      //if (JSON.stringify(aKeys) === JSON.stringify(bKeys))
+      storage.allClasses = data;
+      //else
+        //dialog.componentInstance.validImport = false;
+    }
+    reader.readAsText(file);
+  }
+
+
 
   createClass(){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
@@ -186,11 +208,5 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     moveItemInArray(this.classBoxes,event.previousIndex,event.currentIndex);
   }
 
-  updateStoredDiagram(){
-    this.service.diagramToJSON();
-  }
-  
-  /*test(){
-    this.service.deleteClass('a_0', 'a');
-  }*/
+
 }

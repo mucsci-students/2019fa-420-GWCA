@@ -15,17 +15,11 @@
   <!-- export button contents -->
   <!-- line 59 actually serves our diagram.-->
   <span *ngIf="buttonPressed === 'export'">
-      <h1>Copy this:</h1>
-      <code>
-        <pre>{{service.jsonString}}</pre>
-      </code>
+      If download did not begin, <a download="data.yml" [href]="fileURL">click here</a>
   </span>
   <!-- import button contents -->
   <span *ngIf="buttonPressed === 'import'">
-      <form>
-        <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
-          <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
-      </form>
+    <h4>Diagram imported successfully</h4>
   </span>
   <span *ngIf="buttonPressed === 'connection'">
     <h1>Choose a connection type</h1>
@@ -77,14 +71,13 @@
       <h5>Exporting data</h5>
       <ol>
         <li>Press the export button</li>
-        <li>The current data for the classses will be displayed in a popup menu, in the form of JSON</li>
-        <li>Copy the text and paste it somewhere to keep it for later</li>
-        <li><strong>Note:</strong> upcoming functionality will include allowing the user to download a file holding the data</li>
+        <li>A file manager should populate with a YAML file containing your current diagram</li>
+        <li>Select the name you would like to use for this feed and save it to a desireable location on your machine</li>
       </ol>
       <h5>Importing data</h5>
       <ol>
         <li>Press the import button</li>
-        <li>paste the data previously exported, from the export button into this popup and press the submit 
+        <li>paste the data previously exported, from the export button into this popup and press the submit
           button to regenerate the data</li>
         <li><strong>Note:</strong> upcoming functionality will include allowing the user to input the downloaded file
          taken from the export button, to generate the data</li>
@@ -112,13 +105,11 @@
       <ol>
         <mat-chip-list>
           <li class="chip"><mat-chip color="warn" selected>Bug </mat-chip>Can drag classes over one another, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Allow for downloading/saving the data to a file, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>JSON to YAML change Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Try to force connections to not overlap classes, Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>UX changes, Completion: (TBD)</li>
         </mat-chip-list>
       </ol>
-      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>  
+      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>
     </div>
   </span>
 </div>

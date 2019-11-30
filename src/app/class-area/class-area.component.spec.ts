@@ -29,7 +29,7 @@ describe('ClassAreaComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
+      declarations: [
         ClassAreaComponent,
         ClassBoxComponent,
         CliComponent,
@@ -192,19 +192,37 @@ describe('ClassAreaComponent', () => {
     expect(new_button.querySelector('.export').textContent).toContain('Export');
   }));
 
-  it('click export button opens dialog',async(() => {
-    spyOn(component,'openDialog');
-    let new_button = fixture.debugElement.nativeElement.querySelector('.export');
-    new_button.click();
+  it('click export button opens dialog', async(() => {
+    spyOn(component, 'openDialog');
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    export_button.click();
 
     fixture.whenStable().then(() => {
       expect(component.openDialog).toHaveBeenCalled();
     });
-
   }));
 
+  it ('should increase Blob size on class creation', () => {
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    export_button.click();
+    const testBlobA = component.blob;
+    var size = testBlobA.size;
+    service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
+    component.createClass();
+    export_button.click();
+    const testBlobB = component.blob;
+    expect (testBlobB.size > size).toBeTruthy();
+  });
 
-  it('should create the class',() => {    
+  it ('should contain a file of type YAML in the Blob', () => {
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    export_button.click();
+    const testBlob = component.blob;
+    expect (testBlob.type).toMatch("application/yaml");
+  });
+
+
+  it('should create the class',() => {
     service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
     component.createClass();
     expect(ClassBoxComponent).toBeTruthy();
@@ -248,7 +266,7 @@ describe('ClassAreaComponent', () => {
   }));
 
   it('should update the position in the back end',() => {
-    
+
     service.createNew('apple',['m1'],['v1']);
     component.createClass();
     component.updatePosition();
@@ -304,7 +322,7 @@ describe('ClassAreaComponent', () => {
     //getting endpoints
     expect(guiService.connectionsUpdateWrapper).toHaveBeenCalled();
 
-    
+
 
   });
 
@@ -383,7 +401,20 @@ describe('ClassAreaComponent', () => {
     var editor = fixture.debugElement.nativeElement.querySelector('.editor');
     expect(editor).not.toBeNull();
   });
-  
 
-  
+  it ('should return to a previous save on import', () => {
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    service.createNew('apple',['m1'],['v1']);
+    component.createClass();
+    export_button.click();
+    const testBlob = component.blob;
+    var file : Blob = testBlob.slice();
+    service.removeClassByIndex(0);
+    var event = {target: {files: {0: file}}};
+    component.import(event);
+    export_button.click();
+    expect(file).toEqual(component.blob.slice());
+  });
+
+
 });

@@ -18,12 +18,12 @@ export class DialogTestComponent {
   //export
   //import value
   diagram: string;
-  //exportString: 
+  //exportString:
   connectionType: string;
   //boolean to check to see if class already exists
   exists: boolean;
-
-  constructor(public service: ClassStorageService, public guiService: GuiStorageService) { 
+  //validImport: boolean;
+  constructor(public service: ClassStorageService, public guiService: GuiStorageService) {
     this.exists = true;
   }
 
@@ -59,6 +59,8 @@ export class DialogTestComponent {
     this.exists = true;
   }
 
+
+
   //wrapper for the add button functionality
   addButton(){
     this.insertData();
@@ -80,5 +82,5 @@ export class DialogTestComponent {
 
   updateStoredDiagram(){
     this.service.diagramToJSON();
-  }  
+  }
 }
