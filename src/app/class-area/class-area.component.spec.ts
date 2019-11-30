@@ -202,6 +202,25 @@ describe('ClassAreaComponent', () => {
     });
   }));
 
+  it ('should increase Blob size on class creation', () => {
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    export_button.click();
+    const testBlobA = component.blob;
+    var size = testBlobA.size;
+    service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
+    component.createClass();
+    export_button.click();
+    const testBlobB = component.blob;
+    expect (testBlobB.size > size).toBeTruthy();
+  });
+
+  it ('should contain a file of type YAML in the Blob', () => {
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    export_button.click();
+    const testBlob = component.blob;
+    expect (testBlob.type).toMatch("application/yaml");
+  });
+
 
   it('should create the class',() => {
     service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
