@@ -71,6 +71,8 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
 
 
   downloadDiagram(){
+    this.updatePosition();
+    this.guiService.connectionsUpdateWrapper();
     this.exportedYAML = yaml.safeDump(this.service.allClasses);
     this.blob = new Blob([this.exportedYAML], { type: 'application/yaml' });
     this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
@@ -176,6 +178,25 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
       this.switchToCLI = true;
     });
   }
+
+  import(event: any){
+    let reader = new FileReader();
+    let file: File = event.target.files[0];
+    let storage = this.service;
+    let dialog = this.dialogRef;
+    dialog.componentInstance.validImport = true;
+    reader.onload = function(e){
+      let data = yaml.safeLoad(reader.result);
+      var aKeys = Object.keys(data).sort();
+      var bKeys = Object.keys(storage.allClasses).sort();
+      //if (JSON.stringify(aKeys) === JSON.stringify(bKeys))
+        storage.allClasses = data;
+      //else
+        //dialog.componentInstance.validImport = false;
+    }
+    reader.readAsText(file);
+  }
+
 
 
   createClass(){

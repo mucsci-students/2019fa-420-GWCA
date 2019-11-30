@@ -22,7 +22,7 @@ export class DialogTestComponent {
   connectionType: string;
   //boolean to check to see if class already exists
   exists: boolean;
-
+  validImport: boolean;
   constructor(public service: ClassStorageService, public guiService: GuiStorageService) {
     this.exists = true;
   }
