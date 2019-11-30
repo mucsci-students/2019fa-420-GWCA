@@ -19,12 +19,7 @@
   </span>
   <!-- import button contents -->
   <span *ngIf="buttonPressed === 'import'">
-      <span *ngIf="validImport">
-        <h4>Diagram imported successfully</h4>
-      </span>
-      <span *ngIf="!validImport">
-        <h4>Error uploading the diagram to UML Editor:</h4>
-      </span>
+    <h4>Diagram imported successfully</h4>
   </span>
   <span *ngIf="buttonPressed === 'connection'">
     <h1>Choose a connection type</h1>

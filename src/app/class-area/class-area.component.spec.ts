@@ -402,7 +402,19 @@ describe('ClassAreaComponent', () => {
     expect(editor).not.toBeNull();
   });
 
-
+  it ('should return to a previous save on import', () => {
+    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+    service.createNew('apple',['m1'],['v1']);
+    component.createClass();
+    export_button.click();
+    const testBlob = component.blob;
+    var file : Blob = testBlob.slice();
+    service.removeClassByIndex(0);
+    var event = {target: {files: {0: file}}};
+    component.import(event);
+    export_button.click();
+    expect(file).toEqual(component.blob.slice());
+  });
 
 
 });

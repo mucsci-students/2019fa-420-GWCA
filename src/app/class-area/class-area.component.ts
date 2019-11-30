@@ -183,14 +183,14 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     let reader = new FileReader();
     let file: File = event.target.files[0];
     let storage = this.service;
-    let dialog = this.dialogRef;
-    dialog.componentInstance.validImport = true;
+    //let dialog = this.dialogRef;
+    //dialog.componentInstance.validImport = true;
     reader.onload = function(e){
       let data = yaml.safeLoad(reader.result);
-      var aKeys = Object.keys(data).sort();
-      var bKeys = Object.keys(storage.allClasses).sort();
+      //var aKeys = Object.keys(data).sort();
+      //var bKeys = Object.keys(storage.allClasses).sort();
       //if (JSON.stringify(aKeys) === JSON.stringify(bKeys))
-        storage.allClasses = data;
+      storage.allClasses = data;
       //else
         //dialog.componentInstance.validImport = false;
     }
@@ -208,7 +208,5 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     moveItemInArray(this.classBoxes,event.previousIndex,event.currentIndex);
   }
 
-  updateStoredDiagram(){
-    this.service.diagramToJSON();
-  }
+
 }
