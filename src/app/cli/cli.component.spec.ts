@@ -91,9 +91,9 @@ describe('CliComponent', () => {
   });
 
   it('should be able to call remove',() => {
-    spyOn(component, 'removeClass');
+    spyOn(component, 'remove');
     component.interpret('>remove');
-    expect(component.removeClass).toHaveBeenCalled();
+    expect(component.remove).toHaveBeenCalled();
   });
 
   it('should be able to call clone',() => {
@@ -108,8 +108,8 @@ describe('CliComponent', () => {
     expect(component.neofetch).toHaveBeenCalled();
   });
 
-  it('should show format tip when add is called with no class name',() => {
-    expect(component.interpret('>add')).toBe('\x1b[1;33m' + "Format: add <class_name>");
+  it('should show man entry when add is called with no class name',() => {
+    expect(component.interpret('>add')).toBe(component.man("add"));
   });
 
   it('should error if too many spaces are in add var',() => {
@@ -129,6 +129,57 @@ describe('CliComponent', () => {
     expect(component.interpret('add -v hello int x')).toBe('\x1b[1;32m' + "Variable \"" + "int x" + "\" added to class \"" + "hello" + "\" successfully.");
   });
 
+  it('should show man entry when remove is called with no class name',() => {
+    expect(component.interpret('>remove')).toBe(component.man("remove"));
+  });
+
+  it('should be able to remove a class', () => {
+    component.interpret(">add hello");
+    expect(component.interpret(">remove hello")).toBe('\x1b[1;32m' + "Class \"" + "hello" + "\" removed!");
+  });
+
+  it('should be able to remove one var', () => {
+    component.interpret(">add hello");
+    component.interpret(">add -v hello int x");
+    expect(component.interpret("remove -v hello x")).toBe('\x1b[1;32m' + "Variable \"" + "x" + "\" removed from class \"" + "hello" + "\" successfully.");
+  });
+
+  it('should be able to remove one method', () => {
+    component.interpret(">add hello");
+    component.interpret(">add -m hello print()");
+    expect(component.interpret("remove -m hello print()")).toBe('\x1b[1;32m' + "Method \"" + "print()" + "\" removed from class \"" + "hello" + "\" successfully.");
+  });
+
+  it('should be able to remove all vars', () => {
+    component.interpret(">add hello");
+    component.interpret(">add -v hello int x");
+    component.interpret(">add -v hello bool b");
+    component.interpret(">add -v hello char c");
+    expect(component.interpret("remove -v hello *")).toBe('\x1b[1;32m' + "Variables removed from class \"" + "hello" + "\" successfully.");
+  });
+
+  it('should be able to remove all methods', () => {
+    component.interpret(">add hello");
+    component.interpret(">add -m hello print()");
+    component.interpret(">add -m hello push()");
+    component.interpret(">add -m hello pop()");
+    expect(component.interpret("remove -m hello *")).toBe('\x1b[1;32m' + "Methods removed from class \"" + "hello" + "\" successfully.");
+  });
+
+  it('should not be able to remove a method twice', () => {
+    component.interpret(">add hello");
+    component.interpret(">add -m hello print()");
+    component.interpret(">remove -m hello print()");
+    expect(component.interpret("remove -m hello print()")).toBe('\x1b[1;31m' + "Error: Class " + "hello" + " has no methods!");
+  });
+
+  it('should not be able to remove a var twice', () => {
+    component.interpret(">add hello");
+    component.interpret(">add -v hello int x");
+    component.interpret("remove -v hello x")
+    expect(component.interpret("remove -v hello x")).toBe('\x1b[1;31m' + "Error: Class " + "hello" + " has no variables!");
+  });
+  
 
   //will change soon (will be updated for file input)
   it('should have an input in the import box', () => {

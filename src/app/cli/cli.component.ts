@@ -244,13 +244,13 @@ export class CliComponent implements OnInit, AfterViewInit {
               else if(varName == "*"){
                 this.service.removeAllAttribute(target, "variables");
                 target.variables.push("none");
-                return '\x1b[1;32m' + "Variables removed from class \"" + name + "\" successfully."
+                return '\x1b[1;32m' + "Variables removed from class \"" + name + "\" successfully.";
               }
               else if(this.service.removeAttribute(target, "variables", this.service.findVarIndex(target, varName))){
                 if(target.variables.length < 1){
                   target.variables.push("none");
                 }
-                return '\x1b[1;32m' + "Variable \"" + varName + "\" removed from class \"" + name + "\" successfully."
+                return '\x1b[1;32m' + "Variable \"" + varName + "\" removed from class \"" + name + "\" successfully.";
               }
               else{
                 return '\x1b[1;31m' + "Error: Variable " + varName + " could not be removed from class " + name;
@@ -268,14 +268,14 @@ export class CliComponent implements OnInit, AfterViewInit {
              else if(methodName == "*"){
                this.service.removeAllAttribute(target, "methods");
                target.methods.push("none");
-               return '\x1b[1;32m' + "Methods removed from class \"" + name + "\" successfully."
+               return '\x1b[1;32m' + "Methods removed from class \"" + name + "\" successfully.";
 
              }
              else if(this.service.removeAttribute(target, "methods", this.service.findMethIndex(target, methodName))){
                if(target.methods.length < 1){
                   target.methods.push("none");
                 }
-                return '\x1b[1;32m' + "Method \"" + methodName + "\" removed from class \"" + name + "\" successfully."
+                return '\x1b[1;32m' + "Method \"" + methodName + "\" removed from class \"" + name + "\" successfully.";
              }
              else{
               return '\x1b[1;31m' + "Error: Method " + methodName + " could not be removed from class " + name;
