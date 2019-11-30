@@ -56,6 +56,62 @@ export class ClassStorageService {
     return null;
   }
 
+  //search a class's varaibles array, return index of target
+  findVarIndex(target: fullClass, variable: string){
+    for(var i = 0; i<target.variables.length;i++){
+      var currVar = target.variables[i].split(" ");
+      if(currVar[1] == variable){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  //search a class's methods array, return index of target
+  findMethIndex(target: fullClass, method: string){
+    for(var i = 0; i<target.methods.length;i++){
+      if(target.methods[i] == method){
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  removeAttribute(target: fullClass, attribute: string, index:number){
+    if(index !== -1){
+      if(attribute == "methods"){
+        target.methods.splice(index, 1);
+        return true
+      }
+      else if(attribute == "variables"){
+        target.variables.splice(index, 1);
+        return true
+      }
+      else{
+        return false;
+      }
+    }
+    else{
+      return false;
+    }
+  }
+
+  removeAllAttribute(target: fullClass, attribute: string){
+    if(attribute == "methods"){
+      for(var i = 0; i <= target.methods.length + 1; i++){
+        target.methods.pop();
+      }
+    }
+    else if(attribute == "variables"){
+      for(var i = 0; i <= target.variables.length + 1; i++){
+        target.variables.pop();
+      }
+    }
+    else{
+      return false;
+    }
+  }
+
   //searh array for class by name, return its index
   findClassIndex(name){
     for(var i = 0;i<this.allClasses.length;i++){
