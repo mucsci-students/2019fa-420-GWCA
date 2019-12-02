@@ -79,7 +79,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       case "exit": this.router.navigate(['']); break;
       case "add": output = this.add(line); break;
       case "edit": output = this.editClass(line); break;
-      case "remove": output = this.removeClass(line); break;
+      case "remove": output = this.remove(line); break;
       case "clear": output = ""; break;
       case "view": output = this.viewDiagram(); break;
       case "import": output = this.openImport(); break;
@@ -105,7 +105,8 @@ export class CliComponent implements OnInit, AfterViewInit {
       case "add":   
         manmsg = '\x1b[1;33m' + `Formats:\n\r  Classes:   add <class_name>\n\r  Variables: add -v <class_name> <var_type> <var_name>\n\r  Methods:   add -m <class_name> <method_name>`; break;
       case "edit":  manmsg = '\x1b[1;33m' + "Format:\tedit <class_name> [var1,var2,...] [method1(),method2(),...]"; break;
-      case "remove": manmsg = '\x1b[1;33m' + "Format:\tremove <class_name>"; break;
+      case "remove": 
+      manmsg = '\x1b[1;33m' + `Formats:\n\r  Classes:   remove <class_name>\n\n\r  Variables: remove -v <class_name> <var_name> \n\r\t     remove -v <class_name> *\n\n\r  Methods:   remove -m <class_name> <method_name> \n\r\t     remove -m <class_name> *`; break;
       case "clear": manmsg = '\x1b[1;33m' + "Format:\tclear"; break;
       case "view":  manmsg = '\x1b[1;33m' + "Format:\tview"; break;
       case "export": manmsg = '\x1b[1;33m' + "Format:\texport"; break;
@@ -124,7 +125,7 @@ export class CliComponent implements OnInit, AfterViewInit {
  edit     -> edit a class\r
  export   -> export diagram\r
  help     -> print help message\r
- import -> import a diagram\r
+ import   -> import a diagram\r
  man      -> view a command's manual page\r
  neofetch -> view system information\r
  quit     -> quit and return to GUI\r
@@ -186,8 +187,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       }
     }
     else{
-      //return '\x1b[1;33m' + "Format:\tadd <class_name>";
-      return '\x1b[1;33m' + "Format: add <class_name>";
+      return this.man("add");
     }
   }
 
@@ -227,20 +227,86 @@ export class CliComponent implements OnInit, AfterViewInit {
   }
 
   //  this funtion removes a class with the given name.
-  removeClass(line: string){
-    var arg1 = this.grabClassNameFromInput(line);
-    if (arg1){
-      var target = this.service.findClass(arg1);
-      if(target){
-        this.service.removeClassByIndex(this.service.allClasses.indexOf(target));
-        return '\x1b[1;32m' + "Class \"" + arg1 + "\" has been deleted";
+  remove(line: string){
+    var command = line.split(" ");
+    var name = command[1];
+    var flag = "";
+    if (name){
+      if(name == "-v" || name == "-m"){
+        flag = name;
+        name = command[2];
+        var target = this.service.findClass(name);
+        if(target){
+            if(flag == "-v" && command.length == 4){
+              var varName = command[3];
+              if(target.variables[0] == "none"){
+                return '\x1b[1;31m' + "Error: Class " + name + " has no variables!";
+              }
+              else if(varName == "*"){
+                this.service.removeAllAttribute(target, "variables");
+                target.variables.push("none");
+                return '\x1b[1;32m' + "Variables removed from class \"" + name + "\" successfully.";
+              }
+              else if(this.service.removeAttribute(target, "variables", this.service.findVarIndex(target, varName))){
+                if(target.variables.length < 1){
+                  target.variables.push("none");
+                }
+                return '\x1b[1;32m' + "Variable \"" + varName + "\" removed from class \"" + name + "\" successfully.";
+              }
+              else{
+                return '\x1b[1;31m' + "Error: Variable " + varName + " could not be removed from class " + name;
+              }
+
+            }
+            else if(flag == "-v" && command.length != 4){
+              return this.man("remove");
+            }
+            else if(flag == "-m" && command.length == 4){
+             var methodName = command[3];
+             if(target.methods[0] == "none"){
+              return '\x1b[1;31m' + "Error: Class " + name + " has no methods!"; 
+             }
+             else if(methodName == "*"){
+               this.service.removeAllAttribute(target, "methods");
+               target.methods.push("none");
+               return '\x1b[1;32m' + "Methods removed from class \"" + name + "\" successfully.";
+
+             }
+             else if(this.service.removeAttribute(target, "methods", this.service.findMethIndex(target, methodName))){
+               if(target.methods.length < 1){
+                  target.methods.push("none");
+                }
+                return '\x1b[1;32m' + "Method \"" + methodName + "\" removed from class \"" + name + "\" successfully.";
+             }
+             else{
+              return '\x1b[1;31m' + "Error: Method " + methodName + " could not be removed from class " + name;
+            }
+            }
+          }
+          else if(name == "" && flag == "-v"){
+            return '\x1b[1;31m' + "Error: too many spaces between '-v' and class name";
+          }
+          else if(name == "" && flag == "-m"){
+            return '\x1b[1;31m' + "Error: too many spaces between '-m' and class name";
+          }
+          else{
+            return '\x1b[1;31m' + "Error: Class \"" + name + "\" cannot be found.";
+          }
       }
       else{
-        return '\x1b[1;31m' + "Error: Class \"" + arg1 + "\" not found. Type 'view' to view classes.";
+        var target = this.service.findClass(name);
+        if(!target){
+          return '\x1b[1;31m' + "Error: Class \"" + name + "\" does not exist.";
+        }
+        else{
+          this.service.removeClassByIndex(this.service.findClassIndex(name));
+          return '\x1b[1;32m' + "Class \"" + name + "\" removed!";
+        }
       }
     }
     else{
-      return '\x1b[1;33m' + "Format:\tremove <class_name>";
+      //return '\x1b[1;33m' + "Format:\tadd <class_name>";
+      return this.man("remove");
     }
   }
 
