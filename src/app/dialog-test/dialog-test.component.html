@@ -1,37 +1,5 @@
 <div class="form">
   <h1 mat-dialog-title>{{name}}</h1>
-  <!-- edit button contents -->
-  <span *ngIf="buttonPressed === 'edit'">
-      <form class="edit-form">
-        <span *ngIf="choice !== 'found'">
-          <mat-form-field>
-              <mat-select placeholder="Choose a class..." [(value)]="choice">
-                <!-- <mat-option selected>None</mat-option> -->
-                <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-              </mat-select> 
-          </mat-form-field>
-          <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
-        </span>  
-
-          <span *ngIf="choice === 'found'">
-            <mat-form-field class="input-data">
-              <mat-label>Class Name</mat-label>
-              <input matInput [(ngModel)]="className" [ngModelOptions]="{standalone:true}"/>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>Methods</mat-label>
-                <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
-              <mat-hint>Seperated by commas</mat-hint>
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>State variables</mat-label>
-              <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
-              <mat-hint>Seperated by commas</mat-hint>
-            </mat-form-field>
-            <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="editButton()">Update</button>  
-          </span>
-      </form>
-  </span>
   <!-- new button contents -->
   <span *ngIf="buttonPressed === 'new'">
       <form class="new-form">
@@ -39,47 +7,19 @@
           <mat-label>Class Name</mat-label>
           <input matInput [(ngModel)]="className" minlength="1"  (ngModelChange)="existenceCheck()" [ngModelOptions]="{standalone:true}"/>
         </mat-form-field>
-        <mat-form-field>
-          <mat-label>State variables</mat-label>
-          <textarea matInput [(ngModel)]="variables" [ngModelOptions]="{standalone:true}"></textarea>
-          <mat-hint>Seperated by commas</mat-hint>
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Methods</mat-label>
-          <textarea matInput [(ngModel)]="methods" [ngModelOptions]="{standalone:true}"></textarea>
-          <mat-hint>Seperated by commas</mat-hint>
-        </mat-form-field>
         <span *ngIf="exists == false">
           <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="addButton()">Submit</button>
         </span>
       </form>
   </span>
-  <!-- delete button contents -->
-  <span *ngIf="buttonPressed === 'delete'">
-    <form class="delete-form">
-        <mat-form-field>
-            <mat-select placeholder="Choose a class..." [(value)]="choice">
-              <!-- <mat-option selected>None</mat-option> -->
-              <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select> 
-        </mat-form-field>
-        <button mat-raised-button color="primary" [mat-dialog-close] type="button" (click)="search(choice)">Deleted Class</button>
-    </form>
-  </span> 
   <!-- export button contents -->
   <!-- line 59 actually serves our diagram.-->
   <span *ngIf="buttonPressed === 'export'">
-      <h1>Copy this:</h1>
-      <code>
-        <pre>{{service.jsonString}}</pre>
-      </code>
+      If download did not begin, <a download="data.yml" [href]="fileURL">click here</a>
   </span>
   <!-- import button contents -->
   <span *ngIf="buttonPressed === 'import'">
-      <form>
-        <input matInput [(ngModel)]="diagram" [ngModelOptions]="{standalone:true}"/>
-          <button mat-raised-button color="primary" [mat-dialog-close] type="button" class="submit" (click)="importDiagram(diagram)">Import</button>
-      </form>
+    <h4>Diagram imported successfully</h4>
   </span>
   <span *ngIf="buttonPressed === 'connection'">
     <h1>Choose a connection type</h1>
@@ -93,43 +33,6 @@
       </mat-select>
     </mat-form-field>
     <button mat-raised-button color="primary" [mat-dialog-close] type="button" >Submit</button>
-  </span>
-  <!-- delete attribute contents -->
-  <span *ngIf="buttonPressed === 'delete_attribute'">
-    <form class="delete_attribute-form">
-      <span *ngIf="choice !== 'found'">
-        <mat-form-field>
-            <mat-select placeholder="Choose a class..." [(value)]="choice">
-              <!-- <mat-option selected>None</mat-option> -->
-              <mat-option *ngFor="let className of classNames" value="{{className.innerHTML}}" >{{className.innerHTML}}</mat-option>
-            </mat-select> 
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="button" (click)="search(choice)">Confirm</button>
-      </span>  
-        <span *ngIf="choice === 'found'"> <!--This also needs to me changed...Add function in copmonents part-->
-          <mat-form-field>
-            <!-- THIS SECTION NEEDS TO BE EDITED-->
-            <mat-label> Methods </mat-label>
-            <mat-select [(value)]="selected_1">
-                <mat-option>None</mat-option>
-                <mat-option value="option1">Option 1</mat-option>
-                <mat-option value="option2">Option 2</mat-option>
-                <mat-option value="option3">Option 3</mat-option>
-              </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label> Variables </mat-label>
-            <mat-select [(value)]="selected_2">
-                <mat-option>None</mat-option>
-                <mat-option value="option1">Option 1</mat-option>
-                <mat-option value="option2">Option 2</mat-option>
-                <mat-option value="option3">Option 3</mat-option>
-            </mat-select>
-            <!-- THIS SECTION NEEDS TO BE EDITED-->
-          </mat-form-field>
-          <button [mat-dialog-close] mat-raised-button color="primary" type="button" (click)="updateClass()">Update</button>  
-        </span>
-    </form>
   </span>
   <span *ngIf="buttonPressed == 'help'">
     <div class="textbox">
@@ -168,14 +71,13 @@
       <h5>Exporting data</h5>
       <ol>
         <li>Press the export button</li>
-        <li>The current data for the classses will be displayed in a popup menu, in the form of JSON</li>
-        <li>Copy the text and paste it somewhere to keep it for later</li>
-        <li><strong>Note:</strong> upcoming functionality will include allowing the user to download a file holding the data</li>
+        <li>A file manager should populate with a YAML file containing your current diagram</li>
+        <li>Select the name you would like to use for this feed and save it to a desireable location on your machine</li>
       </ol>
       <h5>Importing data</h5>
       <ol>
         <li>Press the import button</li>
-        <li>paste the data previously exported, from the export button into this popup and press the submit 
+        <li>paste the data previously exported, from the export button into this popup and press the submit
           button to regenerate the data</li>
         <li><strong>Note:</strong> upcoming functionality will include allowing the user to input the downloaded file
          taken from the export button, to generate the data</li>
@@ -203,13 +105,11 @@
       <ol>
         <mat-chip-list>
           <li class="chip"><mat-chip color="warn" selected>Bug </mat-chip>Can drag classes over one another, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Allow for downloading/saving the data to a file, Completion: (TBD)</li>
-          <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>JSON to YAML change Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>Try to force connections to not overlap classes, Completion: (TBD)</li>
           <li class="chip"><mat-chip color="primary" selected>Functionality </mat-chip>UX changes, Completion: (TBD)</li>
         </mat-chip-list>
       </ol>
-      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>  
+      <button [mat-dialog-close] mat-raised-button color="primary" class="close" type="button">Close</button>
     </div>
   </span>
 </div>

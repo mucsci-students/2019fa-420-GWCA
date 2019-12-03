@@ -6,6 +6,9 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
+import * as yaml from "js-yaml";
+import { GuiStorageService } from '../gui-storage.service';
 
 
 @Component({
@@ -13,17 +16,20 @@ import { Router, NavigationEnd, NavigationStart } from '@angular/router';
   templateUrl: './class-area.component.html',
   styleUrls: ['./class-area.component.css']
 })
-export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDestroy {
+export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
- 
+  fileURL: any;
+  exportedYAML : string;
+  blob : Blob;
+
   //NOTE: this is testing, ignore for now
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
-  constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
+  constructor(private sanatizer: DomSanitizer, private resolver: ComponentFactoryResolver,public service: ClassStorageService
     ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
-    private router: Router) {
+    private router: Router, public guiService: GuiStorageService) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
 
@@ -38,7 +44,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
         if(event instanceof NavigationStart){
           if(router.url !== '/cli'){
-            this.service.connectionsUpdateWrapper();
+            this.guiService.connectionsUpdateWrapper();
             this.updatePosition();
             //this.removeAll();
             // this.classBoxes = [];
@@ -60,30 +66,32 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         changes.forEachAddedItem(r =>
            this.updateBackend()
         );
-        changes.forEachRemovedItem(r =>
-          console.log("removed")
-        );
     }
   }
 
-  ngOnDestroy(){
+
+  downloadDiagram(){
+    this.updatePosition();
+    this.guiService.connectionsUpdateWrapper();
+    this.exportedYAML = yaml.safeDump(this.service.allClasses);
+    this.blob = new Blob([this.exportedYAML], { type: 'application/yaml' });
+    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
   }
 
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
-
-    this.service.jsPlumbInstance = jsPlumb.getInstance({
+    this.guiService.jsPlumbInstance = jsPlumb.getInstance({
       DragOptions: {
         zIndex: 1000
       },
     });
-    this.service.jsPlumbInstance.setContainer("classes-container");
-    this.service.jsPlumbInstance.reset();
-    this.service.revertLeftShift();
+    this.guiService.jsPlumbInstance.setContainer("classes-container");
+    this.guiService.jsPlumbInstance.reset();
+    this.guiService.revertLeftShift();
 
 
-    
-    
+
+
     var classes = this.service.allClasses;
 
     //empty back-end for re-insertion
@@ -91,7 +99,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
 
 
     if(classes.length != 0){
-      
+
       for(var i=0;i<classes.length;i++){
         //redraw position if previously placed
         if(classes[i]['position'].length != 0){
@@ -100,33 +108,27 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
           (<HTMLElement>class_box).style.left = classes[i]['position'][0];
           (<HTMLElement>class_box).style.top = classes[i]['position'][1];
         }
-        this.service.reinitializeConnections();
+        this.guiService.reinitializeConnections();
       }
     }
 
   }
 
 
-  
-
-
-
-
-
-
 
   //update backend
   updateBackend(){
     //console.log(this.service.generate());
-    var generated = document.getElementsByClassName(this.service.generate().name);
-    if(generated.length == 0){
-      this.createClass();
-      this.service.pruneArray();
+    if(this.service.allClasses.length != 0){
+      var generated = document.getElementsByClassName(this.service.generate().name);
+      if(generated.length == 0){
+        this.createClass();
+        this.service.pruneArray();
 
+      }
     }
   }
 
-  
 
   updatePosition(){
     var classes = document.querySelectorAll('.class-box');
@@ -136,7 +138,7 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
      }
 
   }
-  
+
 
 
 
@@ -152,18 +154,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         this.dialogRef.componentInstance.buttonPressed = "new";
         this.dialogRef.componentInstance.name = "New Button";
         break;
-      case 'edit':
-        this.dialogRef.componentInstance.buttonPressed = "edit";
-        this.dialogRef.componentInstance.name = "Edit Button";
-        break;
-      case 'delete':
-        this.dialogRef.componentInstance.buttonPressed = "delete";
-        this.dialogRef.componentInstance.name = "Delete Class";
-        break;
-      case 'delete_attribute':
-        this.dialogRef.componentInstance.buttonPressed = "delete_attribute";
-        this.dialogRef.componentInstance.name = "Delete Attribute";
-        break;
       case 'import':
         this.dialogRef.componentInstance.buttonPressed = "import";
         this.dialogRef.componentInstance.name = "Import Button";
@@ -172,12 +162,12 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
         this.dialogRef.componentInstance.buttonPressed = "export";
         this.dialogRef.componentInstance.name = "Export Button";
         break;
-        case 'help':
-          //update width for help
-          this.dialogRef.updateSize('50%','80%');
-          this.dialogRef.componentInstance.buttonPressed = "help";
-          this.dialogRef.componentInstance.name = "Help";
-          break;
+      case 'help':
+        //update width for help
+        this.dialogRef.updateSize('50%','80%');
+        this.dialogRef.componentInstance.buttonPressed = "help";
+        this.dialogRef.componentInstance.name = "Help";
+        break;
     }
     //listen for close without submit
     this.dialogRef.backdropClick().subscribe(() => {
@@ -188,14 +178,29 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
       this.switchToCLI = true;
     });
   }
-  
+
+  import(event: any){
+    let reader = new FileReader();
+    let file: File = event.target.files[0];
+    let storage = this.service;
+    //let dialog = this.dialogRef;
+    //dialog.componentInstance.validImport = true;
+    reader.onload = function(e){
+      let data = yaml.safeLoad(reader.result);
+      //var aKeys = Object.keys(data).sort();
+      //var bKeys = Object.keys(storage.allClasses).sort();
+      //if (JSON.stringify(aKeys) === JSON.stringify(bKeys))
+      storage.allClasses = data;
+      //else
+        //dialog.componentInstance.validImport = false;
+    }
+    reader.readAsText(file);
+  }
+
+
 
   createClass(){
       const factory = this.resolver.resolveComponentFactory(ClassBoxComponent);
-      //  const temp = this.ref.createComponent(factory);
-      //  temp.instance.name = this.service.generate().name;
-      //  temp.instance.methods = this.service.generate().methods;
-      //  temp.instance.variables = this.service.generate().variables;
       this.classBoxes.push(factory);
   }
 
@@ -203,7 +208,5 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit, OnDes
     moveItemInArray(this.classBoxes,event.previousIndex,event.currentIndex);
   }
 
-  updateStoredDiagram(){
-    this.service.diagramToJSON();
-  }  
+
 }

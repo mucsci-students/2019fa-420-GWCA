@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, IterableDiffer, IterableDiffers, DoCh
 import { ClassStorageService} from '../class-storage.service';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { DialogTestComponent } from '../dialog-test/dialog-test.component';
+import { GuiStorageService } from '../gui-storage.service';
 
 @Component({
   selector: 'app-class-box',
@@ -12,10 +13,10 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   name: string;
   editorName: string;
   variables: string[];
-  editorVariables: string;
+  chipAttribute: string;
   methods: string[];
   //Note: this currently is used for all editing, I will make a better name for it soon.
-  editorMethods: string;
+  oldChipValue: string;
   exists: boolean;
   id: string;
   index: number = 0;
@@ -27,7 +28,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
 
   constructor(public service: ClassStorageService, public dialog: MatDialog,
-    private iterableDiffs: IterableDiffers) { 
+    private iterableDiffs: IterableDiffers, public guiService: GuiStorageService) { 
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
 
   }
@@ -43,10 +44,10 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
       }
     }
     this.name = this.service.allClasses[this.index]['name'];
-    this.id = this.name + "_" + this.service.instance;
+    this.id = this.name + "_" + this.guiService.instance;
     this.variables = this.service.allClasses[this.index]['variables'];
     this.methods = this.service.allClasses[this.index]['methods'];
-    this.service.instance = this.service.instance + 1;
+    this.guiService.instance = this.guiService.instance + 1;
 
 
 
@@ -64,7 +65,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   }
 
   ngAfterViewInit(){
-    var jsPlumbInstance = this.service.jsPlumbInstance;
+    var jsPlumbInstance = this.guiService.jsPlumbInstance;
        
 
      //get all the dynamically created elements
@@ -74,63 +75,28 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
      //keep track of the top shift value
      var topShift  = 20;
      for(var i = 0;i<boxes.length;i++){
-      if(this.service.leftShift > 900){
-        this.service.leftShift = 20;
+      if(this.guiService.leftShift > 900){
+        this.guiService.leftShift = 20;
         topShift = topShift + 300;
       }
-        (<HTMLElement>boxes[i]).style.left = this.service.leftShift + 'px';
+        (<HTMLElement>boxes[i]).style.left = this.guiService.leftShift + 'px';
         (<HTMLElement>boxes[i]).style.top = topShift + 'px';
-        this.service.leftShift = this.service.leftShift + 300;
+        this.guiService.leftShift = this.guiService.leftShift + 300;
      }
 
-    var jsPlumbInstance = this.service.jsPlumbInstance;
+    var jsPlumbInstance = this.guiService.jsPlumbInstance;
     //note this is kind of a hacky solution...
 
-    this.service.addEndpoints(this.id);
+    this.guiService.addEndpoints(this.id);
 
     var id = this.id;
 
  
     setTimeout(() =>
-    this.service.jsPlumbInstance.draggable(this.id,{
+    this.guiService.jsPlumbInstance.draggable(this.id,{
       drag:function(event){
         jsPlumbInstance.revalidate(id);
         jsPlumbInstance.repaintEverything();
-        //line overlap algorithm
-        var sourceConnections = jsPlumbInstance.getConnections({source: id});
-        var targetConnections = jsPlumbInstance.getConnections({target: id});
-        if(sourceConnections.length > 0){
-          for(var i =0;i<sourceConnections.length;i++){
-            var source = sourceConnections[i]['source'];
-            var target = sourceConnections[i]['target'];
-            var connection = sourceConnections[i]['canvas'].getBoundingClientRect();
-            var classBoxes = document.querySelectorAll('.class-box');
-            for(var j = 0;j<classBoxes.length;j++){
-              var classBox = classBoxes[j].getBoundingClientRect();
-              var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
-              if(!overlap && classBoxes[j] != source && classBoxes[j] != target){
-                (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
-                jsPlumbInstance.repaintEverything();
-              }
-            }
-          }
-        }
-        if(targetConnections.length > 0){
-          for(var i =0;i<targetConnections.length;i++){
-          var source = targetConnections[i]['source'];
-          var target = targetConnections[i]['target'];
-          var connection = targetConnections[i]['canvas'].getBoundingClientRect();
-          var classBoxes = document.querySelectorAll('.class-box');
-          for(var j = 0;j<classBoxes.length;j++){
-            var classBox = classBoxes[j].getBoundingClientRect();
-            var overlap = !(connection.right < classBox.left || connection.left > classBox.right || connection.bottom < classBox.top || connection.top > classBox.bottom);
-            if(!overlap && classBoxes[j] != source && classBoxes[j] != target){
-              (<HTMLElement>classBoxes[j]).style.top = (connection.top + connection.height + 20) + 'px';
-              jsPlumbInstance.repaintEverything();
-            }
-          }
-        }
-        }
 
       },zIndex: 1000
     }), 
@@ -147,126 +113,11 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.autoConnect();
 
 
-    //no self connections
-    jsPlumbInstance.bind("connection",function(){
-      var connections = jsPlumbInstance.getConnections(this.id);
-      //remove self connections
-        if(connections[(connections.length - 1)]['source']['id'] == connections[(connections.length - 1)]['target']['id']){
-          jsPlumbInstance.deleteConnection(connections[(connections.length - 1)]);
-        }
-        //otherwise open dialog so we can specify connection type
-        else{
-          if(id == connections[(connections.length - 1)]['source']['id']){
-            dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
-            dialogRef.componentInstance.buttonPressed = "connection";
-            dialogRef.afterClosed().subscribe(() => {
-              connectionType = dialogRef.componentInstance.connectionType;
-              switch(connectionType){
-                //open diamond, solid line
-                //aggregation
-                case 'purple':
-                  connections[(connections.length - 1)].removeAllOverlays();
-                  connections[(connections.length - 1)].setPaintStyle({stroke: 'purple', lineWidth: '10px'});
-                  connections[(connections.length - 1)].addOverlay(["Label",{label:"Aggregation",location:0.5}]);
-                  connections[(connections.length - 1)].addOverlay(["Diamond",{
-                    cssClass: "unfilledDiamond",
-                    width: 15,
-                    length: 30,
-                    location: 1
-                  }]);
-                  break;
-                //association
-                //just a line
-                case 'green':
-                  connections[(connections.length - 1)].removeAllOverlays();
-                  connections[(connections.length - 1)].setPaintStyle({stroke: 'green', lineWidth: '10px'});
-                  connections[(connections.length - 1)].addOverlay(["Label",{label:"Association",location:0.5}]);
-                  break;
-                //closed diamond, solid line
-                //composition
-                case 'red':
-                  connections[(connections.length - 1)].removeAllOverlays();
-                  connections[(connections.length - 1)].setPaintStyle({stroke: 'red', lineWidth: '10px'});
-                  connections[(connections.length - 1)].addOverlay(["Label",{label:"Composition",location:0.5}]);
-                  connections[(connections.length - 1)].addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
-                  break;
-                //closed arrow, solid line
-                //generalization
-                case 'orange':
-                  connections[(connections.length - 1)].setPaintStyle({stroke: 'orange', lineWidth: '10px'});
-                  connections[(connections.length - 1)].addOverlay(["Label",{label:"Generalization",location:0.5}]);
-                  break;
-                //closed arrow, dashed line
-                //realization
-                case 'yellow':
-                  connections[(connections.length - 1)].setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
-                  connections[(connections.length - 1)].addOverlay(["Label",{label:"Realization",location:0.5}]);
-                  break;
-              }
-            });
-          }
-        }
-
-      });
+    //bind everything 
+    this.guiService.bindConnections(dialogRef,dialog,jsPlumbInstance,connectionType,DialogTestComponent,id);
 
 
-      //on connection click
-      jsPlumbInstance.bind("click",function(connection){
-        if(id == connection['source']['id']){
-          dialogRef = dialog.open(DialogTestComponent, {width: '250px'});
-          dialogRef.componentInstance.buttonPressed = "connection";
-          dialogRef.afterClosed().subscribe(() => {
-            connectionType = dialogRef.componentInstance.connectionType;
-            switch(connectionType){
-              //open diamond, solid line
-              //aggregation
-              case 'purple':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'purple', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Aggregation",location:0.5}]);
-                connection.addOverlay(["Diamond",{
-                  cssClass: "unfilledDiamond",
-                  width: 15,
-                  length: 30,
-                  location: 1
-                }]);
-
-                break;
-              //association
-              //just a line
-              case 'green':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'green', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Association",location:0.5}]);
-                break;
-              //closed diamond, solid line
-              //composition
-              case 'red':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
-                connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
-                break;
-              //closed arrow, solid line
-              //generalization
-              case 'orange':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({stroke: 'orange', lineWidth: '10px'});
-                connection.addOverlay(["Label",{label:"Generalization",location:0.5}]);
-                connection.addOverlay(["Arrow",{width: 15,lenght: 30,location:1}]);
-                break;
-              //closed arrow, dashed line
-              //realization
-              case 'yellow':
-                connection.removeAllOverlays();
-                connection.setPaintStyle({"dashstyle":'3 3',stroke:'yellow',strokeWidth:5});
-                connection.addOverlay(["Label",{label:"Realization",location:0.5}]);
-                connection.addOverlay(["Arrow",{width: 15,lenght: 30,location:1}]);
-                break;
-            }
-          });
-        }
-      });
+    
 
     
   }
@@ -297,6 +148,34 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
           (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
         }
       }
+      else if(this.edit == 'new_method'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 110) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 170) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
+      else if(this.edit == 'new_variable'){
+        if(!y){
+          (<HTMLElement>editBox).style.top = (position_y + 10) + 'px';
+          
+        }
+        if(!x){
+          (<HTMLElement>editBox).style.left = (position_x + 10) + 'px';
+        }
+        else if(y && x){
+          //if dragged
+          (<HTMLElement>editBox).style.top = (parseInt(y.split("p")[0]) + 70) + 'px';
+          (<HTMLElement>editBox).style.left = (parseInt(x.split("p")[0]) + 10) + 'px';
+        }
+      }
       (<HTMLElement>editBox).style.width = '230px';
     }
   }
@@ -316,7 +195,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   removeMethod(method){
     var index = this.methods.indexOf(method);
 
-    if(index >= 0){
+    if(index >= 0 && this.methods.includes(method)){
       this.methods.splice(index,1);
     }
 
@@ -327,13 +206,14 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   removeVariable(variable){
     var index = this.variables.indexOf(variable);
 
-    if(index >= 0){
+    if(index >= 0 && this.variables.includes(variable)){
       this.variables.splice(index,1);
     }
     this.service.findClass(this.name)['variables'] = this.variables;
   }
 
   //auto generate composition connection on class creation
+  //GUI no checking
   autoConnect(){
     var established_connections: string[][] = [];
     var noVariables = (this.variables.length >= 1 && this.variables[0] != 'none') ? true : false;
@@ -357,7 +237,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
             notAlreadyConnected = true;
           }
           if(notAlreadyConnected){
-            var connection = this.service.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
+            var connection = this.guiService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
             //composition
             connection.removeAllOverlays();
             connection.setPaintStyle({stroke: 'red', lineWidth: '10px'});
@@ -379,16 +259,16 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.edit = edit;
     switch(edit){
       case 'chip':
-        this.editorVariables = input;
+        this.chipAttribute = input;
         if(this.variables.includes(input)){
-          this.editorMethods = input;
+          this.oldChipValue = input;
           this.variables[this.variables.indexOf(input)] = input;
         }
         else{
-          this.editorMethods = input;
+          this.oldChipValue = input;
           this.methods[this.methods.indexOf(input)] = input;
         }
-        //se editor position
+        //set editor position
         setTimeout(function(){
           var editor = document.querySelector('.editor.chip');
           var chip = document.querySelector('.'+input).getBoundingClientRect();
@@ -413,8 +293,9 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   }
 
   //edit name
+  //GUI no tests
   editName(){
-    this.service.connectionsUpdateWrapper();
+    this.guiService.connectionsUpdateWrapper();
     //update connections with new name
     var connections = this.service.findClass(this.name)['connections'];
     for(var i = 0;i<connections.length;i++){
@@ -433,36 +314,35 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
     var id = this.id;
     //reset id of endpoints on name change
-    this.service.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
+    this.guiService.jsPlumbInstance.selectEndpoints({source: element}).each(function(endpoint){
       endpoint['elementId'] = id;
     });
 
     //update id jsPlumb stores
-    this.service.jsPlumbInstance.setIdChanged(oldId,this.id);
+    this.guiService.jsPlumbInstance.setIdChanged(oldId,this.id);
 
 
 
   }
 
   //this will change later
+  //GUI no change
   deleteClass(){
-    this.service.jsPlumbInstance.remove(this.id);
+    this.guiService.jsPlumbInstance.remove(this.id);
+    this.service.allClasses.splice(this.service.allClasses.indexOf(this.service.findClass(this.name)),1);
   }
 
   updateChip(){
-    for(var i = 0;i<this.variables.length;i++){
-      if(this.variables[i].includes(this.editorMethods)){
-        this.variables[i] = this.editorVariables;
-      }
+    if(this.variables.includes(this.oldChipValue)){
+      this.variables[this.variables.indexOf(this.oldChipValue)] = this.chipAttribute;
     }
-    for(var i = 0;i<this.methods.length;i++){
-      if(this.methods[i].includes(this.editorMethods)){
-        this.methods[i] = this.editorVariables;
-      }
+    else{
+      this.methods[this.methods.indexOf(this.oldChipValue)] = this.chipAttribute;
     }
+
     this.updateValues();
     this.edit = '';
-    this.editorMethods = ''
+    this.oldChipValue = ''
   }
 
   //tracker methods for ngFor
@@ -481,6 +361,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     this.methods = cls['methods'];
   }
 
+  //makes sure when changing name that the class with that name doesn't already exist
   existenceCheck(){
     if(this.editorName){
       var cls = document.querySelector('.'+this.editorName);
@@ -491,6 +372,36 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
     else{
       this.exists = true;
     }
+  }
+  //add chip to variables or methods
+  addChip(type){
+    //no adding none to variables or methods regardless
+    if(this.chipAttribute != 'none' && this.chipAttribute != ''){
+      if(type == 'variable'){
+        //if no variables
+        if(this.variables.length == 1 && this.variables[0] == 'none'){
+          this.variables[0] = this.chipAttribute;
+        }
+        //otherwise add to current variables
+        else{
+          this.variables.push(this.chipAttribute);
+        }
+      }
+      else{
+        //if no methods
+        if(this.methods.length == 1 && this.methods[0] == 'none'){
+          this.methods[0] = this.chipAttribute;
+        }
+        //otherwise add to current methods
+        else{
+          this.methods.push(this.chipAttribute);
+        }
+
+      }
+    }
+    //close editor, reset input field
+    this.chipAttribute = '';
+    this.edit = '';
   }
 
 }

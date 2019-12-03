@@ -1,17 +1,18 @@
 //angular imports
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
 //components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DialogTestComponent } from './dialog-test/dialog-test.component';
 import { ClassBoxComponent } from './class-box/class-box.component';
 import { ClassAreaComponent } from './class-area/class-area.component';
+import { CliComponent } from './cli/cli.component';
+import { DialogTestComponent } from './dialog-test/dialog-test.component';
 
 //services
-//import { StorageService } from './storage.service';
 import { ClassStorageService } from './class-storage.service'
 
 //material imports
@@ -21,10 +22,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule, MatSelectModule, MatMenuModule, MatToolbarModule, MatChipsModule, MatCardModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 
-import { CliComponent } from './cli/cli.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ObserversModule } from '@angular/cdk/observers';
+import { GuiStorageService } from './gui-storage.service';
+
 
 
 @NgModule({
@@ -33,8 +35,7 @@ import { ObserversModule } from '@angular/cdk/observers';
     DialogTestComponent,
     ClassBoxComponent,
     ClassAreaComponent,
-    CliComponent,
-
+    CliComponent
   ],
   imports: [
     BrowserModule,
@@ -62,9 +63,8 @@ import { ObserversModule } from '@angular/cdk/observers';
   providers: [
     ClassStorageService,
     ClassAreaComponent,
+    GuiStorageService
     ],
   bootstrap: [AppComponent],
-  schemas: [],
-  exports: [  ]
 })
 export class AppModule { }

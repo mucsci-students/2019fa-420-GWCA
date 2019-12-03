@@ -1,5 +1,3 @@
-
-
 dist: trusty
 sudo: false
 
@@ -26,6 +24,7 @@ before_script:
 
 script:
   - ng build
-  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
-  - npm run coveralls
+  - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox --code-coverage
 
+after_script:
+  - cat ./coverage/*/lcov.info | ./node_modules/coveralls/bin/coveralls.js
