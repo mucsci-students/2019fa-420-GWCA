@@ -32,5 +32,8 @@ after_script:
 deploy:
   skip-cleanup: true
   provider: firebase
+  #Note: this is just for testing right now
+  on:
+    branch: minor_changes
   token:
     secure: $FIREBASE_TOKEN
