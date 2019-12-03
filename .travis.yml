@@ -34,6 +34,6 @@ deploy:
   provider: firebase
   #Note: this is just for testing right now
   on:
-    branch: minor_changes
+    branch: Develop
   token:
     secure: $FIREBASE_TOKEN
