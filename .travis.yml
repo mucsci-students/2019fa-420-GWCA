@@ -28,3 +28,12 @@ script:
 
 after_script:
   - cat ./coverage/*/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+deploy:
+  skip-cleanup: true
+  provider: firebase
+  #Note: this is just for testing right now
+  on:
+    branch: Develop
+  token:
+    secure: $FIREBASE_TOKEN
