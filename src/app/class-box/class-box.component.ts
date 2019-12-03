@@ -237,6 +237,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
             notAlreadyConnected = true;
           }
           if(notAlreadyConnected){
+            //temporarily unbind
             var connection = this.guiService.jsPlumbInstance.connect({uuids:[this.id+'_bottom',targetId]});
             //composition
             connection.removeAllOverlays();
@@ -244,6 +245,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
             connection.addOverlay(["Label",{label:"Composition",location:0.5}]);
             connection.addOverlay(["Diamond", {width: 15,length: 30,location: 1}]);
             established_connections.push([this.id+'_bottom',targetId]);
+            this.dialog.closeAll();
           }
           else{
             continue;
@@ -251,6 +253,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
         }
       }
     }
+
   }
 
   //wrapper for opening editors
@@ -335,6 +338,9 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
   updateChip(){
     if(this.variables.includes(this.oldChipValue)){
       this.variables[this.variables.indexOf(this.oldChipValue)] = this.chipAttribute;
+      //create composition relationship on edit chip attribute
+      this.autoConnect();
+
     }
     else{
       this.methods[this.methods.indexOf(this.oldChipValue)] = this.chipAttribute;
@@ -342,7 +348,7 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
 
     this.updateValues();
     this.edit = '';
-    this.oldChipValue = ''
+    this.oldChipValue = '';
   }
 
   //tracker methods for ngFor
@@ -386,6 +392,8 @@ export class ClassBoxComponent implements OnInit, AfterViewInit,DoCheck, AfterVi
         else{
           this.variables.push(this.chipAttribute);
         }
+        //only do this for creation of variable
+        this.autoConnect();
       }
       else{
         //if no methods
