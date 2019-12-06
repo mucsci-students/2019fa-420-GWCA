@@ -371,7 +371,7 @@ export class CliComponent implements OnInit, AfterViewInit {
   neofetch(){
     console.log(this.getBrowserName());
     return '\x1b[1;31m' + `⣿⣿⣿⣿⣿⣿⣿⡿⢟⣋⣭⣥⣭⣭⣍⡉⠉⠙⠛⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿\r
-⣿⣿⣿⣿⣿⡏⠁⠠⠶⠛⠻⠿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠉⠻⢿⣿⣿⣿⣿⣿` + '\x1b[1;35m' + `\tColonel:\tGNUML 3.0.0\n\r` + '\x1b[1;31m' +
+⣿⣿⣿⣿⣿⡏⠁⠠⠶⠛⠻⠿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠉⠻⢿⣿⣿⣿⣿⣿` + '\x1b[1;35m' + `\tColonel:\tGNUML 4.0.0\n\r` + '\x1b[1;31m' +
 `⣿⣿⣿⣿⠟⠄⢀⡴⢊⣴⣶⣶⣾⣿⣿⣿⣿⢿⡄⠄⠄⠄⠄⠄⠄⠙⢿⣿⣿⣿` + '\x1b[1;35m' + `\tTERMINAL:\tGNUML\n\r` + '\x1b[1;31m' +
 `⣿⣿⡿⠁⠄⠙⡟⠁⣾⣿⣿⣿⣿⣿⣿⣿⣿⣎⠃⠄⠄⠄⠄⠄⠄⠄⠈⢻⣿⣿` + '\x1b[1;35m' + `\tTERMINAL FONT:\tMonospace\n\r` + '\x1b[1;31m' +
 `⣿⡟⠄⠄⠄⠄⡇⠰⠟⠛⠛⠿⠿⠟⢋⢉⠍⢩⣠⡀⠄⠄⠄⠄⠄⠄⠄⠄⢹⣿` + '\x1b[1;35m' + `\tBrowser:\t` + this.getBrowserName() +`\n\r` + '\x1b[1;31m' +
