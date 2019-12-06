@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as yaml from "js-yaml";
 
 /*
 * This file is where the actual service is defined. This is what is referred to 
@@ -181,29 +182,26 @@ export class ClassStorageService {
 
 
 
+  import(event: any){
+    let reader = new FileReader();
+    let file: File = event.target.files[0];
+    reader.readAsText(file);
 
-
- // this function outputs the current diagram as a JSON string
-  diagramToJSON(){
-    var diagram = JSON.stringify(this.allClasses);      
-    this.jsonString = diagram;
+    reader.onloadend = (e) => {
+      let data = yaml.safeLoad(reader.result);
+      this.allClasses = data;
+    }
+    
   }
 
-  /*
-  * This function takes in a JSON string, and creates it's corresponding diagram.
-  * note how we iterate over the JSON and call create new on each object.
-  */
-  jsonToClasses(data){
-    try{
-      var importedDiagram = JSON.parse(data);
-      this.allClasses.length = 0;
-      for(var i = 0; i < importedDiagram.length; i++){
-        this.createNew(importedDiagram[i].name, importedDiagram[i].methods, importedDiagram[i].variables);
-      }
-    }
-    catch(e) {
-      console.log(e);
-    }
+  export(){
+    var exportedYAML = yaml.safeDump(this.allClasses);
+    var element = document.createElement('a');
+    element.className = 'hidden-link'
+    element.href = "data:text/yml;charset=UTF-8," + encodeURIComponent(exportedYAML);
+    element.download = "data.yml";
+    element.click(); // simulate click 
   }
+
   
 }

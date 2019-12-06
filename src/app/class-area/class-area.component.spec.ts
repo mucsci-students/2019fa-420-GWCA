@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick, ComponentFixtureNoNgZone } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import { ClassAreaComponent } from './class-area.component';
 import { MatDialogModule, MatSelectModule, MatDialogRef, MatChipsModule, MatToolbarModule, MatMenuModule, MatCardModule, MatIconModule } from '@angular/material';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { ClassBoxComponent } from '../class-box/class-box.component';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { ComponentFactoryResolver } from '@angular/core';
+import { ComponentFactoryResolver} from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router} from '@angular/router';
 import { Location } from '@angular/common';
@@ -202,24 +202,24 @@ describe('ClassAreaComponent', () => {
     });
   }));
 
-  it ('should increase Blob size on class creation', () => {
-    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
-    export_button.click();
-    const testBlobA = component.blob;
-    var size = testBlobA.size;
-    service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
-    component.createClass();
-    export_button.click();
-    const testBlobB = component.blob;
-    expect (testBlobB.size > size).toBeTruthy();
-  });
+  // it ('should increase Blob size on class creation', () => {
+  //   let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+  //   export_button.click();
+  //   const testBlobA = component.blob;
+  //   var size = testBlobA.size;
+  //   service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
+  //   component.createClass();
+  //   export_button.click();
+  //   const testBlobB = component.blob;
+  //   expect (testBlobB.size > size).toBeTruthy();
+  // });
 
-  it ('should contain a file of type YAML in the Blob', () => {
-    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
-    export_button.click();
-    const testBlob = component.blob;
-    expect (testBlob.type).toMatch("application/yaml");
-  });
+  // it ('should contain a file of type YAML in the Blob', () => {
+  //   let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+  //   export_button.click();
+  //   const testBlob = component.blob;
+  //   expect (testBlob.type).toMatch("application/yaml");
+  // });
 
 
   it('should create the class',() => {
@@ -306,12 +306,8 @@ describe('ClassAreaComponent', () => {
 
     //connect class boxes
     instance.connect({source: 'cherry_0',target: 'apple_1',anchors: ['Left','Right']});
-    //var connection = instance.getAllConnections()[0];
-    //set uuids (because I have to do it manually...)
-    // connection.endpoints[0].uuid = 'cherry_0_left';
-    // connection.endpoints[1].uuid = 'apple_1_right';
 
-    // instance.connect({uuids: ['cherry_0_left','cherry_0_left']});
+
     fixture.detectChanges();
     //make sure there is a connection
     var connection = fixture.debugElement.nativeElement.querySelector('.jtk-connector');
@@ -402,19 +398,41 @@ describe('ClassAreaComponent', () => {
     expect(editor).not.toBeNull();
   });
 
-  it ('should return to a previous save on import', () => {
-    let export_button = fixture.debugElement.nativeElement.querySelector('.export');
-    service.createNew('apple',['m1'],['v1']);
-    component.createClass();
-    export_button.click();
-    const testBlob = component.blob;
-    var file : Blob = testBlob.slice();
-    service.removeClassByIndex(0);
-    var event = {target: {files: {0: file}}};
-    component.import(event);
-    export_button.click();
-    expect(file).toEqual(component.blob.slice());
-  });
+  // it ('should return to a previous save on import', () => {
+  //   let export_button = fixture.debugElement.nativeElement.querySelector('.export');
+  //   service.createNew('apple',['m1'],['v1']);
+  //   component.createClass();
+  //   export_button.click();
+  //   const testBlob = component.blob;
+  //   var file : Blob = testBlob.slice();
+  //   service.removeClassByIndex(0);
+  //   var event = {target: {files: {0: file}}};
+  //   component.import(event);
+  //   export_button.click();
+  //   expect(file).toEqual(component.blob.slice());
+  // });
+
+  it('should export the file in GUI',() => {
+    fixture.autoDetectChanges();
+    spyOn(component,'updatePosition');
+    spyOn(guiService,'connectionsUpdateWrapper');
+    var spy = jasmine.createSpyObj('a',['click']);
+    spyOn(document,'createElement').and.returnValue(spy);
+    component.exportWrapper();
+    
+    expect(component.updatePosition).toHaveBeenCalled();
+    expect(guiService.connectionsUpdateWrapper).toHaveBeenCalled();
+
+    expect(document.createElement).toHaveBeenCalled();
+    expect(document.createElement).toHaveBeenCalledWith('a');
+    expect(spy.href).toBe("data:text/yml;charset=UTF-8,%5B%5D%0A");
+    expect(spy.download).toBe("data.yml");
+    expect(spy.click).toHaveBeenCalledTimes(1);
+    expect(spy.click).toHaveBeenCalledWith();
+   });
+
+
+   
 
 
 });

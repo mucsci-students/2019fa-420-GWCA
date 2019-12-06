@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ClassStorageService, fullClass } from '../class-storage.service';
 import { jsPlumb } from 'jsplumb';
 import { GuiStorageService } from '../gui-storage.service';
+import { By } from '@angular/platform-browser';
 
 describe('DialogTestComponent', () => {
   let component: DialogTestComponent;
@@ -76,14 +77,8 @@ describe('DialogTestComponent', () => {
   });
 
 
-  it('should call importDiagram',() => {
-    spyOn(component,'importDiagram');
-    component.importButton();
-    expect(component.importDiagram).toHaveBeenCalled();
-  });
 
-
-
+  
 
 
  

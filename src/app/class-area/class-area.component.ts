@@ -6,9 +6,8 @@ import { MatDialogRef, MatDialog } from '@angular/material';
 import { jsPlumb } from 'jsplumb';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import * as yaml from "js-yaml";
 import { GuiStorageService } from '../gui-storage.service';
+
 
 
 @Component({
@@ -20,14 +19,11 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   switchToCLI: boolean;
   //generate components (new way) in the view
   classBoxes = [];
-  fileURL: any;
-  exportedYAML : string;
-  blob : Blob;
 
   //NOTE: this is testing, ignore for now
   //listen for changes in arrays (insertions / deletions)
   private iterableDiffer: IterableDiffer<object>;
-  constructor(private sanatizer: DomSanitizer, private resolver: ComponentFactoryResolver,public service: ClassStorageService
+  constructor(private resolver: ComponentFactoryResolver,public service: ClassStorageService
     ,public dialog: MatDialog, private iterableDiffs: IterableDiffers,
     private router: Router, public guiService: GuiStorageService) {
       this.iterableDiffer= this.iterableDiffs.find([]).create(null);
@@ -70,13 +66,6 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
   }
 
 
-  downloadDiagram(){
-    this.updatePosition();
-    this.guiService.connectionsUpdateWrapper();
-    this.exportedYAML = yaml.safeDump(this.service.allClasses);
-    this.blob = new Blob([this.exportedYAML], { type: 'application/yaml' });
-    this.fileURL = this.sanatizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(this.blob));
-  }
 
   //set up jsplumb instance after the view has initialized
   ngAfterViewInit(){
@@ -172,30 +161,25 @@ export class ClassAreaComponent implements OnInit, DoCheck, AfterViewInit {
     //listen for close without submit
     this.dialogRef.backdropClick().subscribe(() => {
       this.switchToCLI = true;
+      this.dialog.closeAll();
     });
     //listen for normal close
     this.dialogRef.afterClosed().subscribe(() => {
       this.switchToCLI = true;
+      this.dialog.closeAll();
     });
   }
+  
 
-  import(event: any){
-    let reader = new FileReader();
-    let file: File = event.target.files[0];
-    let storage = this.service;
-    //let dialog = this.dialogRef;
-    //dialog.componentInstance.validImport = true;
-    reader.onload = function(e){
-      let data = yaml.safeLoad(reader.result);
-      //var aKeys = Object.keys(data).sort();
-      //var bKeys = Object.keys(storage.allClasses).sort();
-      //if (JSON.stringify(aKeys) === JSON.stringify(bKeys))
-      storage.allClasses = data;
-      //else
-        //dialog.componentInstance.validImport = false;
-    }
-    reader.readAsText(file);
+
+  //wrapper function for export
+  exportWrapper(){
+    this.updatePosition();
+    this.guiService.connectionsUpdateWrapper();
+    this.service.export();
   }
+
+
 
 
 

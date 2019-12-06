@@ -16,10 +16,14 @@
   <!-- line 59 actually serves our diagram.-->
   <span *ngIf="buttonPressed === 'export'">
       If download did not begin, <a download="data.yml" [href]="fileURL">click here</a>
+      <button class="close close-button" mat-raised-button color="primary" [mat-dialog-close] type="button" >Close</button>
   </span>
-  <!-- import button contents -->
+  <!-- import button contents --> 
   <span *ngIf="buttonPressed === 'import'">
-    <h4>Diagram imported successfully</h4>
+    <button (click)="fileInput.click()" class="import-wrapper" mat-raised-button color="primary">Import
+      <input #fileInput id="import" type="file" (change)="service.import($event)"/>
+    </button>
+    <button class="close close-button" mat-raised-button color="primary" [mat-dialog-close] type="button" >Close</button>
   </span>
   <span *ngIf="buttonPressed === 'connection'">
     <h1>Choose a connection type</h1>
