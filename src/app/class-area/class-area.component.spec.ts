@@ -432,6 +432,18 @@ describe('ClassAreaComponent', () => {
    });
 
 
+   it('should import in GUI',() => {
+     const mockFile = new File([''], 'data.yml', { type: 'application/yml' });
+     const mockEvent = { target: {files: [mockFile]}};
+     const mockReader: FileReader = jasmine.createSpyObj('FileReader',['readAsText','onloadend']);
+    spyOn(window as any,'FileReader').and.returnValue(mockReader);
+    service.import(mockEvent);
+    expect((window as any).FileReader).toHaveBeenCalled();
+    expect(mockReader.readAsText).toHaveBeenCalledWith(mockFile);
+
+   });
+
+
    
 
 
