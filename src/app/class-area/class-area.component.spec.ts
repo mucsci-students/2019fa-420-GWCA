@@ -202,24 +202,7 @@ describe('ClassAreaComponent', () => {
     });
   }));
 
-  // it ('should increase Blob size on class creation', () => {
-  //   let export_button = fixture.debugElement.nativeElement.querySelector('.export');
-  //   export_button.click();
-  //   const testBlobA = component.blob;
-  //   var size = testBlobA.size;
-  //   service.createNew("cherry",["m1()","m2()","m3()"],["v1","v2","v3"]);
-  //   component.createClass();
-  //   export_button.click();
-  //   const testBlobB = component.blob;
-  //   expect (testBlobB.size > size).toBeTruthy();
-  // });
-
-  // it ('should contain a file of type YAML in the Blob', () => {
-  //   let export_button = fixture.debugElement.nativeElement.querySelector('.export');
-  //   export_button.click();
-  //   const testBlob = component.blob;
-  //   expect (testBlob.type).toMatch("application/yaml");
-  // });
+  
 
 
   it('should create the class',() => {
@@ -398,20 +381,6 @@ describe('ClassAreaComponent', () => {
     expect(editor).not.toBeNull();
   });
 
-  // it ('should return to a previous save on import', () => {
-  //   let export_button = fixture.debugElement.nativeElement.querySelector('.export');
-  //   service.createNew('apple',['m1'],['v1']);
-  //   component.createClass();
-  //   export_button.click();
-  //   const testBlob = component.blob;
-  //   var file : Blob = testBlob.slice();
-  //   service.removeClassByIndex(0);
-  //   var event = {target: {files: {0: file}}};
-  //   component.import(event);
-  //   export_button.click();
-  //   expect(file).toEqual(component.blob.slice());
-  // });
-
   it('should export the file in GUI',() => {
     fixture.autoDetectChanges();
     spyOn(component,'updatePosition');
@@ -432,7 +401,7 @@ describe('ClassAreaComponent', () => {
    });
 
 
-   it('should import in GUI',() => {
+   it('should import a file',() => {
      const mockFile = new File([''], 'data.yml', { type: 'application/yml' });
      const mockEvent = { target: {files: [mockFile]}};
      const mockReader: FileReader = jasmine.createSpyObj('FileReader',['readAsText','onloadend']);
