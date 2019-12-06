@@ -22,7 +22,6 @@ export class DialogTestComponent {
   connectionType: string;
   //boolean to check to see if class already exists
   exists: boolean;
-  //validImport: boolean;
   constructor(public service: ClassStorageService, public guiService: GuiStorageService) {
     this.exists = true;
   }
@@ -65,22 +64,5 @@ export class DialogTestComponent {
   addButton(){
     this.insertData();
   }
-  //wrapper for import button functionality
-  importButton(){
-    this.importDiagram(this.diagram);
-  }
-  //wrapper for export button functionality
 
-  /*
-  * importDiagram is basically just a wrapper for the service's import method.
-  * This needs to be done because we can't directly call the service in the (click)
-  * listener on line 65 of dialogue-test.component.html.
-  */
-  importDiagram(diagram){
-    this.service.jsonToClasses(diagram);
-  }
-
-  updateStoredDiagram(){
-    this.service.diagramToJSON();
-  }
 }

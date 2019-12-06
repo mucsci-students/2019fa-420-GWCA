@@ -2,13 +2,8 @@
     <mat-toolbar class="menu">
         <h3>GWCA</h3>
         <button mat-raised-button color="primary" class="buttons new" (click)="openDialog('new')" >New</button>
-        <button mat-raised-button color="primary" class="buttons import" (click)="openDialog('import')">
-          <label for="file-input">
-            Import
-            <input type="file" id="file-input" (change)="import($event)" accept=".yml, application/yaml"/>
-          </label>
-        </button>
-        <a mat-raised-button color="primary" class="buttons export" [href]="fileURL" download="data.yml" (click)="openDialog('export');downloadDiagram()">Export</a>
+        <button mat-raised-button color="primary" class="buttons import" (click)="openDialog('import')">Import</button>
+        <button mat-raised-button color="primary" class="buttons export" (click)="openDialog('export');exportWrapper()">Export</button>
         <button mat-raised-button color="primary" class="buttons help" (click)="openDialog('help')">Help</button>
         <div class="cli-container">
             <a routerLink="cli">
@@ -17,6 +12,7 @@
         </div>
     </mat-toolbar>
 </div>
+
 
 
 <div class="classes" id="#classes-container" #container>

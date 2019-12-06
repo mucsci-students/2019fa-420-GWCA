@@ -19,6 +19,22 @@ span form, span mat-form-field{
 
 
 
+.close-button{
+    float          : right;
+    margin-top     : 20px;
+}
+
+.import-wrapper{
+    margin-left    : 25% !important;
+    width          : 50%;
+}
+
+button input{
+    display        : none;
+}
+
+
+
 .chip::marker{
     content       : '' !important;
 }

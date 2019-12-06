@@ -189,4 +189,17 @@ describe('CliComponent', () => {
     expect(input).not.toBeUndefined();
   });
 
+  it('should export the file in CLI',() => {
+    fixture.autoDetectChanges();
+    var spy = jasmine.createSpyObj('a',['click']);
+    spyOn(document,'createElement').and.returnValue(spy);
+    expect(component.interpret('>export')).toBe('downloading file');
+    expect(document.createElement).toHaveBeenCalled();
+    expect(document.createElement).toHaveBeenCalledWith('a');
+    expect(spy.href).toBe("data:text/yml;charset=UTF-8,%5B%5D%0A");
+    expect(spy.download).toBe("data.yml");
+    expect(spy.click).toHaveBeenCalledTimes(1);
+    expect(spy.click).toHaveBeenCalledWith();
+   });
+
 });

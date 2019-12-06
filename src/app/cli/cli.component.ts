@@ -83,7 +83,7 @@ export class CliComponent implements OnInit, AfterViewInit {
       case "clear": output = ""; break;
       case "view": output = this.viewDiagram(); break;
       case "import": output = this.openImport(); break;
-      case "export": output = "copy this: " + this.exportDiagram(); break;
+      case "export": output = "downloading file";this.service.export(); break;
       case "clone": output = this.cloneClass(line); break;
       case "neofetch": output = this.neofetch(); break;
       case "": output = '\x1b[1;31m' + "Error: Invalid Command. Type \"help\" for commands"; break;
@@ -328,11 +328,6 @@ export class CliComponent implements OnInit, AfterViewInit {
   }
 
 
-  //this outputs the current JSON to the terminal screen
-  exportDiagram(){
-    this.service.diagramToJSON();
-    return this.service.jsonString;
-  }
 
   //  this takes the name of a given class and a "new" name. It copies the class, 
   //  renaming it to the "new" name in the process

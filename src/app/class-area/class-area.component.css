@@ -71,3 +71,9 @@ pre {
     /* height        : 100vh; */
 
 }
+
+.hidden-link{
+    display       : none;
+}
+
+

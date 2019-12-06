@@ -217,8 +217,6 @@ export class GuiStorageService {
          var targetPosition = classes[i]['connections'][j][1].split("_")[1];
          var targetElement = document.querySelector("app-class-box ."+target).id;
 
-        //  console.log(srcElement+"_"+sourcePosition);
-        //  console.log(targetElement+"_"+targetPosition);
          var connectionType = classes[i]['connections'][j][2];
          //skip
          
